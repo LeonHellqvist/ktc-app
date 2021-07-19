@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 ## ktc-app
 ### En websida / progressiv webbapplikation (pwa) för KTC i Katrineholm. Alla elever och lärare är välkomna att hjälpa till! 
+#### Mobila enheter ska optimeras för i första hand
 
 =======
 
