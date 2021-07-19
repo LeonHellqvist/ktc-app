@@ -1,8 +1,15 @@
 <<<<<<< HEAD
-# ktc-app
-En websida / progressiv webbapplikation (pwa) för KTC i Katrineholm. Alla elever och lärare är välkomna att hjälpa till! 
+## ktc-app
+### En websida / progressiv webbapplikation (pwa) för KTC i Katrineholm. Alla elever och lärare är välkomna att hjälpa till! 
+#### Mobila enheter ska optimeras för i första hand
+
 =======
-# Getting Started with Create React App
+
+## Vi använder Material-UI för design och istället för dedikerade css filer där det går.
+
+=======
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
