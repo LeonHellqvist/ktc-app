@@ -15,13 +15,11 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Login( {setUserClass} ) {
+export default function Login({ setUserInfo }) {
   const classes = useStyles();
   return (
     <div className={classes.backgroundDiv}>
-      
-      <LoginForm setUserClass={setUserClass}/>
-    
+      <LoginForm setUserInfo={setUserInfo} />
     </div>
-  )
+  );
 }
