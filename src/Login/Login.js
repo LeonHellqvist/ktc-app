@@ -7,11 +7,9 @@ const useStyles = makeStyles({
     background: "linear-gradient(25deg, #FE6B8B 30%, #FF8E53 90%)",
     padding: 0,
     overflow: "hidden",
-    position: "fixed",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
+    position: "absolute",
+    height: "100%",
+    width: "100%",
   },
 });
 
