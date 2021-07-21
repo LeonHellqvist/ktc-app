@@ -1,5 +1,6 @@
 import React from "react";
 import LoginForm from "./LoginForm";
+import LoginBottomSVG from "./LoginBottomSVG";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
@@ -18,6 +19,7 @@ export default function Login({ setUserInfo }) {
   return (
     <div className={classes.backgroundDiv}>
       <LoginForm setUserInfo={setUserInfo} />
+      <LoginBottomSVG />
     </div>
   );
 }
