@@ -3,30 +3,34 @@ import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 import SaveIcon from "@material-ui/icons/Save";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
+import Divider from '@material-ui/core/Divider';
 
 const axios = require("axios");
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: "absolute",
-    top: "5vh",
-    left: "5vw",
-    right: "5vw",
-    bottom: "5vh",
+    top: 25,
+    left: 25,
+    right: 25,
+    paddingBottom: 25,
   },
   gridItem: {
     margin: "10px",
   },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+  divider: {
+    margin: 0,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  input: {
+    minWidth: "60vw",
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
@@ -113,10 +117,10 @@ export default function LoginForm({ setUserInfo }) {
         <Grid item xs="auto">
           <h1>KTC appen</h1>
           <h2>Ange dina uppgifter</h2>
-          <hr />
+          <Divider variant="middle" className={classes.divider}/>
         </Grid>
-        <Grid item xs="auto">
-          <FormControl variant="outlined" className={classes.formControl}>
+        <Grid item xs="auto" className={classes.gridItem}>
+          <FormControl variant="outlined" className={classes.input}>
             <InputLabel id="demo-simple-select-outlined-label">
               Klass
             </InputLabel>
@@ -134,7 +138,6 @@ export default function LoginForm({ setUserInfo }) {
                 </MenuItem>
               ))}
             </Select>
-            <FormHelperText>Vänligen välj din klass</FormHelperText>
           </FormControl>
         </Grid>
         <Grid item xs="auto" className={classes.gridItem}>
@@ -142,6 +145,7 @@ export default function LoginForm({ setUserInfo }) {
             id="firstnameInput"
             label="Förnamn"
             variant="outlined"
+            className={classes.input}
             onChange={fistNameHandleChange}
           />
         </Grid>
@@ -150,6 +154,7 @@ export default function LoginForm({ setUserInfo }) {
             id="lastnameInput"
             label="Efternamn"
             variant="outlined"
+            className={classes.input}
             onChange={lastNameHandleChange}
           />
         </Grid>
