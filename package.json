@@ -1,6 +1,7 @@
 {
   "name": "ktc-app",
   "version": "0.1.0",
+  "homepage": "https://leonhellqvist.com/ktc/",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.12.1",
