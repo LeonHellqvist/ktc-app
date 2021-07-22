@@ -79,7 +79,7 @@ export default function LoginForm({ setUserInfo }) {
     //Vi gör en post request till leon pga CORS med Schema24
     var config = {
       method: "post",
-      url: "http://leonhellqvist.com:8080/classApi",
+      url: "https://leonhellqvist.com/api/ktc-app/classApi",
       headers: {
         "Content-Type": "application/json",
       },
