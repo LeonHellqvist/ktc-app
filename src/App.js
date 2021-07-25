@@ -33,7 +33,6 @@ function App() {
   }, [userInfo]);
 
   if (userInfo === null) {
-    console.log(userInfo)
     return (
       <div className="App">
         <Login setUserInfo={setUserInfo} />

@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard( {userInfo} ) {
   const classes = useStyles();
+  if (userInfo === undefined) {
+    return (<div></div>);
+  }
   return (
     <Router className={classes.root}>
       <Switch>
