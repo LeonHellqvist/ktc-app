@@ -10,6 +10,12 @@ const theme = createTheme({
   palette: {
     secondary: orange,
   },
+  typography: {
+    fontFamily: 'Roboto',
+    h1: {
+      fontFamily: '"Rajdhani"',
+    }
+  }
 });
 
 ReactDOM.render(
