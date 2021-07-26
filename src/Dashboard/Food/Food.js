@@ -1,15 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import FoodList from './FoodList'
 import FoodNav from './FoodNav'
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  root: {
+    height: "90vh",
+    width: "100vw",
+    overflowY: "scroll"
+  },
+});
 
 export default function Food() {
+  const classes = useStyles();
 
   const [offset, setOffset] = useState(0);
   
   return (
-    <div>
+    <div className={classes.root}>
       <FoodList offset={offset}/>
-      <FoodNav setOffset={setOffset}/>
+      <FoodNav offset={offset} setOffset={setOffset}/>
     </div>
   )
 }
