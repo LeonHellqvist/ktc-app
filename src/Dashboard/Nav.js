@@ -2,10 +2,11 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import ScheduleIcon from '@material-ui/icons/Schedule';
+// import ScheduleIcon from '@material-ui/icons/Schedule';
 import HomeIcon from '@material-ui/icons/Home';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import Paper from '@material-ui/core/Paper';
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles({
   root: {
@@ -26,9 +27,9 @@ export default function LabelBottomNavigation() {
   return (
     <Paper elevation={3} className={classes.root}>
       <BottomNavigation value={value} onChange={handleChange}>
-        <BottomNavigationAction label="Schema" value="schedule" icon={<ScheduleIcon />} />
-        <BottomNavigationAction label="Hem" value="home" icon={<HomeIcon />} />
-        <BottomNavigationAction label="Matsedel" value="food" icon={<FastfoodIcon />} />
+        {/* <BottomNavigationAction label="Schema" value="schedule" icon={<ScheduleIcon />} /> */}
+        <BottomNavigationAction label="Hem" value="home" icon={<HomeIcon />} component={Link} to={'/ktc'} />
+        <BottomNavigationAction label="Matsedel" value="food" icon={<FastfoodIcon />} component={Link} to={'/ktc/food'} />
       </BottomNavigation>
     </Paper>
   );

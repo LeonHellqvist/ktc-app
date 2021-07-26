@@ -1,6 +1,7 @@
 import React from 'react'
 import Nav from './Nav'
 import Home from './Home/Home'
+import Food from './Food/Food'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -18,7 +19,8 @@ export default function Dashboard( {userInfo} ) {
   return (
     <Router className={classes.root}>
       <Switch>
-        <Route path="/" component={Home}/>
+        <Route path="/ktc" exact component={Home}/>
+        <Route path="/ktc/food" component={Food}/>
       </Switch>
       <Nav />
     </Router>
