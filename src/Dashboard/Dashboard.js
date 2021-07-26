@@ -1,4 +1,5 @@
 import React from 'react'
+import Bar from './Bar'
 import Nav from './Nav'
 import Home from './Home/Home'
 import Food from './Food/Food'
@@ -18,6 +19,7 @@ export default function Dashboard( {userInfo} ) {
   }
   return (
     <Router className={classes.root}>
+      <Bar />
       <Switch>
         <Route path="/ktc" exact component={Home}/>
         <Route path="/ktc/food" component={Food}/>
