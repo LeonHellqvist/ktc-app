@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ScheduleNav from './ScheduleNav'
-import ScheduleList from './ScheduleList'
+import ScheduleWeek from './ScheduleWeek/ScheduleWeek'
 
 var currentWeekNumber = require('current-week-number');
 var cwn = currentWeekNumber();
@@ -12,7 +12,7 @@ export default function Schedule() {
   return (
     <div>
       <ScheduleNav setWeek={setWeek} cwn={cwn} />
-      <ScheduleList week={week}/>
+      <ScheduleWeek week={week}/>
     </div>
   )
 }
