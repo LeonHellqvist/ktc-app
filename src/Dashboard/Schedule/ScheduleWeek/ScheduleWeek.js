@@ -1,15 +1,30 @@
 import React, { useEffect, useState } from "react";
-const axios = require('axios');
+import Skeleton from "@material-ui/lab/Skeleton";
+import Paper from '@material-ui/core/Paper';
 
-export default function ScheduleWeek( {week} ) {
 
-  const [scheduleData, setScheduleData] = useState()
+const axios = require("axios");
 
-  const screenWidth = window.innerWidth - 20;
+export default function ScheduleWeek({ week, setPopupData }) {
+  const [scheduleData, setScheduleData] = useState();
+
+  const screenWidth = window.innerWidth;
   const screenHeight = 550;
 
   console.log(scheduleData);
+
+  function getPopupData(id) {
+    console.log(scheduleData.lessonInfo)
+    for (var x = 0; x < scheduleData.lessonInfo.length; x++) {
+      if (scheduleData.lessonInfo[x].guidId === id[0]) {
+        console.log(scheduleData.lessonInfo[x])
+        return scheduleData.lessonInfo[x];
+      }
+    }
+  }
+
   useEffect(() => {
+    setScheduleData(undefined);
     const LOCAL_STORAGE_USER_INFO = "ktc-app.userInfo";
     const storedUserInfo = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_USER_INFO)
@@ -24,7 +39,7 @@ export default function ScheduleWeek( {week} ) {
       wi: screenWidth,
       he: screenHeight,
     });
-  
+
     var config = {
       method: "post",
       url: "https://leonhellqvist.com/api/ktc-app/schemaApi",
@@ -33,37 +48,81 @@ export default function ScheduleWeek( {week} ) {
       },
       data: data,
     };
-  
+
     axios(config)
       .then(function (response) {
-        console.log(response)
-        setScheduleData(response.data.data)
+        console.log(response);
+        setScheduleData(response.data.data);
       })
       .catch(function (error) {
         console.log(error);
       });
-  }, [week, screenWidth])
+  }, [week, screenWidth]);
 
   return (
-    <div style={{marginTop: "20px"}}>
-      {scheduleData !== undefined ? 
-        <svg width={screenWidth} height={screenHeight} viewBox={`0 0 ${screenWidth} ${screenHeight}`} shapeRendering="crispEdges" style={{borderStyle: "solid", borderWidth: 1}}>
-          {scheduleData.boxList.map(item => {
-            return <rect x={item.x} y={item.y} width={item.width} height={item.height} style={item.type.startsWith("Clock") ? {fill: item.bColor, stroke: "#000", strokeWidth: 0} : {fill: item.bColor, stroke: "#000", strokeWidth: 1}} ></rect>
-          })}
-          
-          {scheduleData.textList.map(item => {
-            return <text x={item.x + 1} y={item.y + 9.5} style={{fontSize: item.fontsize, fill: item.fColor}}>{item.text}</text>
-          })}
+    <div>
+      <Paper elevation={3} style={{overflowY: "scroll", paddingBottom: "400px" }}>
+        {scheduleData !== undefined ? (
+          <svg
+            width={screenWidth}
+            height={screenHeight}
+            viewBox={`0 0 ${screenWidth} ${screenHeight}`}
+            shapeRendering="crispEdges"
+            
+          >
+            {scheduleData.boxList.map((item) => {
+              return (
+                <rect
+                  x={item.x}
+                  y={item.y}
+                  width={item.width}
+                  height={item.height}
+                  key={item.id}
+                  style={
+                    item.type.startsWith("Clock")
+                      ? { fill: item.bColor, stroke: "#000", strokeWidth: 0 }
+                      : { fill: item.bColor, stroke: "#000", strokeWidth: 1 }
+                  }
+                  onClick={() => item.type.startsWith("Lesson") ? setPopupData(getPopupData(item.lessonGuids)) : {}}
+                ></rect>
+              );
+            })}
 
-          {scheduleData.lineList.map(item => {
-            return <line x1={item.p1x} y1={item.p1y} x2={item.p2x} y2={item.p2y} style={{stroke: item.color}}></line>
-          })}
-        </svg> :
-      <p>Btuh</p>
-      }
-      
-      {week}
+            {scheduleData.textList.map((item) => {
+              return (
+                <text
+                  x={item.x + 1}
+                  y={item.y + 9}
+                  key={item.id}
+                  style={{ fontSize: item.fontsize, fill: item.fColor }}
+                >
+                  {item.text}
+                </text>
+              );
+            })}
+
+            {scheduleData.lineList.map((item) => {
+              return (
+                <line
+                  x1={item.p1x}
+                  y1={item.p1y}
+                  x2={item.p2x}
+                  y2={item.p2y}
+                  key={item.id}
+                  style={{ stroke: item.color }}
+                ></line>
+              );
+            })}
+          </svg>
+        ) : (
+          <Skeleton
+            variant="rect"
+            width={screenWidth}
+            height={"100vh"}
+            animation="wave"
+          />
+        )}
+      </Paper>
     </div>
-  )
+  );
 }
