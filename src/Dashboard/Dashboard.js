@@ -2,6 +2,7 @@ import React from 'react'
 import Bar from './Bar'
 import Nav from './Nav'
 import Home from './Home/Home'
+import Schedule from './Schedule/Schedule'
 import Food from './Food/Food'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
@@ -22,6 +23,7 @@ export default function Dashboard( {userInfo} ) {
       <Bar />
       <Switch>
         <Route path="/ktc" exact component={Home}/>
+        <Route path="/ktc/schedule" component={Schedule}/>
         <Route path="/ktc/food" component={Food}/>
       </Switch>
       <Nav />
