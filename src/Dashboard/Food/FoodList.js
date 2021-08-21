@@ -10,7 +10,7 @@ const useStyles = makeStyles({
     display: 'flex',
     flexWrap: "nowrap",
     marginTop: 10,
-    marginBottom: 50,
+    marginBottom: 150,
   },
   item: {
     margin: 5,
