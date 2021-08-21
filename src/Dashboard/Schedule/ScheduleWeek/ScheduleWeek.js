@@ -8,6 +8,9 @@ const axios = require("axios");
 export default function ScheduleWeek({ week, setPopupData }) {
   const [scheduleData, setScheduleData] = useState();
 
+  const textXOffset = 1;
+  const textYOffset = 9.5;
+
   const screenWidth = window.innerWidth;
   const screenHeight = 550;
 
@@ -20,6 +23,15 @@ export default function ScheduleWeek({ week, setPopupData }) {
         console.log(scheduleData.lessonInfo[x])
         return scheduleData.lessonInfo[x];
       }
+    }
+  }
+
+  function styleSelect(item) {
+    if ((item.type.startsWith("Clock")) || (item.type.startsWith("Footer"))) {
+      return { fill: item.bColor, stroke: "#000", strokeWidth: 0 }
+    }
+    else {
+      return { fill: item.bColor, stroke: "#000", strokeWidth: 1 }
     }
   }
 
@@ -78,11 +90,7 @@ export default function ScheduleWeek({ week, setPopupData }) {
                   width={item.width}
                   height={item.height}
                   key={item.id}
-                  style={
-                    item.type.startsWith("Clock")
-                      ? { fill: item.bColor, stroke: "#000", strokeWidth: 0 }
-                      : { fill: item.bColor, stroke: "#000", strokeWidth: 1 }
-                  }
+                  style={styleSelect(item)}
                   onClick={() => item.type.startsWith("Lesson") ? setPopupData(getPopupData(item.lessonGuids)) : {}}
                 ></rect>
               );
@@ -91,8 +99,8 @@ export default function ScheduleWeek({ week, setPopupData }) {
             {scheduleData.textList.map((item) => {
               return (
                 <text
-                  x={item.x + 1}
-                  y={item.y + 9}
+                  x={item.x + textXOffset}
+                  y={item.y + textYOffset}
                   key={item.id}
                   style={{ fontSize: item.fontsize, fill: item.fColor }}
                 >
