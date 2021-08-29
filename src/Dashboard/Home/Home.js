@@ -17,9 +17,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "100%",
   },
-  grid: {
-    padding: 10,
-  },
 }));
 
 export default function Home() {
@@ -33,6 +30,10 @@ export default function Home() {
   
     if (day === 0) { // veckodag 0 (söndag) är 7 i Europa
       day = 7;
+    }
+
+    if (day > 5) {
+      day = 1;
     }
   
     return day;
