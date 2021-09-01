@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     overflowY: "scroll",
     overflowX: "hidden",
-    height: "83vh"
+    height: "83vh",
   },
 }));
 
@@ -59,7 +59,7 @@ export default function HomeGridList({ todaySchedule }) {
     } else {
       for (let a = 1; a < groups.length; a++) {
         if (groups[a][0][0].timeStartI - groups[a - 1][0][0].timeEndI >= 8000) {
-          groups.splice(a - 1, 0, [[{food: true, guidId: "bruh"}]])
+          groups.splice(a - 1, 0, [[{food: true}]])
           a++;
         }
       }
@@ -70,8 +70,8 @@ export default function HomeGridList({ todaySchedule }) {
 
   return (
     <div className={classes.root}>
-      {scheduleGroups ? scheduleGroups.map((group) => {
-        return <HomeGridGroup group={group} key={group[0][0].guidId}/>
+      {scheduleGroups ? scheduleGroups.map((group, index) => {
+        return <HomeGridGroup group={group} key={index}/>
       }) : ""}
     </div>
   );
