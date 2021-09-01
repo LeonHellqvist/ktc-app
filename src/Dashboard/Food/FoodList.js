@@ -11,9 +11,7 @@ const useStyles = makeStyles({
     flexWrap: "nowrap",
     marginTop: 10,
     marginBottom: 150,
-  },
-  item: {
-    margin: 5,
+    width: '100vw',
   },
   skeleton: {
     width: "85vw",
@@ -71,7 +69,7 @@ export default function FoodList( {offset} ) {
         }) :
         skeletonNumbers.map(item => {
           return (
-            <Grid item key={item} className={classes.item}>
+            <Grid item key={item}>
               <Skeleton className={classes.skeleton}/>
             </Grid>
           )

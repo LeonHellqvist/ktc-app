@@ -7,7 +7,9 @@ const useStyles = makeStyles({
   root: {
     height: "90vh",
     width: "100vw",
-    overflowY: "scroll"
+    overflowY: "scroll",
+    overflowX: "hidden",
+    backgroundColor: "rgb(250,250,250)",
   },
 });
 

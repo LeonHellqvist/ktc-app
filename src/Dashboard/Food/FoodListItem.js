@@ -7,7 +7,8 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
   root: {
-    width: "85vw",
+    width: "95vw",
+    marginBottom: 10,
   },
 });
 
@@ -15,14 +16,14 @@ export default function FoodListItem( {item} ) {
   const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} variant="outlined">
       <CardActionArea>
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             {item.title[0].split(' -')[0]}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            {item.description[0].replace("<br/>", " ✪ ")}
+            {item.description[0].replaceAll("<br/>", " ✪ ")}
           </Typography>
         </CardContent>
       </CardActionArea>
