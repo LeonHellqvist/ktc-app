@@ -59,7 +59,14 @@ export default function HomeGridList({ todaySchedule }) {
       console.log("Starts after lunch")
     } else {
       for (let a = 1; a < groups.length; a++) {
-        if ((groups[a][0][0].timeStartI - groups[a - 1][0][0].timeEndI >= 8000) && (131500 - groups[a - 1][0][0].timeEndI >= 4000)) {
+        if (
+          ((groups[a][0][0].timeStart.substr(0, 2) !== groups[a - 1][0][0].timeEnd.substr(0, 2)) &&
+          (groups[a][0][0].timeStartI - groups[a - 1][0][0].timeEndI >= 8000 &&
+          131500 - groups[a - 1][0][0].timeEndI >= 8000)) || 
+          ((groups[a][0][0].timeStart.substr(0, 2) === groups[a - 1][0][0].timeEnd.substr(0, 2)) &&
+          (groups[a][0][0].timeStartI - groups[a - 1][0][0].timeEndI >= 4000 &&
+          131500 - groups[a - 1][0][0].timeEndI >= 8000))
+        ) {
           console.log(groups[a][0][0].timeStartI)
           console.log(groups[a - 1][0][0].timeEndI)
           groups.splice(a, 0, [[{food: true}]])
