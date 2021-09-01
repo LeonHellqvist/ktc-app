@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
   const classes = useStyles();
 
+  const [storedUserInfo, setStoredUserInfo] = useState()
   const [todaySchedule, setTodaySchedule] = useState()
 
   function getLocalDay(date) {
@@ -36,10 +37,13 @@ export default function Home() {
 
   useEffect(() => {
     const LOCAL_STORAGE_USER_INFO = "ktc-app.userInfo";
-    const storedUserInfo = JSON.parse(
+    setStoredUserInfo(JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_USER_INFO)
-    );
-    console.log(storedUserInfo);
+    ))
+  }, [])
+
+  useEffect(() => {
+    if (!storedUserInfo) return
     var data = JSON.stringify({
       s: "ZGI0OGY4MjktMmYzNy1mMmU3LTk4NmItYzgyOWViODhmNzhj",
       c: storedUserInfo.userClass,
@@ -74,7 +78,7 @@ export default function Home() {
       .catch(function (error) {
         console.log(error);
       });
-  }, []);
+  }, [storedUserInfo]);
 
   return (
     <Slide direction="up" in={true} mountOnEnter unmountOnExit>
