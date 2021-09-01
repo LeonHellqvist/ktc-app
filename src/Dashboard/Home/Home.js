@@ -9,14 +9,9 @@ var currentWeekNumber = require('current-week-number');
 var cwn = currentWeekNumber();
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    position: "relative",
-    display: "flex",
-    justifyContent: "center",
-    flexDirection: "column",
-    width: "100%",
-    height: "100%",
-  },
+  grid: {
+    backgroundColor: "rgb(250,250,250)",
+  }
 }));
 
 export default function Home() {
