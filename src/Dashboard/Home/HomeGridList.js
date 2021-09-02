@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HomeGridGroup from "./HomeGridGroup";
+import Skeleton from '@material-ui/lab/Skeleton';
+import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -10,12 +12,18 @@ const useStyles = makeStyles((theme) => ({
     height: "80vh",
     paddingBottom: "80vh",
   },
+  skeleton: {
+    width: "85vw",
+    height: "20px",
+  },
 }));
 
 export default function HomeGridList({ todaySchedule }) {
   const classes = useStyles();
 
   const [scheduleGroups, setScheduleGroups] = useState();
+
+  const skeletonNumbers = [1,2,3,4,5];
 
   useEffect(() => {
     if (!todaySchedule) return;
@@ -76,14 +84,19 @@ export default function HomeGridList({ todaySchedule }) {
       }
     }
     setScheduleGroups(groups)
-    console.log(groups);
   }, [todaySchedule]);
 
   return (
     <div className={classes.root}>
       {scheduleGroups ? scheduleGroups.map((group, index) => {
         return <HomeGridGroup group={group} key={index}/>
-      }) : ""}
+      }) : skeletonNumbers.map(item => {
+        return (
+          <Grid item key={item} style={{marginTop: 10}}>
+            <Skeleton className={classes.skeleton}/>
+          </Grid>
+        )
+      })}
     </div>
   );
 }
