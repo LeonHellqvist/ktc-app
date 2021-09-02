@@ -2,16 +2,15 @@ import React, { useEffect, useState } from "react";
 import HomeGridList from "./HomeGridList"
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import Slide from "@material-ui/core/Slide";
 
 const axios = require("axios");
 var currentWeekNumber = require('current-week-number');
 var cwn = currentWeekNumber();
 
 const useStyles = makeStyles((theme) => ({
-  grid: {
+  root: {
     backgroundColor: "rgb(250,250,250)",
-  }
+  },
 }));
 
 export default function Home() {
@@ -65,9 +64,7 @@ export default function Home() {
 
     axios(config)
       .then(function (response) {
-        console.log(response);
         let sortedResponse = response.data.data.lessonInfo;
-        console.log(sortedResponse);
         for (var x = 0; x < sortedResponse.length; x++) {
           sortedResponse[x].timeStartI = parseInt(sortedResponse[x].timeStart.replaceAll(":", ""))
           sortedResponse[x].timeEndI = parseInt(sortedResponse[x].timeEnd.replaceAll(":", ""))
@@ -81,17 +78,17 @@ export default function Home() {
   }, [storedUserInfo]);
 
   return (
-    <Slide direction="up" in={true} mountOnEnter unmountOnExit>
+    <div className={classes.root}>
       <Grid
         container
         direction="column"
         justifyContent="center"
         alignItems="center"
       >
-        <Grid item xs={12} className={classes.grid}>
+        <Grid item xs={12}>
           <HomeGridList todaySchedule={todaySchedule}/>
         </Grid>
       </Grid>
-    </Slide>
+    </div>
   );
 }

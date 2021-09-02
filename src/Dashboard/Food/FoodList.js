@@ -43,7 +43,6 @@ export default function FoodList( {offset} ) {
   
     axios(config)
       .then(function (response) {
-        console.log(response)
         setFoodItems(response.data.rss.channel[0].item)
       })
       .catch(function (error) {
