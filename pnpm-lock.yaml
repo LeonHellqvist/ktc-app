@@ -3,6 +3,8 @@ lockfileVersion: 5.4
 specifiers:
   '@emotion/react': ^11.10.5
   '@emotion/styled': ^11.10.5
+  '@fontsource/roboto': ^4.5.8
+  '@mui/icons-material': ^5.10.16
   '@mui/material': ^5.10.16
   '@types/react': ^18.0.24
   '@types/react-dom': ^18.0.8
@@ -16,6 +18,8 @@ specifiers:
 dependencies:
   '@emotion/react': 11.10.5_hebjedjhazelsvuzebr6t7ng24
   '@emotion/styled': 11.10.5_5tjec44ezuvlpkchcqgxkxryqi
+  '@fontsource/roboto': 4.5.8
+  '@mui/icons-material': 5.10.16_ge2ne5gh5gcqikeclw577gsblu
   '@mui/material': 5.10.16_thp4wrxo45nyllusrnt46mid4u
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -1362,6 +1366,10 @@ packages:
     dev: true
     optional: true
 
+  /@fontsource/roboto/4.5.8:
+    resolution: {integrity: sha512-CnD7zLItIzt86q4Sj3kZUiLcBk1dSk81qcqgMGaZe7SQ1P8hFNxhMl5AZthK1zrDM5m74VVhaOpuMGIL4gagaA==}
+    dev: false
+
   /@jridgewell/gen-mapping/0.1.1:
     resolution: {integrity: sha512-sQXCasFk+U8lWYEe66WxRDOE9PjVz4vSM51fTu3Hw+ClTpUSQb718772vH3pyS5pShp6lvQM7SxgIDXXXmOX7w==}
     engines: {node: '>=6.0.0'}
@@ -1427,6 +1435,23 @@ packages:
 
   /@mui/core-downloads-tracker/5.10.16:
     resolution: {integrity: sha512-eK9+olw2ZbXX+vGrtKnN01/vLP1aX0Lq0xok35bqWM1aB93Dcmky/xPNf8h31oJ/C+IzJBjZaZMEDzVZg4Qc0A==}
+    dev: false
+
+  /@mui/icons-material/5.10.16_ge2ne5gh5gcqikeclw577gsblu:
+    resolution: {integrity: sha512-jjCc0IF6iyLiucQCu5igg3fOscSqbbvRCmyRxXgzOcLR56B0sg2L8o+ZfJ0dAg59+wvgtXaxvjze/mJg0B4iWA==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      '@mui/material': ^5.0.0
+      '@types/react': ^17.0.0 || ^18.0.0
+      react: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.20.6
+      '@mui/material': 5.10.16_thp4wrxo45nyllusrnt46mid4u
+      '@types/react': 18.0.25
+      react: 18.2.0
     dev: false
 
   /@mui/material/5.10.16_thp4wrxo45nyllusrnt46mid4u:
