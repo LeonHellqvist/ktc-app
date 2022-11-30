@@ -68,6 +68,7 @@ export default function LoginForm({ setUserInfo }) {
       userFirstName: firstNameFinal,
       userLastName: lastNameFinal,
     });
+    window.location.reload()
   }
 
   //För att hämta alla klasser på KTC och lägga dom i (classAvalible)
