@@ -15,8 +15,9 @@ function App() {
   const [firstTime, setFirstTime] = React.useState(false);
   React.useEffect(() => {
     const firstTime = localStorage.getItem("firstTime");
-    if (firstTime) {
+    if (!firstTime) {
       setFirstTime(true);
+      localStorage.setItem("firstTime", "true");
     } else {
       setFirstTime(false);
     }
