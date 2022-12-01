@@ -33,9 +33,7 @@ function Content({ parallaxRef }: props) {
         offset={1}
         speed={1}
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          overflow: "scroll",
         }}
       >
         <Food />
@@ -45,9 +43,7 @@ function Content({ parallaxRef }: props) {
         offset={2}
         speed={1}
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          overflow: "scroll",
         }}
       >
         <Absent />
