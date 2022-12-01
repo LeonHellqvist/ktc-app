@@ -1,6 +1,9 @@
 import React from "react";
 import { Parallax, ParallaxLayer, IParallax } from "@react-spring/parallax";
 import { config } from "@react-spring/web";
+import Schedule from "./content/schedule/Schedule";
+import Food from "./content/food/Food";
+import Absent from "./content/absent/Absent";
 
 interface props {
   parallaxRef: React.MutableRefObject<IParallax>;
@@ -23,7 +26,7 @@ function Content({ parallaxRef }: props) {
           overflow: "scroll",
         }}
       >
-        <p>SIda 1</p>
+        <Schedule />
       </ParallaxLayer>
 
       <ParallaxLayer
@@ -35,7 +38,7 @@ function Content({ parallaxRef }: props) {
           alignItems: "center",
         }}
       >
-        <p>Sida 2</p>
+        <Food />
       </ParallaxLayer>
 
       <ParallaxLayer
@@ -47,7 +50,7 @@ function Content({ parallaxRef }: props) {
           alignItems: "center",
         }}
       >
-        <p>Sida 3</p>
+        <Absent />
       </ParallaxLayer>
     </Parallax>
   );
