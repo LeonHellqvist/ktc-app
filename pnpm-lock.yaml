@@ -6,6 +6,7 @@ specifiers:
   '@fontsource/roboto': ^4.5.8
   '@mui/icons-material': ^5.10.16
   '@mui/material': ^5.10.16
+  '@react-spring/parallax': ^9.5.5
   '@react-spring/web': ^9.5.5
   '@types/react': ^18.0.24
   '@types/react-dom': ^18.0.8
@@ -22,6 +23,7 @@ dependencies:
   '@fontsource/roboto': 4.5.8
   '@mui/icons-material': 5.10.16_ge2ne5gh5gcqikeclw577gsblu
   '@mui/material': 5.10.16_thp4wrxo45nyllusrnt46mid4u
+  '@react-spring/parallax': 9.5.5_biqbaboplfbrettd7655fr4n2y
   '@react-spring/web': 9.5.5_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -1631,6 +1633,18 @@ packages:
       '@react-spring/shared': 9.5.5_react@18.2.0
       '@react-spring/types': 9.5.5
       react: 18.2.0
+    dev: false
+
+  /@react-spring/parallax/9.5.5_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-Mx5DxIVkASoK+lDe/OX88Tyd4ibgwvl2Gov540kCdJwYRvOdsxinnTa1R7d4XyNv6kkKce1bstOKHdyWTCKu7g==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@react-spring/shared': 9.5.5_react@18.2.0
+      '@react-spring/web': 9.5.5_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@react-spring/rafz/9.5.5:
