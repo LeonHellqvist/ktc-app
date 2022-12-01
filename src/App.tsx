@@ -1,4 +1,5 @@
 import React from "react";
+import { IParallax } from "@react-spring/parallax";
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 /* import "./App.css"; */
@@ -11,7 +12,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 function App() {
-  const parallaxRef = React.useRef<HTMLInputElement>();
+  const parallaxRef = React.useRef<IParallax>(null!);
 
   return (
     <div className="App">

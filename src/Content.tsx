@@ -1,9 +1,9 @@
 import React from "react";
-import { Parallax, ParallaxLayer } from "@react-spring/parallax";
+import { Parallax, ParallaxLayer, IParallax } from "@react-spring/parallax";
 import { config } from "@react-spring/web";
 
 interface props {
-  parallaxRef: React.MutableRefObject<HTMLInputElement | undefined>;
+  parallaxRef: React.MutableRefObject<IParallax>;
 }
 
 function Content({ parallaxRef }: props) {

@@ -18,9 +18,10 @@ import TodayIcon from "@mui/icons-material/Today";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import SickIcon from "@mui/icons-material/Sick";
 import ChatIcon from "@mui/icons-material/Chat";
+import { IParallax } from "@react-spring/parallax";
 
 interface props {
-  parallaxRef: React.MutableRefObject<HTMLInputElement | undefined>;
+  parallaxRef: React.MutableRefObject<IParallax>;
 }
 
 export default function Navigation({ parallaxRef }: props) {
