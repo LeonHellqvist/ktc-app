@@ -1,12 +1,23 @@
+import React from "react";
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 /* import "./App.css"; */
 import Navigation from "./Navigation";
+import ResponsiveAppBar from "./ResponsiveAppBar";
+import Content from "./Content";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 function App() {
+  const parallaxRef = React.useRef<HTMLInputElement>();
+
   return (
     <div className="App">
-      <Navigation />
+      <ResponsiveAppBar />
+      <Content parallaxRef={parallaxRef} />
+      <Navigation parallaxRef={parallaxRef} />
     </div>
   );
 }

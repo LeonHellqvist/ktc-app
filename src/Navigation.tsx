@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import FolderIcon from "@mui/icons-material/Folder";
@@ -19,12 +19,12 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import SickIcon from "@mui/icons-material/Sick";
 import ChatIcon from "@mui/icons-material/Chat";
 
-export default function Navigation() {
-  const [value, setValue] = React.useState("schema");
+interface props {
+  parallaxRef: React.MutableRefObject<HTMLInputElement | undefined>;
+}
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
+export default function Navigation({ parallaxRef }: props) {
+  const [value, setValue] = React.useState(0);
 
   return (
     <Paper
@@ -35,21 +35,20 @@ export default function Navigation() {
         value={value}
         onChange={(event, newValue) => {
           setValue(newValue);
+          if (parallaxRef.current) {
+            parallaxRef.current.scrollTo(newValue);
+          }
         }}
       >
-        <BottomNavigationAction
-          label="Schema"
-          value="schema"
-          icon={<TodayIcon />}
-        />
+        <BottomNavigationAction label="Schema" value={0} icon={<TodayIcon />} />
         <BottomNavigationAction
           label="Matsedel"
-          value="matsedel"
+          value={1}
           icon={<RestaurantIcon />}
         />
         <BottomNavigationAction
           label="Frånvarande"
-          value="frånvarande"
+          value={2}
           icon={<SickIcon />}
         />
         {/* <BottomNavigationAction
