@@ -12,13 +12,29 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 function App() {
+  const [firstTime, setFirstTime] = React.useState(false);
+  React.useEffect(() => {
+    const firstTime = localStorage.getItem("firstTime");
+    if (firstTime) {
+      setFirstTime(true);
+    } else {
+      setFirstTime(false);
+    }
+  }, []);
+
   const parallaxRef = React.useRef<IParallax>(null!);
 
   return (
     <div className="App">
-      <ResponsiveAppBar />
-      <Content parallaxRef={parallaxRef} />
-      <Navigation parallaxRef={parallaxRef} />
+      {!firstTime ? (
+        <>
+          <ResponsiveAppBar />
+          <Content parallaxRef={parallaxRef} />
+          <Navigation parallaxRef={parallaxRef} />
+        </>
+      ) : (
+        <div>bruh</div>
+      )}
     </div>
   );
 }
