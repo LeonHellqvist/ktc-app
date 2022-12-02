@@ -166,7 +166,7 @@ function ResponsiveAppBar() {
           </Toolbar>
         </Container>
       </AppBar>
-      <div style={{ width: "100%", height: 56, position: "relative" }}></div>
+      <Toolbar />
     </>
   );
 }

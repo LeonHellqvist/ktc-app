@@ -6,15 +6,28 @@ import Food from "./content/food/Food";
 import Absent from "./content/absent/Absent";
 
 interface props {
-  parallaxRef: React.MutableRefObject<IParallax>;
+  page: number;
 }
 
-function Content({ parallaxRef }: props) {
+function Content({ page }: props) {
+  const parallaxRef = React.useRef<IParallax>(null!);
+
+  React.useEffect(() => {
+    if (parallaxRef.current) {
+      parallaxRef.current.scrollTo(page);
+    }
+  }, [page]);
+
   return (
     <Parallax
       ref={parallaxRef}
       pages={3}
-      style={{ top: "20", left: "0" }}
+      style={{
+        top: "0",
+        left: "0",
+        height: "calc(100vh - 200px)",
+        position: "relative",
+      }}
       horizontal
       enabled={false}
       config={config.stiff}

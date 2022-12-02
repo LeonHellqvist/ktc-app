@@ -21,24 +21,20 @@ import ChatIcon from "@mui/icons-material/Chat";
 import { IParallax } from "@react-spring/parallax";
 
 interface props {
-  parallaxRef: React.MutableRefObject<IParallax>;
+  page: number;
+  setPage: (page: number) => void;
 }
 
-export default function Navigation({ parallaxRef }: props) {
-  const [value, setValue] = React.useState(0);
-
+export default function Navigation({ page, setPage }: props) {
   return (
     <Paper
       sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
       elevation={3}
     >
       <BottomNavigation
-        value={value}
+        value={page}
         onChange={(event, newValue) => {
-          setValue(newValue);
-          if (parallaxRef.current) {
-            parallaxRef.current.scrollTo(newValue);
-          }
+          setPage(newValue);
         }}
       >
         <BottomNavigationAction label="Schema" value={0} icon={<TodayIcon />} />

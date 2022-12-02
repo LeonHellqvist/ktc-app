@@ -13,6 +13,8 @@ import "@fontsource/roboto/700.css";
 
 function App() {
   const [firstTime, setFirstTime] = React.useState(false);
+  const [page, setPage] = React.useState(0);
+
   React.useEffect(() => {
     const firstTime = localStorage.getItem("firstTime");
     if (!firstTime) {
@@ -23,15 +25,13 @@ function App() {
     }
   }, []);
 
-  const parallaxRef = React.useRef<IParallax>(null!);
-
   return (
     <div className="App">
       {!firstTime ? (
         <>
           <ResponsiveAppBar />
-          <Content parallaxRef={parallaxRef} />
-          <Navigation parallaxRef={parallaxRef} />
+          <Content page={page} />
+          <Navigation page={page} setPage={setPage} />
         </>
       ) : (
         <div>bruh</div>
