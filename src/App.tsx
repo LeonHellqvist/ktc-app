@@ -1,34 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import React from "react";
+import { IParallax } from "@react-spring/parallax";
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+/* import "./App.css"; */
+import Navigation from "./Navigation";
+import ResponsiveAppBar from "./ResponsiveAppBar";
+import Content from "./Content";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [firstTime, setFirstTime] = React.useState(false);
+  const [page, setPage] = React.useState(0);
+
+  React.useEffect(() => {
+    const firstTime = localStorage.getItem("firstTime");
+    if (!firstTime) {
+      setFirstTime(true);
+      localStorage.setItem("firstTime", "true");
+    } else {
+      setFirstTime(false);
+    }
+  }, []);
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {!firstTime ? (
+        <>
+          <ResponsiveAppBar />
+          <Content page={page} />
+          <Navigation page={page} setPage={setPage} />
+        </>
+      ) : (
+        <div>bruh</div>
+      )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
