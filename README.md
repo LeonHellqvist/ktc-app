@@ -64,10 +64,7 @@ KTC appen är ett projekt för att förbättre upplevelsen av att gå på KTC.
 
 ### Byggt med
 
-- [React.js](https://reactjs.org/)
-- [Vite](https://vitejs.dev/)
-- [Vite PWA plugin](https://vite-pwa-org.netlify.app/)
-- [MUI](https://mui.com/)
+- [Flutter](https://flutter.dev/)
 
 <p align="right">(<a href="#top">Tillbaka till toppen</a>)</p>
 
@@ -79,7 +76,7 @@ Det här är ett exempel på hur du kan sätta upp projektet. Följ bara dessa i
 
 ### Förutsättningar
 
-Om du inte redan har PNPM så måste du installera det först
+Om du inte redan har Flutter så måste du installera det först
 
 ### Installation
 
@@ -87,13 +84,13 @@ Om du inte redan har PNPM så måste du installera det först
    ```sh
    git clone https://github.com/LeonHellqvist/ktc-app.git
    ```
-2. Installera PNPM paket
+2. Hämta paket
    ```sh
-   pnpm install
+   flutter pub get
    ```
 3. Starta utvecklingsmiljön
    ```sh
-   pnpm run dev
+   flutter run
    ```
 
 <p align="right">(<a href="#top">Tillbaka till toppen</a>)</p>
@@ -108,7 +105,7 @@ Kommer snart
 
 ## Roadmap
 
-Se [öppna issues](https://github.com/LeonHellqvist/unikum-tools/issues) för en full lista av föreslagna funktioner (och kända problem).
+Se [öppna issues](https://github.com/LeonHellqvist/ktc-app/issues) för en full lista av föreslagna funktioner (och kända problem).
 
 <p align="right">(<a href="#top">Tillbaka till toppen</a>)</p>
 
