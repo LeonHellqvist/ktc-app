@@ -10,7 +10,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/LeonHellqvist/ktc-app">
-    <img src="public/logo192.png" alt="Logo" width="80" height="80">
+    <img src="assets/images/Icon-192.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">KTC appen</h3>
