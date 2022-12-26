@@ -58,7 +58,12 @@
 
 ## Om projektet
 
-KTC appen är ett projekt för att förbättre upplevelsen av att gå på KTC.
+KTC appen är ett projekt för att förbättre upplevelsen av att gå på KTC.<br/>
+Just nu kan man:
+
+- Se sitt schema
+- Se matsedeln
+- Se frånvarande lärare
 
 <p align="right">(<a href="#top">Tillbaka till toppen</a>)</p>
 
