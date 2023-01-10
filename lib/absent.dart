@@ -3,6 +3,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/sheets/v4.dart' as api;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:ktc_app/loginStatus.dart';
+
+import 'config.dart';
 
 extension StringCasingExtension on String {
   String toCapitalized() =>
@@ -14,7 +17,7 @@ extension StringCasingExtension on String {
 }
 
 class AbsentPage extends StatefulWidget {
-  const AbsentPage({super.key});
+  const AbsentPage({super.key, required MyLoginStatus currentLoginStatus});
 
   @override
   State<AbsentPage> createState() => _AbsentPageState();
@@ -38,6 +41,8 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
 
   List<List<Object?>>? absent;
 
+  String loginStatus = "in";
+
   @override
   void dispose() {
     _tabController!.dispose();
@@ -58,6 +63,8 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
         tabIndex = _tabController!.index;
       });
     });
+    loginStatus = currentLoginStatus.getLoginStatus();
+    print("Bruuhuhuuhh: " + loginStatus);
     super.initState();
     _googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount? account) async {
@@ -66,6 +73,9 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
       });
       if (_currentUser != null) {
         print("Signed in already");
+        if (loginStatus == "out") {
+          currentLoginStatus.setLoginStatus("in");
+        }
         var httpClient = (await _googleSignIn.authenticatedClient())!;
         var sheetsApi = api.SheetsApi(httpClient);
         api.ValueRange sheet = await sheetsApi.spreadsheets.values.get(
@@ -120,33 +130,37 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
             return Text("");
           }
         } else {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    children: const [
-                      Text(
-                          style: TextStyle(fontSize: 16),
-                          textAlign: TextAlign.center,
-                          'För att se frånvarande personal måste du\nlogga in med ditt skolkonto!'),
-                      Text(
-                          style: TextStyle(fontSize: 12),
-                          textAlign: TextAlign.center,
-                          'Du måste även godkänna att appen kan se alla dina kalkylark men appen använder bara frånvarande personal dokumentet'),
-                    ],
+          if (loginStatus == "out") {
+            print("out");
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      children: const [
+                        Text(
+                            style: TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
+                            'För att se frånvarande personal måste du\nlogga in med ditt skolkonto!'),
+                        Text(
+                            style: TextStyle(fontSize: 12),
+                            textAlign: TextAlign.center,
+                            'Du måste även godkänna att appen kan se alla dina kalkylark men appen använder bara frånvarande personal dokumentet'),
+                      ],
+                    ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: _handleSignIn,
-                  child: const Text('LOGGA IN'),
-                ),
-              ],
-            ),
-          );
+                  ElevatedButton(
+                    onPressed: _handleSignIn,
+                    child: const Text('LOGGA IN'),
+                  ),
+                ],
+              ),
+            );
+          }
+          return Text("");
         }
       }),
     );
@@ -166,7 +180,6 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
     setState(() {
       absent = values;
     });
-    // why use freshNumbers var? https://stackoverflow.com/a/52992836/2301224
   }
 }
 

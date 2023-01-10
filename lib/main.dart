@@ -38,6 +38,9 @@ class _MyAppState extends State<MyApp> {
     currentGroupGuid.addListener(() {
       setState(() {});
     });
+    currentLoginStatus.addListener(() {
+      setState(() {});
+    });
   }
 
   // This widget is the root of your application.
@@ -102,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _pageList = <Widget>[
     SchedulePage(currentGroupGuid: currentGroupGuid.currentGroupGuid()),
     const FoodPage(),
-    const AbsentPage(),
+    AbsentPage(currentLoginStatus: currentLoginStatus),
     SettingsPage(currentGroupGuid: currentGroupGuid),
   ];
 
