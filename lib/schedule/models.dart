@@ -13,9 +13,11 @@ class Schedule {
   Schedule.fromJson(Map<String, dynamic> json) {
     boxList =
         List.from(json['boxList']).map((e) => BoxList.fromJson(e)).toList();
-    lessonInfo = List.from(json['lessonInfo'])
-        .map((e) => LessonInfo.fromJson(e))
-        .toList();
+    lessonInfo = json['lessonInfo'] != null
+        ? List.from(json['lessonInfo'])
+            .map((e) => LessonInfo.fromJson(e))
+            .toList()
+        : [];
     lineList =
         List.from(json['lineList']).map((e) => LineList.fromJson(e)).toList();
     textList =

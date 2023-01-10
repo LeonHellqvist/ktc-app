@@ -16,10 +16,14 @@ import 'models.dart';
 Future<Schedule> fetchSchedule(
     String groupGuid, int scheduleDay, int week, int width, int height) async {
   int year = DateTime.now().year;
+
+  String url =
+      'https://tools-proxy.leonhellqvist.workers.dev/?service=skola24&subService=getLessons&hostName=katrineholm.skola24.se&unitGuid=ZGI0OGY4MjktMmYzNy1mMmU3LTk4NmItYzgyOWViODhmNzhj&groupGuid=$groupGuid&year=$year&week=$week&scheduleDay=$scheduleDay&lines=true&width=$width&height=$height';
+
+  print(url);
+
   // TODO: Remove this
-  week += 2;
-  final response = await dio.getUri(Uri.parse(
-      'https://tools-proxy.leonhellqvist.workers.dev/?service=skola24&subService=getLessons&hostName=katrineholm.skola24.se&unitGuid=ZGI0OGY4MjktMmYzNy1mMmU3LTk4NmItYzgyOWViODhmNzhj&groupGuid=$groupGuid&year=$year&week=$week&scheduleDay=$scheduleDay&lines=true&width=$width&height=$height'));
+  final response = await dio.getUri(Uri.parse(url));
 
   if (response.statusCode == 200 || response.statusCode == 304) {
     return Schedule.fromJson(jsonDecode(response.data));
