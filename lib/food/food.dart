@@ -152,7 +152,7 @@ class _FoodPageState extends State<FoodPage>
           for (final tab in tabs)
             tab == (tabIndex.value + 1).toString()
                 ? TabViewComponent(futureFood: futureFood)
-                : Text("")
+                : const Text("")
         ],
       ),
     );
@@ -221,8 +221,14 @@ class _DayComponentState extends State<DayComponent>
                                 i.value),
                           ))
                       .toList()),
-              const Divider(
+              const SizedBox(
                 height: 8,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
+                  child: Divider(
+                    height: 1,
+                  ),
+                ),
               ),
             ],
           ),
