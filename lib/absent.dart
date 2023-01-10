@@ -74,6 +74,7 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
         List<List<Object?>> values = sheet.values!;
         for (int i = 0; i < values.length; i++) {
           values[i].removeRange(0, 5);
+          values[i].removeWhere((y) => y == "");
         }
         setState(() {
           absent = values;
@@ -160,6 +161,7 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
     List<List<Object?>> values = sheet.values!;
     for (int i = 0; i < values.length; i++) {
       values[i].removeRange(0, 5);
+      values[i].removeWhere((y) => y == "");
     }
     setState(() {
       absent = values;
