@@ -52,7 +52,8 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
   @override
   void initState() {
     _tabController = TabController(
-      initialIndex: 0,
+      initialIndex:
+          (DateTime.now().weekday > 5 ? 5 : DateTime.now().weekday) - 1,
       length: 5,
       vsync: this,
     );
