@@ -7,8 +7,9 @@ import 'package:http/http.dart' as http;
 import 'models.dart';
 
 Future<Food> fetchFood(int week) async {
+  int year = DateTime.now().year;
   final response = await http.get(Uri.parse(
-      'https://tools-proxy.leonhellqvist.workers.dev/?service=skolmaten&subService=menu&school=76517002&year=2022&week=$week'));
+      'https://tools-proxy.leonhellqvist.workers.dev/?service=skolmaten&subService=menu&school=76517002&year=$year&week=$week'));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
