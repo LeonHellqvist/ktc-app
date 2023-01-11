@@ -28,59 +28,58 @@ class _SettingsState extends State<SettingsPage> {
         appBar: AppBar(
           title: const Text("Inställningar"),
         ),
-        body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+            Widget>[
+          ExpansionTile(
+            title: const Text('Utseende'),
+            subtitle: const Text("Anpassa utseendet"),
             children: <Widget>[
-              ExpansionTile(
-                title: const Text('Utseende'),
-                subtitle: const Text("Anpassa utseendet"),
-                children: <Widget>[
-                  ListTile(
-                      title: ElevatedButton(
-                    onPressed: () {
-                      currentTheme.switchTheme();
-                    },
-                    child: const Text('Ändra mörkt/ljust läge'),
-                  )),
-                ],
+              ListTile(
+                  title: ElevatedButton(
+                onPressed: () {
+                  currentTheme.switchTheme();
+                },
+                child: const Text('Ändra mörkt/ljust läge'),
+              )),
+            ],
+          ),
+          const ExpansionTile(
+            title: Text('Schema'),
+            subtitle: Text("Ändra klass"),
+            children: <Widget>[
+              ListTile(title: GroupSelector()),
+            ],
+          ),
+          ExpansionTile(
+            title: const Text('Medverkande'),
+            subtitle: const Text("Se alla som hjälp till"),
+            children: <Widget>[
+              ListTile(
+                title: Column(
+                  children: [
+                    const Text("Leon Hellqvist | TE21"),
+                    TextButton(
+                      child: const Text("Vill du hjälpa till? Besök projektet"),
+                      onPressed: () => {_launchUrl()},
+                    ),
+                  ],
+                ),
               ),
-              const ExpansionTile(
-                title: Text('Schema'),
-                subtitle: Text("Ändra klass"),
-                children: <Widget>[
-                  ListTile(title: GroupSelector()),
-                ],
-              ),
-              ExpansionTile(
-                title: Text('Medverkande'),
-                subtitle: Text("Se alla som hjälp till"),
-                children: <Widget>[
-                  ListTile(
-                    title: Column(
-                      children: [
-                        Text("Leon Hellqvist"),
-                        TextButton(
-                          child: Text("Vill du hjälpa till? Besök projektet"),
-                          onPressed: () => {_launchUrl()},
-                        ),
-                      ],
+            ],
+          ),
+          currentLoginStatus.getLoginStatus() == "in"
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: ElevatedButton(
+                      child: const Text("Logga ut från ditt Google konto"),
+                      onPressed: () =>
+                          {currentLoginStatus.setLoginStatus("logout")},
                     ),
                   ),
-                ],
-              ),
-              currentLoginStatus.getLoginStatus() == "in"
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                        child: ElevatedButton(
-                          child: Text("Logga ut från ditt Google konto"),
-                          onPressed: () =>
-                              {currentLoginStatus.setLoginStatus("logout")},
-                        ),
-                      ),
-                    )
-                  : Text(""),
-            ]));
+                )
+              : const Text(""),
+        ]));
   }
 }
 
@@ -122,7 +121,7 @@ class _GroupSelectorState extends State<GroupSelector> {
           if (snapshot.data != null) {
             return GroupOptions(futureGroups: snapshot.data!);
           } else {
-            return Text("");
+            return const Text("");
           }
         });
     ;
