@@ -65,7 +65,6 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
       });
     });
     loginStatus = currentLoginStatus.getLoginStatus();
-    print("Bruuhuhuuhh: " + loginStatus);
     super.initState();
     _googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount? account) async {
@@ -77,7 +76,6 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
         _currentUser = account;
       });
       if (_currentUser != null) {
-        print("Signed in already");
         if (loginStatus == "out") {
           currentLoginStatus.setLoginStatus("in");
         }
