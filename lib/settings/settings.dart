@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ktc_app/groupGuid.dart';
@@ -50,6 +51,23 @@ class _SettingsState extends State<SettingsPage> {
                   ListTile(title: GroupSelector()),
                 ],
               ),
+              ExpansionTile(
+                title: Text('Medverkande'),
+                subtitle: Text("Se alla som hjälp till"),
+                children: <Widget>[
+                  ListTile(
+                    title: Column(
+                      children: [
+                        Text("Leon Hellqvist"),
+                        TextButton(
+                          child: Text("Vill du hjälpa till? Besök projektet"),
+                          onPressed: () => {_launchUrl()},
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               currentLoginStatus.getLoginStatus() == "in"
                   ? Center(
                       child: Padding(
@@ -63,6 +81,12 @@ class _SettingsState extends State<SettingsPage> {
                     )
                   : Text(""),
             ]));
+  }
+}
+
+Future<void> _launchUrl() async {
+  if (!await launchUrl(Uri.parse('https://github.com/LeonHellqvist/ktc-app'))) {
+    throw 'Could not launch github';
   }
 }
 
