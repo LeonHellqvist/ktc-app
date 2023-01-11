@@ -81,7 +81,7 @@ class _SchedulePageState extends State<SchedulePage>
       dio: dio,
     );
     _tabController = TabController(
-      initialIndex: 0,
+      initialIndex: tabIndex,
       length: 5,
       vsync: this,
     );
