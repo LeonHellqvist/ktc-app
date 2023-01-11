@@ -6,11 +6,15 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ktc_app/groupGuid.dart';
+import 'package:ktc_app/loginStatus.dart';
 
 import '../config.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key, required MyGroupGuid currentGroupGuid});
+  const SettingsPage(
+      {super.key,
+      required MyGroupGuid currentGroupGuid,
+      required MyLoginStatus currentLoginStatus});
 
   @override
   State<SettingsPage> createState() => _SettingsState();
@@ -46,6 +50,18 @@ class _SettingsState extends State<SettingsPage> {
                   ListTile(title: GroupSelector()),
                 ],
               ),
+              currentLoginStatus.getLoginStatus() == "in"
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                        child: ElevatedButton(
+                          child: Text("Logga ut från ditt Google konto"),
+                          onPressed: () =>
+                              {currentLoginStatus.setLoginStatus("logout")},
+                        ),
+                      ),
+                    )
+                  : Text(""),
             ]));
   }
 }

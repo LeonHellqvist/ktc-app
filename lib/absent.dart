@@ -69,6 +69,10 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
     super.initState();
     _googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount? account) async {
+      if (currentLoginStatus.getLoginStatus() == "logout") {
+        _googleSignIn.signOut();
+        currentLoginStatus.setLoginStatus("out");
+      }
       setState(() {
         _currentUser = account;
       });

@@ -106,7 +106,9 @@ class _MyHomePageState extends State<MyHomePage> {
     SchedulePage(currentGroupGuid: currentGroupGuid.currentGroupGuid()),
     const FoodPage(),
     AbsentPage(currentLoginStatus: currentLoginStatus),
-    SettingsPage(currentGroupGuid: currentGroupGuid),
+    SettingsPage(
+        currentGroupGuid: currentGroupGuid,
+        currentLoginStatus: currentLoginStatus),
   ];
 
   @override
