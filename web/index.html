@@ -26,6 +26,8 @@
   <meta name="apple-mobile-web-app-title" content="KTC Appen">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
+  <meta name="theme-color" content="#1B1C19" />
+
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="favicon.ico"/>
 
@@ -41,6 +43,7 @@
 </head>
 <body>
   <script>
+    window.flutterWebRenderer = "canvaskit";
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
