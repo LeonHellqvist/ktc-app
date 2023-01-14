@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:week_of_year/week_of_year.dart';
 import 'package:http/http.dart' as http;
+import 'package:ktc_app/throttler.dart';
 
 import 'models.dart';
 
@@ -33,6 +34,8 @@ class _FoodPageState extends State<FoodPage>
     with TickerProviderStateMixin, RestorationMixin {
   late Future<Food> futureFood;
 
+  var throttler = Throttler();
+
   TabController? _tabController;
   final RestorableInt tabIndex = RestorableInt(DateTime.now().weekOfYear - 1);
 
@@ -40,6 +43,18 @@ class _FoodPageState extends State<FoodPage>
 
   @override
   String get restorationId => 'tab_scrollable_demo';
+
+  void updateState(int value) {
+    setState(() {
+      tabIndex.value = value;
+    });
+    setState(() {
+      futureFood = fetchFood(tabIndex.value + 1);
+    });
+    setState(() {
+      visible = false;
+    });
+  }
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
@@ -57,15 +72,26 @@ class _FoodPageState extends State<FoodPage>
     _tabController!.addListener(() {
       // When the tab controller's value is updated, make sure to update the
       // tab index value, which is state restorable.
-      setState(() {
-        tabIndex.value = _tabController!.index;
-      });
-      setState(() {
-        futureFood = fetchFood(tabIndex.value + 1);
-      });
-      setState(() {
-        visible = false;
-      });
+
+      updateState((_tabController!.animation!.value).round());
+      print("changed");
+
+      /* throttler.run(() {
+        
+      }); */
+    });
+    _tabController!.animation!.addListener(() {
+      // When the tab controller's value is updated, make sure to update the
+      // tab index value, which is state restorable.
+      if (tabIndex.value != (_tabController!.animation!.value).round()) {
+        updateState((_tabController!.animation!.value).round());
+        print("animation");
+
+        /* throttler.run(() {
+          
+        }); */
+      }
+      // TODO: fixa att man kan välja klass
     });
     super.initState();
   }
@@ -74,6 +100,7 @@ class _FoodPageState extends State<FoodPage>
   void dispose() {
     _tabController!.dispose();
     tabIndex.dispose();
+    throttler.dispose();
     super.dispose();
   }
 

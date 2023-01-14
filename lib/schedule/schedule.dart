@@ -96,6 +96,19 @@ class _SchedulePageState extends State<SchedulePage>
       });
       // TODO: fixa att man kan välja klass
     });
+    _tabController!.animation!.addListener(() {
+      // When the tab controller's value is updated, make sure to update the
+      // tab index value, which is state restorable.
+      if (tabIndex != (_tabController!.animation!.value).round()) {
+        setState(() {
+          tabIndex = (_tabController!.animation!.value).round();
+          int week = DateTime.now().weekOfYear;
+          futureSchedule = fetchSchedule(widget.currentGroupGuid, tabIndex + 1,
+              week, MediaQuery.of(context).size.width.toInt(), height);
+        });
+      }
+      // TODO: fixa att man kan välja klass
+    });
     Future.delayed(Duration.zero, () {
       setState(() {
         tabIndex = _tabController!.index;
@@ -131,6 +144,12 @@ class _SchedulePageState extends State<SchedulePage>
             for (final tab in tabs) Tab(text: tab),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+        child: const Icon(Icons.people),
       ),
       body: Builder(builder: (context1) {
         double fullHeight = MediaQuery.of(context1).size.height;
