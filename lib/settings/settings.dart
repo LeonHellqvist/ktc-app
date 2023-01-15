@@ -119,71 +119,44 @@ class _GroupSelectorState extends State<GroupSelector> {
         future: futureGroups,
         builder: (BuildContext context, AsyncSnapshot<Groups> snapshot) {
           if (snapshot.data != null) {
-            return GroupOptions(futureGroups: snapshot.data!);
+            return ElevatedButton(
+                onPressed: () {
+                  showDialog<bool>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: const Text('Ändra klass'),
+                      content: SingleChildScrollView(
+                          child: Column(
+                        children: [
+                          for (var item in snapshot.data!.data.classes)
+                            RadioListTile(
+                              activeColor:
+                                  const Color.fromARGB(255, 120, 220, 119),
+                              title: Text(item.groupName),
+                              value: item.groupGuid,
+                              groupValue: currentGroupGuid.currentGroupGuid(),
+                              onChanged: (value) {
+                                currentGroupGuid.setGroupGuid(value!);
+                                setState(() {});
+                              },
+                            )
+                        ],
+                      )),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: Text("Min klass"));
           } else {
             return const Text("");
           }
         });
     ;
-  }
-}
-
-class GroupOptions extends StatefulWidget {
-  const GroupOptions({super.key, required this.futureGroups});
-
-  final Groups futureGroups;
-
-  @override
-  State<GroupOptions> createState() => _GroupOptionsState();
-}
-
-class _GroupOptionsState extends State<GroupOptions> {
-  String _guid = currentGroupGuid.currentGroupGuid();
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 80,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: List<Widget>.generate(
-          widget.futureGroups.data.classes.length,
-          (int index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: ChoiceChip(
-                label: Text(widget.futureGroups.data.classes[index].groupName),
-                selected:
-                    _guid == widget.futureGroups.data.classes[index].groupGuid,
-                onSelected: (bool selected) {
-                  setState(() {
-                    _guid = (selected
-                        ? widget.futureGroups.data.classes[index].groupGuid
-                        : null)!;
-                    currentGroupGuid.setGroupGuid(_guid);
-                    log("hejsan");
-                  });
-                },
-              ),
-            );
-          },
-        ).toList(),
-      ),
-    );
-  }
-}
-
-class GuidChips extends StatefulWidget {
-  const GuidChips({super.key, required this.futureGroups});
-  final Future<Groups> futureGroups;
-
-  @override
-  State<GuidChips> createState() => _GuidChipsState();
-}
-
-class _GuidChipsState extends State<GuidChips> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
 
