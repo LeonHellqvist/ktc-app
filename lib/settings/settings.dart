@@ -68,15 +68,22 @@ class _SettingsState extends State<SettingsPage> {
             ],
           ),
           currentLoginStatus.getLoginStatus() == "in"
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                    child: ElevatedButton(
-                      child: const Text("Logga ut från ditt Google konto"),
-                      onPressed: () =>
-                          {currentLoginStatus.setLoginStatus("logout")},
-                    ),
-                  ),
+              ? ExpansionTile(
+                  title: const Text('Google konto'),
+                  subtitle: const Text("Hantera ditt Google konto"),
+                  children: <Widget>[
+                    ListTile(
+                        title: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                        child: ElevatedButton(
+                          child: const Text("Logga ut från ditt Google konto"),
+                          onPressed: () =>
+                              {currentLoginStatus.setLoginStatus("logout")},
+                        ),
+                      ),
+                    )),
+                  ],
                 )
               : const Text(""),
         ]));
