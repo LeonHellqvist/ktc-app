@@ -115,33 +115,44 @@ class _GroupSelectorState extends State<GroupSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Groups>(
-        future: futureGroups,
-        builder: (BuildContext context, AsyncSnapshot<Groups> snapshot) {
-          if (snapshot.data != null) {
-            return ElevatedButton(
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+            child: ElevatedButton(
                 onPressed: () {
                   showDialog<bool>(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(
-                      title: const Text('Ändra klass'),
-                      content: SingleChildScrollView(
-                          child: Column(
-                        children: [
-                          for (var item in snapshot.data!.data.classes)
-                            RadioListTile(
-                              activeColor:
-                                  const Color.fromARGB(255, 120, 220, 119),
-                              title: Text(item.groupName),
-                              value: item.groupGuid,
-                              groupValue: currentGroupGuid.currentGroupGuid(),
-                              onChanged: (value) {
-                                currentGroupGuid.setGroupGuid(value!);
-                                setState(() {});
-                              },
-                            )
-                        ],
-                      )),
+                      title: const Text('Välj din klass'),
+                      content: FutureBuilder<Groups>(
+                          future: futureGroups,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<Groups> snapshot) {
+                            if (snapshot.data != null) {
+                              return SingleChildScrollView(
+                                  child: Column(
+                                children: [
+                                  for (var item in snapshot.data!.data.classes)
+                                    RadioListTile(
+                                      activeColor: const Color.fromARGB(
+                                          255, 120, 220, 119),
+                                      title: Text(item.groupName),
+                                      value: item.groupGuid,
+                                      groupValue:
+                                          currentGroupGuid.currentGroupGuid(),
+                                      onChanged: (value) {
+                                        currentGroupGuid.setGroupGuid(value!);
+                                        setState(() {});
+                                      },
+                                    )
+                                ],
+                              ));
+                            } else {
+                              return Text("");
+                            }
+                          }),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
@@ -151,12 +162,60 @@ class _GroupSelectorState extends State<GroupSelector> {
                     ),
                   );
                 },
-                child: Text("Min klass"));
-          } else {
-            return const Text("");
-          }
-        });
-    ;
+                child: Text("Din klass")),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+            child: ElevatedButton(
+                onPressed: () {
+                  showDialog<bool>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: const Text('Välj alternativ klass'),
+                      content: FutureBuilder<Groups>(
+                          future: futureGroups,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<Groups> snapshot) {
+                            if (snapshot.data != null) {
+                              return SingleChildScrollView(
+                                  child: Column(
+                                children: [
+                                  for (var item in snapshot.data!.data.classes)
+                                    RadioListTile(
+                                      activeColor: const Color.fromARGB(
+                                          255, 120, 220, 119),
+                                      title: Text(item.groupName),
+                                      value: item.groupGuid,
+                                      groupValue: currentGroupGuid
+                                          .currentGroupGuidAlt(),
+                                      onChanged: (value) {
+                                        currentGroupGuid
+                                            .setGroupGuidAlt(value!);
+                                        setState(() {});
+                                      },
+                                    )
+                                ],
+                              ));
+                            } else {
+                              return Text("");
+                            }
+                          }),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: Text("Alternativ klass")),
+          ),
+        ),
+      ],
+    );
   }
 }
 
