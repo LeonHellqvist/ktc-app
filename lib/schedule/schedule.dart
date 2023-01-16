@@ -59,6 +59,8 @@ class _SchedulePageState extends State<SchedulePage>
   int height = 0;
   int width = 0;
 
+  bool altSchedule = false;
+
   bool _scrollingEnabled = true;
   TransformationController _transformationController =
       TransformationController();
@@ -141,7 +143,9 @@ class _SchedulePageState extends State<SchedulePage>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add your onPressed code here!
+          setState(() {
+            altSchedule = !altSchedule;
+          });
         },
         child: const Icon(Icons.people),
       ),
@@ -175,11 +179,13 @@ class _SchedulePageState extends State<SchedulePage>
                     }
                   },
                   child: TabViewComponent(
-                      tab: tab,
-                      tabIndex: tabIndex,
-                      currentGroupGuid: currentGroupGuid,
-                      height: height,
-                      width: width))
+                    tab: tab,
+                    tabIndex: tabIndex,
+                    currentGroupGuid: currentGroupGuid,
+                    height: height,
+                    width: width,
+                    altSchedule: altSchedule,
+                  ))
           ],
         );
       }),
@@ -342,12 +348,14 @@ class TabViewComponent extends StatefulWidget {
       required this.tabIndex,
       required this.currentGroupGuid,
       required this.height,
-      required this.width});
+      required this.width,
+      required this.altSchedule});
   final String tab;
   final int tabIndex;
   final MyGroupGuid currentGroupGuid;
   final int height;
   final int width;
+  final bool altSchedule;
 
   @override
   State<TabViewComponent> createState() => _TabViewComponentState();
@@ -362,13 +370,32 @@ class _TabViewComponentState extends State<TabViewComponent> {
   void initState() {
     setState(() {
       futureSchedule = fetchSchedule(
-          currentGroupGuid.currentGroupGuid(),
+          widget.altSchedule
+              ? currentGroupGuid.currentGroupGuidAlt()
+              : currentGroupGuid.currentGroupGuid(),
           dayMap[widget.tab]! + 1,
           DateTime.now().weekOfYear,
           widget.width,
           widget.height);
     });
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    if (oldWidget.altSchedule != widget.altSchedule) {
+      setState(() {
+        futureSchedule = fetchSchedule(
+            widget.altSchedule
+                ? currentGroupGuid.currentGroupGuidAlt()
+                : currentGroupGuid.currentGroupGuid(),
+            dayMap[widget.tab]! + 1,
+            DateTime.now().weekOfYear,
+            widget.width,
+            widget.height);
+      });
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
