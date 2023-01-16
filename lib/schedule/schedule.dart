@@ -131,7 +131,8 @@ class _SchedulePageState extends State<SchedulePage>
     return Scaffold(
       appBar: AppBar(
         primary: true,
-        title: const Text("Schema"),
+        title: Text(
+            "Schema ${altSchedule ? currentGroupGuid.currentGroupNameAlt() : currentGroupGuid.currentGroupName()}"),
         bottom: TabBar(
           indicatorColor: Colors.green,
           controller: _tabController,

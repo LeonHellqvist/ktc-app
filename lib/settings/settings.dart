@@ -150,7 +150,8 @@ class _GroupSelectorState extends State<GroupSelector> {
                                       groupValue:
                                           currentGroupGuid.currentGroupGuid(),
                                       onChanged: (value) {
-                                        currentGroupGuid.setGroupGuid(value!);
+                                        currentGroupGuid.setGroup(
+                                            value!, item.groupName);
                                         setState(() {});
                                       },
                                     )
@@ -198,8 +199,8 @@ class _GroupSelectorState extends State<GroupSelector> {
                                       groupValue: currentGroupGuid
                                           .currentGroupGuidAlt(),
                                       onChanged: (value) {
-                                        currentGroupGuid
-                                            .setGroupGuidAlt(value!);
+                                        currentGroupGuid.setGroupAlt(
+                                            value!, item.groupName);
                                         setState(() {});
                                       },
                                     )
