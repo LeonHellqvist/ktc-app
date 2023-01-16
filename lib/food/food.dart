@@ -32,14 +32,10 @@ class FoodPage extends StatefulWidget {
 
 class _FoodPageState extends State<FoodPage>
     with TickerProviderStateMixin, RestorationMixin {
-  late Future<Food> futureFood;
-
   var throttler = Throttler();
 
   TabController? _tabController;
   final RestorableInt tabIndex = RestorableInt(DateTime.now().weekOfYear - 1);
-
-  var visible = false;
 
   @override
   String get restorationId => 'tab_scrollable_demo';
@@ -47,12 +43,6 @@ class _FoodPageState extends State<FoodPage>
   void updateState(int value) {
     setState(() {
       tabIndex.value = value;
-    });
-    setState(() {
-      futureFood = fetchFood(tabIndex.value + 1);
-    });
-    setState(() {
-      visible = false;
     });
   }
 
@@ -178,9 +168,10 @@ class _FoodPageState extends State<FoodPage>
         controller: _tabController,
         children: [
           for (final tab in tabs)
-            tab == (tabIndex.value + 1).toString()
-                ? TabViewComponent(futureFood: futureFood)
-                : const Text("")
+            TabViewComponent(
+              tab: tab,
+              tabIndex: tabIndex.value,
+            )
         ],
       ),
     );
@@ -267,19 +258,39 @@ class _DayComponentState extends State<DayComponent>
 }
 
 class TabViewComponent extends StatefulWidget {
-  const TabViewComponent({super.key, required this.futureFood});
-  final Future<Food> futureFood;
+  const TabViewComponent(
+      {super.key, required this.tab, required this.tabIndex});
+  final String tab;
+  final int tabIndex;
 
   @override
   State<TabViewComponent> createState() => _TabViewComponentState();
 }
 
 class _TabViewComponentState extends State<TabViewComponent> {
+  late Future<Food>? futureFood;
+  bool hasRendered = false;
+
+  @override
+  void initState() {
+    if (int.parse(widget.tab) == widget.tabIndex + 1 ||
+        int.parse(widget.tab) == widget.tabIndex + 2 ||
+        int.parse(widget.tab) == widget.tabIndex) {
+      setState(() {
+        futureFood = fetchFood(int.parse(widget.tab));
+        print("FETCHED FOOOOOOOD");
+      });
+    } else {
+      futureFood = null;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: FutureBuilder<Food>(
-          future: widget.futureFood,
+          future: futureFood,
           builder: (BuildContext context, AsyncSnapshot<Food> snapshot) {
             if (snapshot.data != null) {
               return ListView.builder(
