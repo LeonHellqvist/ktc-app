@@ -55,7 +55,7 @@ class _FoodPageState extends State<FoodPage>
   @override
   void initState() {
     _tabController = TabController(
-      initialIndex: 5,
+      initialIndex: 0,
       length: 53,
       vsync: this,
     );
@@ -63,16 +63,17 @@ class _FoodPageState extends State<FoodPage>
       // When the tab controller's value is updated, make sure to update the
       // tab index value, which is state restorable.
 
-      updateState((_tabController!.animation!.value).round());
+      updateState(_tabController!.index);
       print("changed");
 
       /* throttler.run(() {
         
       }); */
     });
-    _tabController!.animation!.addListener(() {
+    /* _tabController!.animation!.addListener(() {
       // When the tab controller's value is updated, make sure to update the
       // tab index value, which is state restorable.
+      print(_tabController!.animation!.value);
       if (tabIndex.value != (_tabController!.animation!.value).round()) {
         updateState((_tabController!.animation!.value).round());
         print("animation");
@@ -82,7 +83,7 @@ class _FoodPageState extends State<FoodPage>
         }); */
       }
       // TODO: fixa att man kan välja klass
-    });
+    }); */
     super.initState();
   }
 
@@ -269,20 +270,12 @@ class TabViewComponent extends StatefulWidget {
 
 class _TabViewComponentState extends State<TabViewComponent> {
   late Future<Food>? futureFood;
-  bool hasRendered = false;
 
   @override
   void initState() {
-    if (int.parse(widget.tab) == widget.tabIndex + 1 ||
-        int.parse(widget.tab) == widget.tabIndex + 2 ||
-        int.parse(widget.tab) == widget.tabIndex) {
-      setState(() {
-        futureFood = fetchFood(int.parse(widget.tab));
-        print("FETCHED FOOOOOOOD");
-      });
-    } else {
-      futureFood = null;
-    }
+    setState(() {
+      futureFood = fetchFood(int.parse(widget.tab));
+    });
     super.initState();
   }
 
