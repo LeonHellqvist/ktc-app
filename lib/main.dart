@@ -103,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _pageIndex = 0;
 
   final _pageList = <Widget>[
-    SchedulePage(currentGroupGuid: currentGroupGuid.currentGroupGuid()),
+    SchedulePage(currentGroupGuid: currentGroupGuid),
     const FoodPage(),
     AbsentPage(currentLoginStatus: currentLoginStatus),
     SettingsPage(

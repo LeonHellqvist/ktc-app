@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:ktc_app/groupGuid.dart';
 import 'package:week_of_year/week_of_year.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
@@ -35,8 +36,11 @@ Future<Schedule> fetchSchedule(
 }
 
 class SchedulePage extends StatefulWidget {
-  const SchedulePage({super.key, required this.currentGroupGuid});
-  final String currentGroupGuid;
+  const SchedulePage({
+    super.key,
+    required this.currentGroupGuid,
+  });
+  final MyGroupGuid currentGroupGuid;
 
   @override
   State<SchedulePage> createState() => _SchedulePageState();
@@ -49,12 +53,11 @@ late Caller caller;
 
 class _SchedulePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
-  Future<Schedule>? futureSchedule;
-
   TabController? _tabController;
   int tabIndex = (DateTime.now().weekday > 5 ? 5 : DateTime.now().weekday) - 1;
 
   int height = 0;
+  int width = 0;
 
   bool _scrollingEnabled = true;
   TransformationController _transformationController =
@@ -90,9 +93,6 @@ class _SchedulePageState extends State<SchedulePage>
       // tab index value, which is state restorable.
       setState(() {
         tabIndex = _tabController!.index;
-        int week = DateTime.now().weekOfYear;
-        futureSchedule = fetchSchedule(widget.currentGroupGuid, tabIndex + 1,
-            week, MediaQuery.of(context).size.width.toInt(), height);
       });
       // TODO: fixa att man kan välja klass
     });
@@ -102,9 +102,6 @@ class _SchedulePageState extends State<SchedulePage>
       if (tabIndex != (_tabController!.animation!.value).round()) {
         setState(() {
           tabIndex = (_tabController!.animation!.value).round();
-          int week = DateTime.now().weekOfYear;
-          futureSchedule = fetchSchedule(widget.currentGroupGuid, tabIndex + 1,
-              week, MediaQuery.of(context).size.width.toInt(), height);
         });
       }
       // TODO: fixa att man kan välja klass
@@ -112,9 +109,6 @@ class _SchedulePageState extends State<SchedulePage>
     Future.delayed(Duration.zero, () {
       setState(() {
         tabIndex = _tabController!.index;
-        int week = DateTime.now().weekOfYear;
-        futureSchedule = fetchSchedule(widget.currentGroupGuid, tabIndex + 1,
-            week, MediaQuery.of(context).size.width.toInt(), height);
       });
     });
     super.initState();
@@ -158,6 +152,7 @@ class _SchedulePageState extends State<SchedulePage>
             appBar.preferredSize.height + MediaQuery.of(context).padding.top;
         /* height = fullHeight.toInt() - appBarHeight.toInt(); */
         height = fullHeight.toInt() - appBarHeight.toInt() * 2 - 40;
+        width = MediaQuery.of(context).size.width.toInt();
         log(fullHeight.toString());
         log(appBarHeight.toString());
         log(height.toString());
@@ -168,32 +163,23 @@ class _SchedulePageState extends State<SchedulePage>
           controller: _tabController,
           children: [
             for (final tab in tabs)
-              tab == tabs[tabIndex]
-                  ? FutureBuilder<Schedule>(
-                      future: futureSchedule,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<Schedule> snapshot) {
-                        if (snapshot.data != null) {
-                          return InteractiveViewer(
-                              transformationController:
-                                  _transformationController,
-                              onInteractionStart: (scale) {
-                                setState(() => _scrollingEnabled = false);
-                              },
-                              onInteractionEnd: (details) {
-                                if (_transformationController.value
-                                        .getMaxScaleOnAxis() ==
-                                    1) {
-                                  setState(() => _scrollingEnabled = true);
-                                }
-                              },
-                              child: TabViewComponent(
-                                  futureSchedule: futureSchedule));
-                        } else {
-                          return const Text("");
-                        }
-                      })
-                  : const Text("")
+              InteractiveViewer(
+                  transformationController: _transformationController,
+                  onInteractionStart: (scale) {
+                    setState(() => _scrollingEnabled = false);
+                  },
+                  onInteractionEnd: (details) {
+                    if (_transformationController.value.getMaxScaleOnAxis() ==
+                        1) {
+                      setState(() => _scrollingEnabled = true);
+                    }
+                  },
+                  child: TabViewComponent(
+                      tab: tab,
+                      tabIndex: tabIndex,
+                      currentGroupGuid: currentGroupGuid,
+                      height: height,
+                      width: width))
           ],
         );
       }),
@@ -350,18 +336,45 @@ class ScheduleComponent extends CustomPainter {
 }
 
 class TabViewComponent extends StatefulWidget {
-  const TabViewComponent({super.key, required this.futureSchedule});
-  final futureSchedule;
+  const TabViewComponent(
+      {super.key,
+      required this.tab,
+      required this.tabIndex,
+      required this.currentGroupGuid,
+      required this.height,
+      required this.width});
+  final String tab;
+  final int tabIndex;
+  final MyGroupGuid currentGroupGuid;
+  final int height;
+  final int width;
 
   @override
   State<TabViewComponent> createState() => _TabViewComponentState();
 }
 
 class _TabViewComponentState extends State<TabViewComponent> {
+  Map<String, int> dayMap = {"Mån": 0, "Tis": 1, "Ons": 2, "Tors": 3, "Fre": 4};
+
+  Future<Schedule>? futureSchedule;
+
+  @override
+  void initState() {
+    setState(() {
+      futureSchedule = fetchSchedule(
+          currentGroupGuid.currentGroupGuid(),
+          dayMap[widget.tab]! + 1,
+          DateTime.now().weekOfYear,
+          widget.width,
+          widget.height);
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Schedule>(
-        future: widget.futureSchedule,
+        future: futureSchedule,
         builder: (BuildContext context, AsyncSnapshot<Schedule> snapshot) {
           if (snapshot.data != null) {
             return DayComponent(futureSchedule: snapshot.data!);
