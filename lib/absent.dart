@@ -130,7 +130,10 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
                     onRefresh: _pullRefresh, child: AbsentView(days: days))
             ]);
           } else {
-            return Text("");
+            return const Center(
+                child: CircularProgressIndicator(
+              strokeWidth: 8,
+            ));
           }
         } else {
           if (loginStatus == "out") {
