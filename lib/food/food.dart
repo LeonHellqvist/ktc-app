@@ -1,30 +1,28 @@
-import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:week_of_year/week_of_year.dart';
-import 'package:http/http.dart' as http;
 import 'package:ktc_app/throttler.dart';
 
 import 'models.dart';
 
-Future<Food> fetchFood(int week) async {
+Future<Food> fetchFood(int week, Dio dio) async {
   int year = DateTime.now().year;
-  final response = await http.get(Uri.parse(
+  final response = await dio.getUri(Uri.parse(
       'https://tools-proxy.leonhellqvist.workers.dev/?service=skolmaten&subService=menu&school=76517002&year=$year&week=$week'));
 
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    return Food.fromJson(jsonDecode(response.body));
+  if (response.statusCode == 200 || response.statusCode == 304) {
+    return Food.fromJson(response.data);
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
-    throw Exception('Failed to load food');
+    throw Exception('Failed to load schedule (status: ${response.statusCode})');
   }
 }
 
 class FoodPage extends StatefulWidget {
-  const FoodPage({super.key});
+  const FoodPage({super.key, required this.dio});
+
+  final Dio dio;
 
   @override
   State<FoodPage> createState() => _FoodPageState();
@@ -172,6 +170,7 @@ class _FoodPageState extends State<FoodPage>
             TabViewComponent(
               tab: tab,
               tabIndex: tabIndex.value,
+              dio: widget.dio,
             )
         ],
       ),
@@ -260,9 +259,13 @@ class _DayComponentState extends State<DayComponent>
 
 class TabViewComponent extends StatefulWidget {
   const TabViewComponent(
-      {super.key, required this.tab, required this.tabIndex});
+      {super.key,
+      required this.tab,
+      required this.tabIndex,
+      required this.dio});
   final String tab;
   final int tabIndex;
+  final Dio dio;
 
   @override
   State<TabViewComponent> createState() => _TabViewComponentState();
@@ -274,7 +277,7 @@ class _TabViewComponentState extends State<TabViewComponent> {
   @override
   void initState() {
     setState(() {
-      futureFood = fetchFood(int.parse(widget.tab));
+      futureFood = fetchFood(int.parse(widget.tab), widget.dio);
     });
     super.initState();
   }

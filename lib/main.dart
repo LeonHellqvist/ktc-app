@@ -1,6 +1,10 @@
+import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:animations/animations.dart';
+import 'package:ktc_app/caller.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -102,14 +106,53 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _pageIndex = 0;
 
-  final _pageList = <Widget>[
-    SchedulePage(currentGroupGuid: currentGroupGuid),
-    const FoodPage(),
-    AbsentPage(currentLoginStatus: currentLoginStatus),
-    SettingsPage(
-        currentGroupGuid: currentGroupGuid,
-        currentLoginStatus: currentLoginStatus),
-  ];
+  late CacheStore cacheStore;
+  late CacheOptions cacheOptions;
+  late Dio dio;
+  late Caller caller;
+
+  late final List<Widget> pageList;
+
+  @override
+  void initState() {
+    cacheStore = HiveCacheStore(null);
+    cacheOptions = CacheOptions(
+      policy: CachePolicy.forceCache,
+      priority: CachePriority.high,
+      maxStale: const Duration(days: 7),
+      store: cacheStore,
+      hitCacheOnErrorExcept: [],
+      allowPostMethod: false, // for offline behaviour
+    );
+
+    dio = Dio()
+      ..interceptors.add(
+        DioCacheInterceptor(options: cacheOptions),
+      );
+    caller = Caller(
+      cacheStore: cacheStore,
+      cacheOptions: cacheOptions,
+      dio: dio,
+    );
+    pageList = <Widget>[
+      SchedulePage(currentGroupGuid: currentGroupGuid, dio: dio),
+      FoodPage(dio: dio),
+      AbsentPage(currentLoginStatus: currentLoginStatus),
+      SettingsPage(
+          currentGroupGuid: currentGroupGuid,
+          currentLoginStatus: currentLoginStatus)
+    ];
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    dio.close();
+    cacheStore.close();
+    super.dispose();
+  }
+
+  final _pageList = <Widget>[];
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: child,
           );
         },
-        child: _pageList[_pageIndex],
+        child: pageList[_pageIndex],
       ),
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,

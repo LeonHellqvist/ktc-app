@@ -6,16 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:ktc_app/groupGuid.dart';
 import 'package:week_of_year/week_of_year.dart';
 import 'package:tinycolor2/tinycolor2.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import '../caller.dart';
 import '../config.dart';
 
 import 'models.dart';
 
-Future<Schedule> fetchSchedule(
-    String groupGuid, int scheduleDay, int week, int width, int height) async {
+Future<Schedule> fetchSchedule(String groupGuid, int scheduleDay, int week,
+    int width, int height, Dio dio) async {
   int year = DateTime.now().year;
 
   String url =
@@ -39,17 +37,14 @@ class SchedulePage extends StatefulWidget {
   const SchedulePage({
     super.key,
     required this.currentGroupGuid,
+    required this.dio,
   });
   final MyGroupGuid currentGroupGuid;
+  final Dio dio;
 
   @override
   State<SchedulePage> createState() => _SchedulePageState();
 }
-
-late CacheStore cacheStore;
-late CacheOptions cacheOptions;
-late Dio dio;
-late Caller caller;
 
 class _SchedulePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
@@ -66,25 +61,6 @@ class _SchedulePageState extends State<SchedulePage>
       TransformationController();
   @override
   void initState() {
-    cacheStore = MemCacheStore();
-    cacheOptions = CacheOptions(
-      policy: CachePolicy.forceCache,
-      priority: CachePriority.high,
-      maxStale: const Duration(days: 7),
-      store: cacheStore,
-      hitCacheOnErrorExcept: [],
-      allowPostMethod: false, // for offline behaviour
-    );
-
-    dio = Dio()
-      ..interceptors.add(
-        DioCacheInterceptor(options: cacheOptions),
-      );
-    caller = Caller(
-      cacheStore: cacheStore,
-      cacheOptions: cacheOptions,
-      dio: dio,
-    );
     _tabController = TabController(
       initialIndex: tabIndex,
       length: 5,
@@ -119,8 +95,6 @@ class _SchedulePageState extends State<SchedulePage>
   @override
   void dispose() {
     _tabController!.dispose();
-    dio.close();
-    cacheStore.close();
     super.dispose();
   }
 
@@ -186,6 +160,7 @@ class _SchedulePageState extends State<SchedulePage>
                     height: height,
                     width: width,
                     altSchedule: altSchedule,
+                    dio: widget.dio,
                   ))
           ],
         );
@@ -350,13 +325,15 @@ class TabViewComponent extends StatefulWidget {
       required this.currentGroupGuid,
       required this.height,
       required this.width,
-      required this.altSchedule});
+      required this.altSchedule,
+      required this.dio});
   final String tab;
   final int tabIndex;
   final MyGroupGuid currentGroupGuid;
   final int height;
   final int width;
   final bool altSchedule;
+  final Dio dio;
 
   @override
   State<TabViewComponent> createState() => _TabViewComponentState();
@@ -377,7 +354,8 @@ class _TabViewComponentState extends State<TabViewComponent> {
           dayMap[widget.tab]! + 1,
           DateTime.now().weekOfYear,
           widget.width,
-          widget.height);
+          widget.height,
+          widget.dio);
     });
     super.initState();
   }
@@ -393,7 +371,8 @@ class _TabViewComponentState extends State<TabViewComponent> {
             dayMap[widget.tab]! + 1,
             DateTime.now().weekOfYear,
             widget.width,
-            widget.height);
+            widget.height,
+            widget.dio);
       });
     }
     super.didUpdateWidget(oldWidget);
