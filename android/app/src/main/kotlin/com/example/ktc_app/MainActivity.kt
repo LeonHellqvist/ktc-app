@@ -1,4 +1,4 @@
-package com.example.ktc_app
+package com.leonhellqvist.ktc_app
 
 import io.flutter.embedding.android.FlutterActivity
 

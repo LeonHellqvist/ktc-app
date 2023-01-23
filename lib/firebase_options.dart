@@ -72,6 +72,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'ktc-app-54116.appspot.com',
     iosClientId:
         '114566651471-tq80ligaopv4g4mjjd7f7395770qigj1.apps.googleusercontent.com',
-    iosBundleId: 'com.example.ktcApp',
+    iosBundleId: 'com.leonhellqvist.ktcApp',
   );
 }
