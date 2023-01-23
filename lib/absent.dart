@@ -166,7 +166,10 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
               ),
             );
           }
-          return Text("");
+          return const Center(
+              child: CircularProgressIndicator(
+            strokeWidth: 8,
+          ));
         }
       }),
     );
