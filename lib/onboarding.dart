@@ -118,7 +118,10 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                                 ),
                               );
                             },
-                            child: Text("Din klass")),
+                            child: Text(
+                                currentGroupGuid.currentGroupName() == ""
+                                    ? "Din klass"
+                                    : currentGroupGuid.currentGroupName())),
                       )),
                       Expanded(
                           child: Padding(
@@ -169,7 +172,10 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                                 ),
                               );
                             },
-                            child: Text("Alternativ klass")),
+                            child: Text(
+                                currentGroupGuid.currentGroupNameAlt() == ""
+                                    ? "Alternativ klass"
+                                    : currentGroupGuid.currentGroupNameAlt())),
                       ))
                     ],
                   ),
