@@ -346,17 +346,19 @@ class _TabViewComponentState extends State<TabViewComponent> {
 
   @override
   void initState() {
-    setState(() {
-      futureSchedule = fetchSchedule(
-          widget.altSchedule
-              ? currentGroupGuid.currentGroupGuidAlt()
-              : currentGroupGuid.currentGroupGuid(),
-          dayMap[widget.tab]! + 1,
-          DateTime.now().weekOfYear,
-          widget.width,
-          widget.height,
-          widget.dio);
-    });
+    if (currentGroupGuid.currentGroupGuid() != "") {
+      setState(() {
+        futureSchedule = fetchSchedule(
+            widget.altSchedule
+                ? currentGroupGuid.currentGroupGuidAlt()
+                : currentGroupGuid.currentGroupGuid(),
+            dayMap[widget.tab]! + 1,
+            DateTime.now().weekOfYear,
+            widget.width,
+            widget.height,
+            widget.dio);
+      });
+    }
     super.initState();
   }
 

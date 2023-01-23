@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:animations/animations.dart';
 import 'package:ktc_app/caller.dart';
+import 'package:ktc_app/preload_image.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -15,6 +16,7 @@ import 'schedule/schedule.dart';
 import 'food/food.dart';
 import 'absent.dart';
 import 'settings/settings.dart';
+import 'onboarding.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -22,6 +24,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  WidgetsFlutterBinding.ensureInitialized();
+  await loadImage(const AssetImage('assets/images/ktcBuilding.png'));
   runApp(const MyApp());
 }
 
@@ -81,6 +85,7 @@ class _MyAppState extends State<MyApp> {
           ),
       themeMode: currentTheme.currentTheme(),
       home: const MyHomePage(title: 'KTC Appen'),
+      routes: {'/onboarding': (context) => const MyOnboardingPage()},
     );
   }
 }
@@ -143,6 +148,11 @@ class _MyHomePageState extends State<MyHomePage> {
           currentLoginStatus: currentLoginStatus)
     ];
     super.initState();
+    Future(() {
+      if (currentGroupGuid.currentGroupGuid() == "") {
+        Navigator.pushReplacementNamed(context, '/onboarding');
+      }
+    });
   }
 
   @override

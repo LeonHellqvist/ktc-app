@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'config.dart';
 
 class MyGroupGuid with ChangeNotifier {
-  static String groupGuid = "NTk4NzRhOGQtNDVjOS1mYzE2LTg0NTktNDc1ZjQ0MTQ3YjU4";
-  static String groupGuidAlt =
-      "ZDY4NDFmMjctM2I0NS1mYWEwLTk2ZWItY2Q0NDQzMGYwM2Qy";
+  static String groupGuid = "";
+  static String groupGuidAlt = "";
 
-  static String groupName = "TE21";
-  static String groupNameAlt = "NA21";
+  static String groupName = "";
+  static String groupNameAlt = "";
 
   MyGroupGuid() {
     if (box!.containsKey('currentGroupGuid')) {
