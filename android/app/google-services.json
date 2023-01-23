@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:114566651471:android:cbe55e09dea0071a12d43a",
+        "mobilesdk_app_id": "1:114566651471:android:f5045b8cbabb2a4212d43a",
         "android_client_info": {
-          "package_name": "com.example.ktc_app"
+          "package_name": "com.leonhellqvist.ktc_app"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "114566651471-c3or1m6hggobj52simk4umkt7gpa279v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.leonhellqvist.ktc_app",
+            "certificate_hash": "4a97f1b49913c45995cb59900dd5fc80d20bebb9"
+          }
+        },
         {
           "client_id": "114566651471-f1h56f08a47mbmvol2iok2v7jg8d453d.apps.googleusercontent.com",
           "client_type": 3
@@ -31,7 +39,7 @@
               "client_type": 3
             },
             {
-              "client_id": "114566651471-tq80ligaopv4g4mjjd7f7395770qigj1.apps.googleusercontent.com",
+              "client_id": "114566651471-ou9dfbir2fhrl0678ufilcn4k3pmind8.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.leonhellqvist.ktcApp"
