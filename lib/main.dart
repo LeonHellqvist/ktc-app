@@ -63,10 +63,21 @@ class _MyAppState extends State<MyApp> {
       if (lightDynamic != null && darkDynamic != null) {
         // On Android S+ devices, use the provided dynamic color scheme.
         // (Recommended) Harmonize the dynamic color scheme' built-in semantic colors.
-        lightColorScheme = lightDynamic;
+        if (currentTheme.currentThemeDynamic()) {
+          lightColorScheme = lightDynamic;
 
-        // Repeat for the dark color scheme.
-        darkColorScheme = darkDynamic;
+          // Repeat for the dark color scheme.
+          darkColorScheme = darkDynamic;
+        } else {
+          // Otherwise, use fallback schemes.
+          lightColorScheme = ColorScheme.fromSeed(
+            seedColor: Colors.green,
+          );
+          darkColorScheme = ColorScheme.fromSeed(
+            seedColor: Colors.green,
+            brightness: Brightness.dark,
+          );
+        }
       } else {
         // Otherwise, use fallback schemes.
         lightColorScheme = ColorScheme.fromSeed(

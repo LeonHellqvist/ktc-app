@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -41,6 +42,15 @@ class _SettingsState extends State<SettingsPage> {
                 },
                 child: const Text('Ändra mörkt/ljust läge'),
               )),
+              Platform.isAndroid
+                  ? ListTile(
+                      title: ElevatedButton(
+                      onPressed: () {
+                        currentTheme.switchThemeDynamic();
+                      },
+                      child: const Text('Ändra dynamiskt/standard tema'),
+                    ))
+                  : const Text(""),
             ],
           ),
           const ExpansionTile(
