@@ -143,8 +143,8 @@ class _GroupSelectorState extends State<GroupSelector> {
                                 children: [
                                   for (var item in snapshot.data!.data.classes)
                                     RadioListTile(
-                                      activeColor: const Color.fromARGB(
-                                          255, 120, 220, 119),
+                                      activeColor:
+                                          Theme.of(context).colorScheme.primary,
                                       title: Text(item.groupName),
                                       value: item.groupGuid,
                                       groupValue:
@@ -192,8 +192,8 @@ class _GroupSelectorState extends State<GroupSelector> {
                                 children: [
                                   for (var item in snapshot.data!.data.classes)
                                     RadioListTile(
-                                      activeColor: const Color.fromARGB(
-                                          255, 120, 220, 119),
+                                      activeColor:
+                                          Theme.of(context).colorScheme.primary,
                                       title: Text(item.groupName),
                                       value: item.groupGuid,
                                       groupValue: currentGroupGuid

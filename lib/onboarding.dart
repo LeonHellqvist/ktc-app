@@ -43,7 +43,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF002200),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -90,9 +90,9 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                                               for (var item in snapshot
                                                   .data!.data.classes)
                                                 RadioListTile(
-                                                  activeColor:
-                                                      const Color.fromARGB(
-                                                          255, 120, 220, 119),
+                                                  activeColor: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
                                                   title: Text(item.groupName),
                                                   value: item.groupGuid,
                                                   groupValue: currentGroupGuid
@@ -140,9 +140,9 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                                               for (var item in snapshot
                                                   .data!.data.classes)
                                                 RadioListTile(
-                                                  activeColor:
-                                                      const Color.fromARGB(
-                                                          255, 120, 220, 119),
+                                                  activeColor: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
                                                   title: Text(item.groupName),
                                                   value: item.groupGuid,
                                                   groupValue: currentGroupGuid

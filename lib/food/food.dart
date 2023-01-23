@@ -155,7 +155,7 @@ class _FoodPageState extends State<FoodPage>
       appBar: AppBar(
         title: const Text("Vecka"),
         bottom: TabBar(
-          indicatorColor: Colors.green,
+          indicatorColor: Theme.of(context).colorScheme.primary,
           controller: _tabController,
           isScrollable: true,
           tabs: [

@@ -108,7 +108,7 @@ class _SchedulePageState extends State<SchedulePage>
         title: Text(
             "Schema ${altSchedule ? currentGroupGuid.currentGroupNameAlt() : currentGroupGuid.currentGroupName()}"),
         bottom: TabBar(
-          indicatorColor: Colors.green,
+          indicatorColor: Theme.of(context).colorScheme.primary,
           controller: _tabController,
           isScrollable: false,
           tabs: [

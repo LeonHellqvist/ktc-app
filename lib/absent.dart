@@ -113,7 +113,7 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
       appBar: AppBar(
         title: const Text("Frånvarande"),
         bottom: TabBar(
-          indicatorColor: Colors.green,
+          indicatorColor: Theme.of(context).colorScheme.primary,
           controller: _tabController,
           isScrollable: false,
           tabs: [

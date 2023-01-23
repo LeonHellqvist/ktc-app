@@ -8,6 +8,7 @@ import 'package:ktc_app/caller.dart';
 import 'package:ktc_app/preload_image.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 
 import 'config.dart';
 import 'dart:io';
@@ -54,39 +55,56 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'KTC Appen',
-      theme: ThemeData(
-        brightness: Brightness.light,
-        colorScheme: ColorScheme.fromSeed(
+    return DynamicColorBuilder(
+        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+      ColorScheme lightColorScheme;
+      ColorScheme darkColorScheme;
+
+      if (lightDynamic != null && darkDynamic != null) {
+        // On Android S+ devices, use the provided dynamic color scheme.
+        // (Recommended) Harmonize the dynamic color scheme' built-in semantic colors.
+        lightColorScheme = lightDynamic;
+
+        // Repeat for the dark color scheme.
+        darkColorScheme = darkDynamic;
+      } else {
+        // Otherwise, use fallback schemes.
+        lightColorScheme = ColorScheme.fromSeed(
           seedColor: Colors.green,
-        ),
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          elevation: 2,
-        ),
-        bottomAppBarTheme: const BottomAppBarTheme(
-          elevation: 2,
-        ),
-        tabBarTheme: const TabBarTheme(
-          labelColor: Colors.black,
-        ),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
+        );
+        darkColorScheme = ColorScheme.fromSeed(
+          seedColor: Colors.green,
           brightness: Brightness.dark,
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.green, brightness: Brightness.dark),
-          useMaterial3: true,
-          tabBarTheme: const TabBarTheme(
-            labelColor: Colors.white,
-          )
-          /* dark theme settings */
+        );
+      }
+
+      return MaterialApp(
+        title: 'KTC Appen',
+        theme: ThemeData(
+          brightness: Brightness.light,
+          colorScheme: lightColorScheme,
+          appBarTheme: const AppBarTheme(
+            elevation: 2,
           ),
-      themeMode: currentTheme.currentTheme(),
-      home: const MyHomePage(title: 'KTC Appen'),
-      routes: {'/onboarding': (context) => const MyOnboardingPage()},
-    );
+          tabBarTheme: const TabBarTheme(
+            labelColor: Colors.black,
+          ),
+          useMaterial3: true,
+        ),
+        darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            colorScheme: darkColorScheme,
+            useMaterial3: true,
+            tabBarTheme: const TabBarTheme(
+              labelColor: Colors.white,
+            )
+            /* dark theme settings */
+            ),
+        themeMode: currentTheme.currentTheme(),
+        home: const MyHomePage(title: 'KTC Appen'),
+        routes: {'/onboarding': (context) => const MyOnboardingPage()},
+      );
+    });
   }
 }
 
