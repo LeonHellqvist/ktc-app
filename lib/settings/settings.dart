@@ -180,7 +180,9 @@ class _GroupSelectorState extends State<GroupSelector> {
                     ),
                   );
                 },
-                child: Text("Din klass")),
+                child: Text(currentGroupGuid.currentGroupName() == ""
+                    ? "Din klass"
+                    : currentGroupGuid.currentGroupName())),
           ),
         ),
         Expanded(
@@ -229,7 +231,9 @@ class _GroupSelectorState extends State<GroupSelector> {
                     ),
                   );
                 },
-                child: Text("Alternativ klass")),
+                child: Text(currentGroupGuid.currentGroupNameAlt() == ""
+                    ? "Alternativ klass"
+                    : currentGroupGuid.currentGroupNameAlt())),
           ),
         ),
       ],
