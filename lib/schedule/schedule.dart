@@ -108,7 +108,6 @@ class _SchedulePageState extends State<SchedulePage>
         title: Text(
             "Schema ${altSchedule ? currentGroupGuid.currentGroupNameAlt() : currentGroupGuid.currentGroupName()}"),
         bottom: TabBar(
-          indicatorColor: Theme.of(context).colorScheme.primary,
           controller: _tabController,
           isScrollable: false,
           tabs: [
@@ -169,7 +168,7 @@ class _SchedulePageState extends State<SchedulePage>
   }
 }
 
-Color _getColorFromHex(String hexColor, bool text) {
+Color _getColorFromHex(String hexColor, bool text, context) {
   var color = TinyColor.fromString(hexColor);
   if (currentTheme.currentTheme() == ThemeMode.light) {
     return color.color;
@@ -178,7 +177,7 @@ Color _getColorFromHex(String hexColor, bool text) {
     return Colors.white;
   }
   if (color.color == Colors.white) {
-    return const Color.fromARGB(255, 48, 48, 48);
+    return Theme.of(context).colorScheme.background;
   }
   if (color.color == Colors.black) {
     return const Color.fromARGB(75, 255, 255, 255);
@@ -222,22 +221,25 @@ class _DayComponentState extends State<DayComponent>
     return FadeTransition(
       opacity: _animation,
       child: CustomPaint(
-          painter: ScheduleComponent(futureSchedule: widget.futureSchedule)),
+          painter: ScheduleComponent(
+              futureSchedule: widget.futureSchedule, context: context)),
     );
   }
 }
 
 class ScheduleComponent extends CustomPainter {
-  const ScheduleComponent({required this.futureSchedule});
+  const ScheduleComponent(
+      {required this.futureSchedule, required this.context});
 
   final Schedule futureSchedule;
+  final BuildContext context;
 
   @override
   void paint(Canvas canvas, Size size) {
     for (int i = 0; i < futureSchedule.boxList.length; i++) {
       BoxList box = futureSchedule.boxList[i];
       var paint = Paint()
-        ..color = _getColorFromHex(box.bColor, false)
+        ..color = _getColorFromHex(box.bColor, false, context)
         ..style = PaintingStyle.fill;
 
       canvas.drawRect(
@@ -246,7 +248,7 @@ class ScheduleComponent extends CustomPainter {
           paint);
 
       var paintS = Paint()
-        ..color = _getColorFromHex("#000000", false)
+        ..color = _getColorFromHex("#000000", false, context)
         ..style = PaintingStyle.stroke;
 
       if (i != 0) {
@@ -259,7 +261,7 @@ class ScheduleComponent extends CustomPainter {
     for (int i = 0; i < futureSchedule.lineList.length; i++) {
       LineList line = futureSchedule.lineList[i];
       var paint = Paint()
-        ..color = _getColorFromHex(line.color, false)
+        ..color = _getColorFromHex(line.color, false, context)
         ..strokeWidth = 1;
 
       canvas.drawLine(Offset(line.p1x.toDouble(), line.p1y.toDouble() - 25),
@@ -273,7 +275,7 @@ class ScheduleComponent extends CustomPainter {
           text.italic == true ? FontStyle.italic : FontStyle.normal;
 
       var textStyle = TextStyle(
-        color: _getColorFromHex(text.fColor, true),
+        color: _getColorFromHex(text.fColor, true, context),
         fontSize: text.fontsize.toDouble(),
         fontWeight: weight,
         fontStyle: style,
@@ -284,7 +286,7 @@ class ScheduleComponent extends CustomPainter {
 
       if (!kIsWeb) {
         textStyle = TextStyle(
-          color: _getColorFromHex(text.fColor, true),
+          color: _getColorFromHex(text.fColor, true, context),
           fontSize: Platform.isIOS
               ? text.fontsize.toDouble()
               : text.fontsize.toDouble() - 1,
