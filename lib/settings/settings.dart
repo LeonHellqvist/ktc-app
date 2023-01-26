@@ -62,7 +62,7 @@ class _SettingsState extends State<SettingsPage> {
           ),
           ExpansionTile(
             title: const Text('Medverkande'),
-            subtitle: const Text("Se alla som hjälp till"),
+            subtitle: const Text("Se alla som hjälpt till"),
             children: <Widget>[
               ListTile(
                 title: Column(
