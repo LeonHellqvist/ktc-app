@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/sheets/v4.dart' as api;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:ktc_app/loginStatus.dart';
 
 import 'config.dart';
@@ -158,10 +159,16 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
-                  FilledButton(
-                    onPressed: _handleSignIn,
-                    child: const Text('Logga in'),
-                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SignInButton(
+                      Buttons.Google,
+                      text: "Logga in med Google",
+                      onPressed: () {
+                        _handleSignIn();
+                      },
+                    ),
+                  )
                 ],
               ),
             );
