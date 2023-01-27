@@ -73,7 +73,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                       Expanded(
                           child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                        child: OutlinedButton(
+                        child: FilledButton.tonal(
                             onPressed: () {
                               showDialog<bool>(
                                 context: context,
@@ -126,7 +126,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                       Expanded(
                           child: Padding(
                         padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                        child: OutlinedButton(
+                        child: FilledButton.tonal(
                             onPressed: () {
                               showDialog<bool>(
                                 context: context,
@@ -188,7 +188,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(64.0),
-                  child: ElevatedButton(
+                  child: FilledButton(
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),

@@ -36,7 +36,7 @@ class _SettingsState extends State<SettingsPage> {
             subtitle: const Text("Anpassa utseendet"),
             children: <Widget>[
               ListTile(
-                  title: ElevatedButton(
+                  title: FilledButton.tonal(
                 onPressed: () {
                   currentTheme.switchTheme();
                 },
@@ -44,7 +44,7 @@ class _SettingsState extends State<SettingsPage> {
               )),
               Platform.isAndroid
                   ? ListTile(
-                      title: ElevatedButton(
+                      title: FilledButton.tonal(
                       onPressed: () {
                         currentTheme.switchThemeDynamic();
                       },
@@ -86,7 +86,7 @@ class _SettingsState extends State<SettingsPage> {
                         title: Center(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                        child: ElevatedButton(
+                        child: FilledButton.tonal(
                           child: const Text("Logga ut från ditt Google konto"),
                           onPressed: () =>
                               {currentLoginStatus.setLoginStatus("logout")},
@@ -137,7 +137,7 @@ class _GroupSelectorState extends State<GroupSelector> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-            child: ElevatedButton(
+            child: FilledButton.tonal(
                 onPressed: () {
                   showDialog<bool>(
                     context: context,
@@ -188,7 +188,7 @@ class _GroupSelectorState extends State<GroupSelector> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-            child: ElevatedButton(
+            child: FilledButton.tonal(
                 onPressed: () {
                   showDialog<bool>(
                     context: context,

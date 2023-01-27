@@ -158,9 +158,9 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: _handleSignIn,
-                    child: const Text('LOGGA IN'),
+                    child: const Text('Logga in'),
                   ),
                 ],
               ),
@@ -238,33 +238,3 @@ class _AbsentViewState extends State<AbsentView>
     );
   }
 }
-
-
-
-/* if (user != null) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          ListTile(
-            leading: GoogleUserCircleAvatar(
-              identity: user,
-            ),
-            title: Text(user.displayName ?? ''),
-            subtitle: Text(user.email),
-          ),
-          const Text('Signed in successfully.'),
-          Text(_contactText),
-        ],
-      );
-    } else {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          const Text('You are not currently signed in.'),
-          ElevatedButton(
-            onPressed: _handleSignIn,
-            child: const Text('SIGN IN'),
-          ),
-        ],
-      );
-    } */
