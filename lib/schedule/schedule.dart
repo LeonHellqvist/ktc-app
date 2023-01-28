@@ -107,8 +107,7 @@ class _SchedulePageState extends State<SchedulePage>
     return Scaffold(
       appBar: AppBar(
         primary: true,
-        title: Text(
-            "Schema ${altSchedule ? currentGroupGuid.currentGroupNameAlt() : currentGroupGuid.currentGroupName()}"),
+        title: Text("Schema ${currentGroupGuid.currentGroupName()}"),
         bottom: TabBar(
           controller: _tabController,
           isScrollable: false,
@@ -121,9 +120,37 @@ class _SchedulePageState extends State<SchedulePage>
         width: 170,
         child: FloatingActionButton(
           onPressed: () {
-            setState(() {
-              altSchedule = !altSchedule;
-            });
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                    title: Text('Byt till en favorit'),
+                    content: Container(
+                      height: 200.0,
+                      width: 150.0,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount:
+                            currentGroupGuid.currentGroupGuidFavorites().length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                              title: FilledButton.tonal(
+                            child: Text(currentGroupGuid
+                                .currentGroupNameFavorites()[index]),
+                            onPressed: () {
+                              currentGroupGuid.setGroup(
+                                  currentGroupGuid
+                                      .currentGroupGuidFavorites()[index],
+                                  currentGroupGuid
+                                      .currentGroupNameFavorites()[index]);
+                              setState(() {
+                                altSchedule = !altSchedule;
+                              });
+                              Navigator.pop(context);
+                            },
+                          ));
+                        },
+                      ),
+                    )));
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -393,9 +420,7 @@ class _TabViewComponentState extends State<TabViewComponent> {
     if (currentGroupGuid.currentGroupGuid() != "") {
       setState(() {
         futureSchedule = fetchSchedule(
-            widget.altSchedule
-                ? currentGroupGuid.currentGroupGuidAlt()
-                : currentGroupGuid.currentGroupGuid(),
+            currentGroupGuid.currentGroupGuid(),
             dayMap[widget.tab]! + 1,
             widget.selectedWeek,
             widget.width,
@@ -412,9 +437,7 @@ class _TabViewComponentState extends State<TabViewComponent> {
         (oldWidget.selectedWeek != widget.selectedWeek)) {
       setState(() {
         futureSchedule = fetchSchedule(
-            widget.altSchedule
-                ? currentGroupGuid.currentGroupGuidAlt()
-                : currentGroupGuid.currentGroupGuid(),
+            currentGroupGuid.currentGroupGuid(),
             dayMap[widget.tab]! + 1,
             widget.selectedWeek,
             widget.width,
