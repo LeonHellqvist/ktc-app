@@ -54,6 +54,7 @@ dependencies:
   path_provider: ^2.0.11
   dynamic_color: ^1.5.4
   flutter_signin_button: ^2.0.0
+  google_mobile_ads: ^2.3.0
 
 dev_dependencies:
   flutter_test:

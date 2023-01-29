@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:ktc_app/ad_component.dart';
+import 'package:ktc_app/ad_helper.dart';
 import 'package:week_of_year/week_of_year.dart';
 import 'package:ktc_app/throttler.dart';
 
@@ -20,9 +22,10 @@ Future<Food> fetchFood(int week, Dio dio) async {
 }
 
 class FoodPage extends StatefulWidget {
-  const FoodPage({super.key, required this.dio});
+  const FoodPage({super.key, required this.dio, required this.showAds});
 
   final Dio dio;
+  final bool showAds;
 
   @override
   State<FoodPage> createState() => _FoodPageState();
@@ -163,15 +166,23 @@ class _FoodPageState extends State<FoodPage>
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          for (final tab in tabs)
-            TabViewComponent(
-              tab: tab,
-              tabIndex: tabIndex.value,
-              dio: widget.dio,
-            )
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                for (final tab in tabs)
+                  TabViewComponent(
+                    tab: tab,
+                    tabIndex: tabIndex.value,
+                    dio: widget.dio,
+                  )
+              ],
+            ),
+          ),
+          AdComponent(
+              adUnit: AdHelper.foodBannerAdUnit, showAds: widget.showAds)
         ],
       ),
     );

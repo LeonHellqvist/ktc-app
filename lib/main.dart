@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:animations/animations.dart';
 import 'package:ktc_app/caller.dart';
@@ -133,6 +134,11 @@ class MyHomePage extends StatefulWidget {
 
   final String title;
 
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    // TODO: Initialize Google Mobile Ads SDK
+    return MobileAds.instance.initialize();
+  }
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -147,8 +153,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late final List<Widget> pageList;
 
+  late bool showAds;
+
   @override
   void initState() {
+    showAds = true;
     cacheStore = HiveCacheStore(null);
     cacheOptions = CacheOptions(
       policy: CachePolicy.forceCache,
@@ -169,9 +178,13 @@ class _MyHomePageState extends State<MyHomePage> {
       dio: dio,
     );
     pageList = <Widget>[
-      SchedulePage(currentGroupGuid: currentGroupGuid, dio: dio),
-      FoodPage(dio: dio),
-      AbsentPage(currentLoginStatus: currentLoginStatus),
+      SchedulePage(
+        currentGroupGuid: currentGroupGuid,
+        dio: dio,
+        showAds: showAds,
+      ),
+      FoodPage(dio: dio, showAds: showAds),
+      AbsentPage(currentLoginStatus: currentLoginStatus, showAds: showAds),
       SettingsPage(
           currentGroupGuid: currentGroupGuid,
           currentLoginStatus: currentLoginStatus)
