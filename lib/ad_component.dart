@@ -71,7 +71,7 @@ class _AdComponentState extends State<AdComponent> {
       );
     }
     if (_anchoredAdaptiveAd == null) {
-      return const SizedBox(height: 50, child: Text(""));
+      return const SizedBox(height: 0, child: Text(""));
     } else {
       return SizedBox(
           height: _anchoredAdaptiveAd!.size.height.toDouble(),
