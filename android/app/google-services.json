@@ -22,8 +22,12 @@
           }
         },
         {
-          "client_id": "114566651471-f1h56f08a47mbmvol2iok2v7jg8d453d.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "114566651471-ula034c4pl5v68bfo8s6nal74nl6ojja.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.leonhellqvist.ktc_app",
+            "certificate_hash": "f3e670379899b87ab2e43869af4da9e7a8f3904e"
+          }
         }
       ],
       "api_key": [
@@ -34,10 +38,6 @@
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
-            {
-              "client_id": "114566651471-f1h56f08a47mbmvol2iok2v7jg8d453d.apps.googleusercontent.com",
-              "client_type": 3
-            },
             {
               "client_id": "114566651471-ou9dfbir2fhrl0678ufilcn4k3pmind8.apps.googleusercontent.com",
               "client_type": 2,
