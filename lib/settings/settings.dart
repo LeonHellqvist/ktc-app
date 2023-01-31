@@ -50,7 +50,7 @@ class _SettingsState extends State<SettingsPage> {
                       },
                       child: const Text('Ändra dynamiskt/standard tema'),
                     ))
-                  : const Text(""),
+                  : const SizedBox(height: 0),
             ],
           ),
           const ExpansionTile(

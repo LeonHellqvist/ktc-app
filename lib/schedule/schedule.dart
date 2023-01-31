@@ -134,7 +134,7 @@ class _SchedulePageState extends State<SchedulePage>
                   builder: (_) => AlertDialog(
                       title: Text('Byt till en favorit'),
                       content: Container(
-                        height: 200.0,
+                        height: 175.0,
                         width: 150.0,
                         child: ListView.builder(
                           shrinkWrap: true,
