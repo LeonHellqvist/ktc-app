@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/sheets/v4.dart' as api;
@@ -9,6 +10,7 @@ import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:ktc_app/ad_component.dart';
 import 'package:ktc_app/ad_helper.dart';
 import 'package:ktc_app/login_status.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'config.dart';
 
@@ -160,15 +162,40 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
-                            children: const [
-                              Text(
+                            children: [
+                              const Text(
                                   style: TextStyle(fontSize: 16),
                                   textAlign: TextAlign.center,
                                   'För att se frånvarande personal måste du\nlogga in med ditt skolkonto!'),
-                              Text(
-                                  style: TextStyle(fontSize: 12),
+                              RichText(
                                   textAlign: TextAlign.center,
-                                  'Du måste även godkänna att appen kan se alla dina kalkylark men appen använder bara frånvarande personal dokumentet'),
+                                  text: TextSpan(children: [
+                                    const TextSpan(
+                                        style: TextStyle(fontSize: 12),
+                                        text:
+                                            "Du måste godkänna att appen kan se alla dina "),
+                                    TextSpan(
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary),
+                                        text: "Google Kalkylark",
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () async {
+                                            var uri = Uri.parse(
+                                                "https://www.google.com/intl/sv/sheets/about/");
+                                            if (await canLaunchUrl(uri)) {
+                                              await launchUrl(uri);
+                                            } else {
+                                              throw 'Could not launch $uri';
+                                            }
+                                          }),
+                                    const TextSpan(
+                                        style: TextStyle(fontSize: 12),
+                                        text:
+                                            " men appen använder bara \"frånvarande personal\" kalkylarket")
+                                  ]))
                             ],
                           ),
                         ),
