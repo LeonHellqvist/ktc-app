@@ -156,59 +156,94 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
                   log("out");
                   return Center(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                      children: [
+                        Expanded(
                           child: Column(
-                            children: [
-                              const Text(
-                                  style: TextStyle(fontSize: 16),
-                                  textAlign: TextAlign.center,
-                                  'För att se frånvarande personal måste du\nlogga in med ditt skolkonto!'),
-                              RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(children: [
-                                    const TextSpan(
-                                        style: TextStyle(fontSize: 12),
-                                        text:
-                                            "Du måste godkänna att appen kan se alla dina "),
-                                    TextSpan(
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                        text: "Google Kalkylark",
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () async {
-                                            var uri = Uri.parse(
-                                                "https://www.google.com/intl/sv/sheets/about/");
-                                            if (await canLaunchUrl(uri)) {
-                                              await launchUrl(uri);
-                                            } else {
-                                              throw 'Could not launch $uri';
-                                            }
-                                          }),
-                                    const TextSpan(
-                                        style: TextStyle(fontSize: 12),
-                                        text:
-                                            " men appen använder bara \"frånvarande personal\" kalkylarket")
-                                  ]))
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    const Text(
+                                        style: TextStyle(fontSize: 16),
+                                        textAlign: TextAlign.center,
+                                        'För att se frånvarande personal måste du\nlogga in med ditt skolkonto!'),
+                                    RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(children: [
+                                          const TextSpan(
+                                              style: TextStyle(fontSize: 12),
+                                              text:
+                                                  "Du måste godkänna att appen kan se alla dina "),
+                                          TextSpan(
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
+                                              text: "Google Kalkylark",
+                                              recognizer: TapGestureRecognizer()
+                                                ..onTap = () async {
+                                                  var uri = Uri.parse(
+                                                      "https://www.google.com/intl/sv/sheets/about/");
+                                                  if (await canLaunchUrl(uri)) {
+                                                    await launchUrl(uri);
+                                                  } else {
+                                                    throw 'Could not launch $uri';
+                                                  }
+                                                }),
+                                          const TextSpan(
+                                              style: TextStyle(fontSize: 12),
+                                              text:
+                                                  " men appen använder bara \"Frånvarande Personal DU/KTC\" kalkylarket")
+                                        ]))
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: SignInButton(
+                                  Buttons.GoogleDark,
+                                  text: "Logga in med Google",
+                                  onPressed: () {
+                                    _handleSignIn();
+                                  },
+                                ),
+                              )
                             ],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SignInButton(
-                            Buttons.Google,
-                            text: "Logga in med Google",
-                            onPressed: () {
-                              _handleSignIn();
-                            },
+                          padding: const EdgeInsets.all(32.0),
+                          child: SizedBox(
+                            height: 20,
+                            child: RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(children: [
+                                  TextSpan(
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                      text: "Integritetspolicy",
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+                                          var uri = Uri.parse(
+                                              "https://leonhellqvist.com/ktc-appen/privacy-policy.html");
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri);
+                                          } else {
+                                            throw 'Could not launch $uri';
+                                          }
+                                        }),
+                                ])),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   );
