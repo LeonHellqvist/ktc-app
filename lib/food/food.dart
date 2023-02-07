@@ -232,8 +232,7 @@ class _DayComponentState extends State<DayComponent>
                                 i.value),
                           ))
                       .toList()),
-              // TODO: Add this back when dynamic color supports dividers
-              /* const SizedBox(
+              const SizedBox(
                 height: 8,
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
@@ -241,7 +240,7 @@ class _DayComponentState extends State<DayComponent>
                     height: 1,
                   ),
                 ),
-              ), */
+              ),
             ],
           ),
         ),
