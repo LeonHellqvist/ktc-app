@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/sheets/v4.dart' as api;
@@ -6,7 +8,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:ktc_app/ad_component.dart';
 import 'package:ktc_app/ad_helper.dart';
-import 'package:ktc_app/loginStatus.dart';
+import 'package:ktc_app/login_status.dart';
 
 import 'config.dart';
 
@@ -109,7 +111,7 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
     try {
       await _googleSignIn.signIn();
     } catch (error) {
-      print(error);
+      log(error.toString());
     }
   }
 
@@ -149,14 +151,14 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
                 }
               } else {
                 if (loginStatus == "out") {
-                  print("out");
+                  log("out");
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: const [
                               Text(
@@ -218,7 +220,7 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
 class AbsentView extends StatefulWidget {
   const AbsentView({super.key, required this.days});
 
-  final days;
+  final List<Object?> days;
   @override
   State<AbsentView> createState() => _AbsentViewState();
 }

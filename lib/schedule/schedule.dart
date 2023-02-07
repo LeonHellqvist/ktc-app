@@ -5,7 +5,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ktc_app/ad_component.dart';
-import 'package:ktc_app/groupGuid.dart';
+import 'package:ktc_app/group_guid.dart';
 import 'package:week_of_year/week_of_year.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 import 'package:dio/dio.dart';
@@ -22,9 +22,8 @@ Future<Schedule> fetchSchedule(String groupGuid, int scheduleDay, int week,
   String url =
       'https://tools-proxy.leonhellqvist.workers.dev/?service=skola24&subService=getLessons&hostName=katrineholm.skola24.se&unitGuid=ZGI0OGY4MjktMmYzNy1mMmU3LTk4NmItYzgyOWViODhmNzhj&groupGuid=$groupGuid&year=$year&week=$week&scheduleDay=$scheduleDay&lines=true&width=$width&height=$height';
 
-  print(url);
+  log(url);
 
-  // TODO: Remove this
   final response = await dio.getUri(Uri.parse(url));
 
   if (response.statusCode == 200 || response.statusCode == 304) {
@@ -66,7 +65,7 @@ class _SchedulePageState extends State<SchedulePage>
   late AdSize adSize;
 
   bool _scrollingEnabled = true;
-  TransformationController _transformationController =
+  final TransformationController _transformationController =
       TransformationController();
   @override
   void initState() {
@@ -81,7 +80,6 @@ class _SchedulePageState extends State<SchedulePage>
       setState(() {
         tabIndex = _tabController!.index;
       });
-      // TODO: fixa att man kan välja klass
     });
     _tabController!.animation!.addListener(() {
       // When the tab controller's value is updated, make sure to update the
@@ -91,7 +89,6 @@ class _SchedulePageState extends State<SchedulePage>
           tabIndex = (_tabController!.animation!.value).round();
         });
       }
-      // TODO: fixa att man kan välja klass
     });
     Future.delayed(Duration.zero, () {
       setState(() {
@@ -132,8 +129,8 @@ class _SchedulePageState extends State<SchedulePage>
               showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
-                      title: Text('Byt till en favorit'),
-                      content: Container(
+                      title: const Text('Byt till en favorit'),
+                      content: SizedBox(
                         height: 175.0,
                         width: 150.0,
                         child: ListView.builder(

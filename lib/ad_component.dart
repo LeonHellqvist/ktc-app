@@ -1,6 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:ktc_app/ad_helper.dart';
 
 class AdComponent extends StatefulWidget {
   const AdComponent({super.key, required this.adUnit, required this.showAds});
@@ -13,7 +14,6 @@ class AdComponent extends StatefulWidget {
 
 class _AdComponentState extends State<AdComponent> {
   BannerAd? _anchoredAdaptiveAd;
-  bool _isLoaded = false;
 
   @override
   void didChangeDependencies() {
@@ -28,27 +28,25 @@ class _AdComponentState extends State<AdComponent> {
             MediaQuery.of(context).size.width.truncate());
 
     if (size == null) {
-      print('Unable to get height of anchored banner.');
+      log('Unable to get height of anchored banner.');
       return;
     }
 
     _anchoredAdaptiveAd = BannerAd(
-      // TODO: replace these test ad units with your own ad unit.
       adUnitId: widget.adUnit,
       size: size,
-      request: AdRequest(),
+      request: const AdRequest(),
       listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
-          print('$ad loaded: ${ad.responseInfo}');
+          log('$ad loaded: ${ad.responseInfo}');
           setState(() {
             // When the ad is loaded, get the ad size and use it to set
             // the height of the ad container.
             _anchoredAdaptiveAd = ad as BannerAd;
-            _isLoaded = true;
           });
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          print('Anchored adaptive banner failedToLoad: $error');
+          log('Anchored adaptive banner failedToLoad: $error');
           ad.dispose();
         },
       ),

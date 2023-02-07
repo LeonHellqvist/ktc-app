@@ -1,14 +1,11 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:ktc_app/groupGuid.dart';
-import 'package:ktc_app/loginStatus.dart';
+import 'package:ktc_app/group_guid.dart';
+import 'package:ktc_app/login_status.dart';
 
 import '../config.dart';
 
@@ -123,7 +120,6 @@ class _GroupSelectorState extends State<GroupSelector> {
   late Future<Groups> futureGroups;
   @override
   void initState() {
-    Future<Groups> fetchedGroups = fetchGroups();
     setState(() {
       futureGroups = fetchGroups();
     });
@@ -173,7 +169,7 @@ class _GroupSelectorState extends State<GroupSelector> {
                                 ],
                               ));
                             } else {
-                              return Text("");
+                              return const Text("");
                             }
                           }),
                       actions: <Widget>[
@@ -229,7 +225,7 @@ class _GroupSelectorState extends State<GroupSelector> {
                               ],
                             ));
                           } else {
-                            return Text("");
+                            return const Text("");
                           }
                         }),
                     actions: <Widget>[
@@ -241,7 +237,7 @@ class _GroupSelectorState extends State<GroupSelector> {
                   ),
                 );
               },
-              child: Text("Favoritklasser"),
+              child: const Text("Favoritklasser"),
             ),
           ),
         )

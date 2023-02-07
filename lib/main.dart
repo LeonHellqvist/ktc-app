@@ -12,7 +12,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 import 'config.dart';
-import 'dart:io';
 
 import 'schedule/schedule.dart';
 import 'food/food.dart';
@@ -92,6 +91,7 @@ class _MyAppState extends State<MyApp> {
 
       return MaterialApp(
         title: 'KTC Appen',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           brightness: Brightness.light,
           colorScheme: lightColorScheme,
@@ -157,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    showAds = true;
+    showAds = false;
     cacheStore = HiveCacheStore(null);
     cacheOptions = CacheOptions(
       policy: CachePolicy.forceCache,
@@ -203,8 +203,6 @@ class _MyHomePageState extends State<MyHomePage> {
     cacheStore.close();
     super.dispose();
   }
-
-  final _pageList = <Widget>[];
 
   @override
   Widget build(BuildContext context) {

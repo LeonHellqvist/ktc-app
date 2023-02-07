@@ -110,7 +110,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                                             ],
                                           ));
                                         } else {
-                                          return Text("");
+                                          return const Text("");
                                         }
                                       }),
                                   actions: <Widget>[
@@ -174,7 +174,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                                                 ],
                                               ));
                                             } else {
-                                              return Text("");
+                                              return const Text("");
                                             }
                                           }),
                                       actions: <Widget>[
@@ -187,7 +187,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                                     ),
                                   );
                                 },
-                                child: Text("Favoritklasser"),
+                                child: const Text("Favoritklasser"),
                               )))
                     ],
                   ),
