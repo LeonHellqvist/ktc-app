@@ -55,6 +55,7 @@ dependencies:
   dynamic_color: ^1.5.4
   flutter_signin_button: ^2.0.0
   google_mobile_ads: ^2.3.0
+  firebase_crashlytics: ^3.0.12
 
 dev_dependencies:
   flutter_test:
