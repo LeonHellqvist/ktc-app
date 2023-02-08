@@ -18,10 +18,10 @@ class _AdComponentState extends State<AdComponent> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadAd();
+    _loadAd(widget.showAds);
   }
 
-  Future<void> _loadAd() async {
+  Future<void> _loadAd(bool showAds) async {
     // Get an AnchoredAdaptiveBannerAdSize before loading the ad.
     final AnchoredAdaptiveBannerAdSize? size =
         await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
@@ -32,25 +32,27 @@ class _AdComponentState extends State<AdComponent> {
       return;
     }
 
-    _anchoredAdaptiveAd = BannerAd(
-      adUnitId: widget.adUnit,
-      size: size,
-      request: const AdRequest(),
-      listener: BannerAdListener(
-        onAdLoaded: (Ad ad) {
-          log('$ad loaded: ${ad.responseInfo}');
-          setState(() {
-            // When the ad is loaded, get the ad size and use it to set
-            // the height of the ad container.
-            _anchoredAdaptiveAd = ad as BannerAd;
-          });
-        },
-        onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          log('Anchored adaptive banner failedToLoad: $error');
-          ad.dispose();
-        },
-      ),
-    );
+    _anchoredAdaptiveAd = showAds
+        ? BannerAd(
+            adUnitId: widget.adUnit,
+            size: size,
+            request: const AdRequest(),
+            listener: BannerAdListener(
+              onAdLoaded: (Ad ad) {
+                log('$ad loaded: ${ad.responseInfo}');
+                setState(() {
+                  // When the ad is loaded, get the ad size and use it to set
+                  // the height of the ad container.
+                  _anchoredAdaptiveAd = ad as BannerAd;
+                });
+              },
+              onAdFailedToLoad: (Ad ad, LoadAdError error) {
+                log('Anchored adaptive banner failedToLoad: $error');
+                ad.dispose();
+              },
+            ),
+          )
+        : null;
     return _anchoredAdaptiveAd!.load();
   }
 
