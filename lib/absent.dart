@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io' show Platform;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +37,10 @@ class AbsentPage extends StatefulWidget {
 }
 
 class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
-  final GoogleSignIn _googleSignIn = kIsWeb
+  final GoogleSignIn _googleSignIn = Platform.isAndroid
       ? GoogleSignIn(
           clientId:
-              "114566651471-f1h56f08a47mbmvol2iok2v7jg8d453d.apps.googleusercontent.com",
+              "114566651471-2ne2tukjh0r1t2cn6blqmulj0e8tk49j.apps.googleusercontent.com",
           scopes: <String>[api.SheetsApi.spreadsheetsReadonlyScope],
         )
       : GoogleSignIn(
