@@ -74,6 +74,26 @@ class _SettingsState extends State<SettingsPage> {
               ),
             ],
           ),
+          ExpansionTile(
+            title: const Text('Integritet'),
+            subtitle: const Text("Se integritetpolicyn och användarvilloren"),
+            children: <Widget>[
+              ListTile(
+                title: Column(
+                  children: [
+                    TextButton(
+                      child: const Text("Integritetspolicy"),
+                      onPressed: () => {_launchUrlPrivacy()},
+                    ),
+                    TextButton(
+                      child: const Text("Användarvillkor"),
+                      onPressed: () => {_launchUrlTerms()},
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
           currentLoginStatus.getLoginStatus() == "in"
               ? ExpansionTile(
                   title: const Text('Google konto'),
@@ -100,6 +120,20 @@ class _SettingsState extends State<SettingsPage> {
 Future<void> _launchUrl() async {
   if (!await launchUrl(Uri.parse('https://github.com/LeonHellqvist/ktc-app'))) {
     throw 'Could not launch github';
+  }
+}
+
+Future<void> _launchUrlPrivacy() async {
+  if (!await launchUrl(
+      Uri.parse('https://leonhellqvist.com/ktc-appen/privacy-policy.html'))) {
+    throw 'Could not launch privacy policy';
+  }
+}
+
+Future<void> _launchUrlTerms() async {
+  if (!await launchUrl(
+      Uri.parse('https://leonhellqvist.com/ktc-appen/terms-of-service.html'))) {
+    throw 'Could not launch terms';
   }
 }
 
