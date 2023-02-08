@@ -157,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    showAds = false;
+    showAds = true;
     cacheStore = HiveCacheStore(null);
     cacheOptions = CacheOptions(
       policy: CachePolicy.forceCache,
