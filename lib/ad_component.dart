@@ -72,6 +72,7 @@ class _AdComponentState extends State<AdComponent> {
     }
     if (_anchoredAdaptiveAd == null) {
       return SizedBox(
+        // TODO: Make this the correct height of adaptive ad
         height: 50,
         width: MediaQuery.of(context).size.width,
       );
