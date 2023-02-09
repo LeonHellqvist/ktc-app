@@ -54,6 +54,8 @@ class _SchedulePageState extends State<SchedulePage>
   int height = 0;
   int width = 0;
 
+  int selectedWeek = DateTime.now().weekOfYear;
+
   bool altSchedule = false;
 
   bool _scrollingEnabled = true;
@@ -105,8 +107,7 @@ class _SchedulePageState extends State<SchedulePage>
     return Scaffold(
       appBar: AppBar(
         primary: true,
-        title: Text(
-            "Schema ${altSchedule ? currentGroupGuid.currentGroupNameAlt() : currentGroupGuid.currentGroupName()}"),
+        title: Text("Schema ${currentGroupGuid.currentGroupName()}"),
         bottom: TabBar(
           controller: _tabController,
           isScrollable: false,
@@ -115,13 +116,78 @@ class _SchedulePageState extends State<SchedulePage>
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            altSchedule = !altSchedule;
-          });
-        },
-        child: const Icon(Icons.people),
+      floatingActionButton: SizedBox(
+        width: 170,
+        child: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                    title: Text('Byt till en favorit'),
+                    content: Container(
+                      height: 200.0,
+                      width: 150.0,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount:
+                            currentGroupGuid.currentGroupGuidFavorites().length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                              title: FilledButton.tonal(
+                            child: Text(currentGroupGuid
+                                .currentGroupNameFavorites()[index]),
+                            onPressed: () {
+                              currentGroupGuid.setGroup(
+                                  currentGroupGuid
+                                      .currentGroupGuidFavorites()[index],
+                                  currentGroupGuid
+                                      .currentGroupNameFavorites()[index]);
+                              setState(() {
+                                altSchedule = !altSchedule;
+                              });
+                              Navigator.pop(context);
+                            },
+                          ));
+                        },
+                      ),
+                    )));
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                  width: 126,
+                  child: Row(
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedWeek -= 1;
+                            });
+                          },
+                          icon: const Icon(Icons.arrow_left)),
+                      Expanded(
+                          child: Text(
+                        "v.$selectedWeek",
+                        textAlign: TextAlign.center,
+                      )),
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedWeek += 1;
+                            });
+                          },
+                          icon: const Icon(Icons.arrow_right))
+                    ],
+                  )),
+              const Expanded(
+                  child: Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, 18, 0),
+                child: SizedBox(width: 20, child: Icon(Icons.people)),
+              )),
+            ],
+          ),
+        ),
       ),
       body: Builder(builder: (context1) {
         double fullHeight = MediaQuery.of(context1).size.height;
@@ -160,6 +226,7 @@ class _SchedulePageState extends State<SchedulePage>
                     width: width,
                     altSchedule: altSchedule,
                     dio: widget.dio,
+                    selectedWeek: selectedWeek,
                   ))
           ],
         );
@@ -328,7 +395,8 @@ class TabViewComponent extends StatefulWidget {
       required this.height,
       required this.width,
       required this.altSchedule,
-      required this.dio});
+      required this.dio,
+      required this.selectedWeek});
   final String tab;
   final int tabIndex;
   final MyGroupGuid currentGroupGuid;
@@ -336,6 +404,7 @@ class TabViewComponent extends StatefulWidget {
   final int width;
   final bool altSchedule;
   final Dio dio;
+  final int selectedWeek;
 
   @override
   State<TabViewComponent> createState() => _TabViewComponentState();
@@ -351,11 +420,9 @@ class _TabViewComponentState extends State<TabViewComponent> {
     if (currentGroupGuid.currentGroupGuid() != "") {
       setState(() {
         futureSchedule = fetchSchedule(
-            widget.altSchedule
-                ? currentGroupGuid.currentGroupGuidAlt()
-                : currentGroupGuid.currentGroupGuid(),
+            currentGroupGuid.currentGroupGuid(),
             dayMap[widget.tab]! + 1,
-            DateTime.now().weekOfYear,
+            widget.selectedWeek,
             widget.width,
             widget.height,
             widget.dio);
@@ -366,14 +433,13 @@ class _TabViewComponentState extends State<TabViewComponent> {
 
   @override
   void didUpdateWidget(oldWidget) {
-    if (oldWidget.altSchedule != widget.altSchedule) {
+    if ((oldWidget.altSchedule != widget.altSchedule) ||
+        (oldWidget.selectedWeek != widget.selectedWeek)) {
       setState(() {
         futureSchedule = fetchSchedule(
-            widget.altSchedule
-                ? currentGroupGuid.currentGroupGuidAlt()
-                : currentGroupGuid.currentGroupGuid(),
+            currentGroupGuid.currentGroupGuid(),
             dayMap[widget.tab]! + 1,
-            DateTime.now().weekOfYear,
+            widget.selectedWeek,
             widget.width,
             widget.height,
             widget.dio);

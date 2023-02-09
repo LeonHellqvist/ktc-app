@@ -20,10 +20,14 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
     Navigator.pushReplacementNamed(context, '/');
   }
 
-  bool hasSelected() {
-    if (currentGroupGuid.currentGroupName() == "") return false;
-    if (currentGroupGuid.currentGroupNameAlt() == "") return false;
-    return true;
+  void hasSelected() {
+    if (currentGroupGuid.currentGroupName() == "") {
+      showError();
+    } else {
+      currentGroupGuid.setMainGroup(currentGroupGuid.currentGroupGuid(),
+          currentGroupGuid.currentGroupName());
+      Navigator.pushReplacementNamed(context, '/');
+    }
   }
 
   void showError() {
@@ -73,7 +77,7 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                       Expanded(
                           child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                        child: OutlinedButton(
+                        child: FilledButton.tonal(
                             onPressed: () {
                               showDialog<bool>(
                                 context: context,
@@ -125,58 +129,66 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
                       )),
                       Expanded(
                           child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                        child: OutlinedButton(
-                            onPressed: () {
-                              showDialog<bool>(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                  title: const Text('Välj din klass'),
-                                  content: FutureBuilder<Groups>(
-                                      future: futureGroups,
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot<Groups> snapshot) {
-                                        if (snapshot.data != null) {
-                                          return SingleChildScrollView(
-                                              child: Column(
-                                            children: [
-                                              for (var item in snapshot
-                                                  .data!.data.classes)
-                                                RadioListTile(
-                                                  activeColor: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary,
-                                                  title: Text(item.groupName),
-                                                  value: item.groupGuid,
-                                                  groupValue: currentGroupGuid
-                                                      .currentGroupGuidAlt(),
-                                                  onChanged: (value) {
-                                                    currentGroupGuid
-                                                        .setGroupAlt(value!,
-                                                            item.groupName);
-                                                    setState(() {});
-                                                  },
-                                                )
-                                            ],
-                                          ));
-                                        } else {
-                                          return Text("");
-                                        }
-                                      }),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: const Text('OK'),
+                              padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                              child: FilledButton.tonal(
+                                onPressed: () {
+                                  showDialog<bool>(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                      title: const Text('Välj din klass'),
+                                      content: FutureBuilder<Groups>(
+                                          future: futureGroups,
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<Groups> snapshot) {
+                                            if (snapshot.data != null) {
+                                              return SingleChildScrollView(
+                                                  child: Column(
+                                                children: [
+                                                  for (var item in snapshot
+                                                      .data!.data.classes)
+                                                    ListTile(
+                                                      leading: Checkbox(
+                                                        value: currentGroupGuid
+                                                            .currentGroupGuidFavorites()
+                                                            .contains(
+                                                                item.groupGuid),
+                                                        onChanged:
+                                                            (bool? selected) {
+                                                          if (selected!) {
+                                                            currentGroupGuid
+                                                                .addGroupFavorite(
+                                                                    item.groupGuid,
+                                                                    item.groupName);
+                                                          } else {
+                                                            currentGroupGuid
+                                                                .removeGroupFavorite(
+                                                                    item.groupGuid);
+                                                          }
+                                                          setState(() {});
+                                                        },
+                                                      ),
+                                                      title:
+                                                          Text(item.groupName),
+                                                    )
+                                                ],
+                                              ));
+                                            } else {
+                                              return Text("");
+                                            }
+                                          }),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              );
-                            },
-                            child: Text(
-                                currentGroupGuid.currentGroupNameAlt() == ""
-                                    ? "Alternativ klass"
-                                    : currentGroupGuid.currentGroupNameAlt())),
-                      ))
+                                  );
+                                },
+                                child: Text("Favoritklasser"),
+                              )))
                     ],
                   ),
                 )
@@ -188,11 +200,11 @@ class _MyOnboardingPageState extends State<MyOnboardingPage> {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(64.0),
-                  child: ElevatedButton(
+                  child: FilledButton(
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
-                    onPressed: hasSelected() ? homeScreen : showError,
+                    onPressed: hasSelected,
                     child: const Text("Börja använda appen!"),
                   ),
                 ),

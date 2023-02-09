@@ -36,7 +36,7 @@ class _SettingsState extends State<SettingsPage> {
             subtitle: const Text("Anpassa utseendet"),
             children: <Widget>[
               ListTile(
-                  title: ElevatedButton(
+                  title: FilledButton.tonal(
                 onPressed: () {
                   currentTheme.switchTheme();
                 },
@@ -44,7 +44,7 @@ class _SettingsState extends State<SettingsPage> {
               )),
               Platform.isAndroid
                   ? ListTile(
-                      title: ElevatedButton(
+                      title: FilledButton.tonal(
                       onPressed: () {
                         currentTheme.switchThemeDynamic();
                       },
@@ -86,7 +86,7 @@ class _SettingsState extends State<SettingsPage> {
                         title: Center(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                        child: ElevatedButton(
+                        child: FilledButton.tonal(
                           child: const Text("Logga ut från ditt Google konto"),
                           onPressed: () =>
                               {currentLoginStatus.setLoginStatus("logout")},
@@ -137,7 +137,7 @@ class _GroupSelectorState extends State<GroupSelector> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-            child: ElevatedButton(
+            child: FilledButton.tonal(
                 onPressed: () {
                   showDialog<bool>(
                     context: context,
@@ -160,8 +160,13 @@ class _GroupSelectorState extends State<GroupSelector> {
                                       groupValue:
                                           currentGroupGuid.currentGroupGuid(),
                                       onChanged: (value) {
+                                        currentGroupGuid.updateMainGroup(
+                                            value!,
+                                            item.groupName,
+                                            currentGroupGuid
+                                                .currentGroupGuid());
                                         currentGroupGuid.setGroup(
-                                            value!, item.groupName);
+                                            value, item.groupName);
                                         setState(() {});
                                       },
                                     )
@@ -188,54 +193,58 @@ class _GroupSelectorState extends State<GroupSelector> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-            child: ElevatedButton(
-                onPressed: () {
-                  showDialog<bool>(
-                    context: context,
-                    builder: (BuildContext context) => AlertDialog(
-                      title: const Text('Välj alternativ klass'),
-                      content: FutureBuilder<Groups>(
-                          future: futureGroups,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<Groups> snapshot) {
-                            if (snapshot.data != null) {
-                              return SingleChildScrollView(
-                                  child: Column(
-                                children: [
-                                  for (var item in snapshot.data!.data.classes)
-                                    RadioListTile(
-                                      activeColor:
-                                          Theme.of(context).colorScheme.primary,
-                                      title: Text(item.groupName),
-                                      value: item.groupGuid,
-                                      groupValue: currentGroupGuid
-                                          .currentGroupGuidAlt(),
-                                      onChanged: (value) {
-                                        currentGroupGuid.setGroupAlt(
-                                            value!, item.groupName);
+            child: FilledButton.tonal(
+              onPressed: () {
+                showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text('Välj favoritklasser'),
+                    content: FutureBuilder<Groups>(
+                        future: futureGroups,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<Groups> snapshot) {
+                          if (snapshot.data != null) {
+                            return SingleChildScrollView(
+                                child: Column(
+                              children: [
+                                for (var item in snapshot.data!.data.classes)
+                                  ListTile(
+                                    leading: Checkbox(
+                                      value: currentGroupGuid
+                                          .currentGroupGuidFavorites()
+                                          .contains(item.groupGuid),
+                                      onChanged: (bool? selected) {
+                                        if (selected!) {
+                                          currentGroupGuid.addGroupFavorite(
+                                              item.groupGuid, item.groupName);
+                                        } else {
+                                          currentGroupGuid.removeGroupFavorite(
+                                              item.groupGuid);
+                                        }
                                         setState(() {});
                                       },
-                                    )
-                                ],
-                              ));
-                            } else {
-                              return Text("");
-                            }
-                          }),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                child: Text(currentGroupGuid.currentGroupNameAlt() == ""
-                    ? "Alternativ klass"
-                    : currentGroupGuid.currentGroupNameAlt())),
+                                    ),
+                                    title: Text(item.groupName),
+                                  )
+                              ],
+                            ));
+                          } else {
+                            return Text("");
+                          }
+                        }),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              child: Text("Favoritklasser"),
+            ),
           ),
-        ),
+        )
       ],
     );
   }

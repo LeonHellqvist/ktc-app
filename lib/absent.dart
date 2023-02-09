@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/sheets/v4.dart' as api;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:ktc_app/loginStatus.dart';
 
 import 'config.dart';
@@ -158,10 +159,16 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: _handleSignIn,
-                    child: const Text('LOGGA IN'),
-                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SignInButton(
+                      Buttons.Google,
+                      text: "Logga in med Google",
+                      onPressed: () {
+                        _handleSignIn();
+                      },
+                    ),
+                  )
                 ],
               ),
             );
@@ -238,33 +245,3 @@ class _AbsentViewState extends State<AbsentView>
     );
   }
 }
-
-
-
-/* if (user != null) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          ListTile(
-            leading: GoogleUserCircleAvatar(
-              identity: user,
-            ),
-            title: Text(user.displayName ?? ''),
-            subtitle: Text(user.email),
-          ),
-          const Text('Signed in successfully.'),
-          Text(_contactText),
-        ],
-      );
-    } else {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          const Text('You are not currently signed in.'),
-          ElevatedButton(
-            onPressed: _handleSignIn,
-            child: const Text('SIGN IN'),
-          ),
-        ],
-      );
-    } */
