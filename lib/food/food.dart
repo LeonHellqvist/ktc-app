@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:ktc_app/ad_component.dart';
+import 'package:ktc_app/ad_helper.dart';
 import 'package:week_of_year/week_of_year.dart';
 import 'package:ktc_app/throttler.dart';
 
@@ -20,9 +24,10 @@ Future<Food> fetchFood(int week, Dio dio) async {
 }
 
 class FoodPage extends StatefulWidget {
-  const FoodPage({super.key, required this.dio});
+  const FoodPage({super.key, required this.dio, required this.showAds});
 
   final Dio dio;
+  final bool showAds;
 
   @override
   State<FoodPage> createState() => _FoodPageState();
@@ -58,30 +63,9 @@ class _FoodPageState extends State<FoodPage>
       vsync: this,
     );
     _tabController!.addListener(() {
-      // When the tab controller's value is updated, make sure to update the
-      // tab index value, which is state restorable.
-
       updateState(_tabController!.index);
-      print("changed");
-
-      /* throttler.run(() {
-        
-      }); */
+      log("changed");
     });
-    /* _tabController!.animation!.addListener(() {
-      // When the tab controller's value is updated, make sure to update the
-      // tab index value, which is state restorable.
-      print(_tabController!.animation!.value);
-      if (tabIndex.value != (_tabController!.animation!.value).round()) {
-        updateState((_tabController!.animation!.value).round());
-        print("animation");
-
-        /* throttler.run(() {
-          
-        }); */
-      }
-      // TODO: fixa att man kan välja klass
-    }); */
     super.initState();
   }
 
@@ -163,15 +147,23 @@ class _FoodPageState extends State<FoodPage>
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          for (final tab in tabs)
-            TabViewComponent(
-              tab: tab,
-              tabIndex: tabIndex.value,
-              dio: widget.dio,
-            )
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                for (final tab in tabs)
+                  TabViewComponent(
+                    tab: tab,
+                    tabIndex: tabIndex.value,
+                    dio: widget.dio,
+                  )
+              ],
+            ),
+          ),
+          AdComponent(
+              adUnit: AdHelper.foodBannerAdUnit, showAds: widget.showAds)
         ],
       ),
     );

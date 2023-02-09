@@ -3,10 +3,13 @@ import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-import 'package:ktc_app/groupGuid.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:ktc_app/ad_component.dart';
+import 'package:ktc_app/group_guid.dart';
 import 'package:week_of_year/week_of_year.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 import 'package:dio/dio.dart';
+import 'package:ktc_app/ad_helper.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../config.dart';
 
@@ -19,9 +22,8 @@ Future<Schedule> fetchSchedule(String groupGuid, int scheduleDay, int week,
   String url =
       'https://tools-proxy.leonhellqvist.workers.dev/?service=skola24&subService=getLessons&hostName=katrineholm.skola24.se&unitGuid=ZGI0OGY4MjktMmYzNy1mMmU3LTk4NmItYzgyOWViODhmNzhj&groupGuid=$groupGuid&year=$year&week=$week&scheduleDay=$scheduleDay&lines=true&width=$width&height=$height';
 
-  print(url);
+  log(url);
 
-  // TODO: Remove this
   final response = await dio.getUri(Uri.parse(url));
 
   if (response.statusCode == 200 || response.statusCode == 304) {
@@ -38,9 +40,11 @@ class SchedulePage extends StatefulWidget {
     super.key,
     required this.currentGroupGuid,
     required this.dio,
+    required this.showAds,
   });
   final MyGroupGuid currentGroupGuid;
   final Dio dio;
+  final bool showAds;
 
   @override
   State<SchedulePage> createState() => _SchedulePageState();
@@ -58,8 +62,10 @@ class _SchedulePageState extends State<SchedulePage>
 
   bool altSchedule = false;
 
+  late AdSize adSize;
+
   bool _scrollingEnabled = true;
-  TransformationController _transformationController =
+  final TransformationController _transformationController =
       TransformationController();
   @override
   void initState() {
@@ -74,7 +80,6 @@ class _SchedulePageState extends State<SchedulePage>
       setState(() {
         tabIndex = _tabController!.index;
       });
-      // TODO: fixa att man kan välja klass
     });
     _tabController!.animation!.addListener(() {
       // When the tab controller's value is updated, make sure to update the
@@ -84,7 +89,6 @@ class _SchedulePageState extends State<SchedulePage>
           tabIndex = (_tabController!.animation!.value).round();
         });
       }
-      // TODO: fixa att man kan välja klass
     });
     Future.delayed(Duration.zero, () {
       setState(() {
@@ -116,121 +120,140 @@ class _SchedulePageState extends State<SchedulePage>
           ],
         ),
       ),
-      floatingActionButton: SizedBox(
-        width: 170,
-        child: FloatingActionButton(
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                    title: Text('Byt till en favorit'),
-                    content: Container(
-                      height: 200.0,
-                      width: 150.0,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount:
-                            currentGroupGuid.currentGroupGuidFavorites().length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ListTile(
-                              title: FilledButton.tonal(
-                            child: Text(currentGroupGuid
-                                .currentGroupNameFavorites()[index]),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.fromLTRB(0, 0, 0, (widget.showAds ? 60 : 0)),
+        child: SizedBox(
+          width: 170,
+          child: FloatingActionButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                      title: const Text('Byt till en favorit'),
+                      content: SizedBox(
+                        height: 175.0,
+                        width: 150.0,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: currentGroupGuid
+                              .currentGroupGuidFavorites()
+                              .length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ListTile(
+                                title: FilledButton.tonal(
+                              child: Text(currentGroupGuid
+                                  .currentGroupNameFavorites()[index]),
+                              onPressed: () {
+                                currentGroupGuid.setGroup(
+                                    currentGroupGuid
+                                        .currentGroupGuidFavorites()[index],
+                                    currentGroupGuid
+                                        .currentGroupNameFavorites()[index]);
+                                setState(() {
+                                  altSchedule = !altSchedule;
+                                });
+                                Navigator.pop(context);
+                              },
+                            ));
+                          },
+                        ),
+                      )));
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(
+                    width: 126,
+                    child: Row(
+                      children: [
+                        IconButton(
                             onPressed: () {
-                              currentGroupGuid.setGroup(
-                                  currentGroupGuid
-                                      .currentGroupGuidFavorites()[index],
-                                  currentGroupGuid
-                                      .currentGroupNameFavorites()[index]);
                               setState(() {
-                                altSchedule = !altSchedule;
+                                selectedWeek -= 1;
                               });
-                              Navigator.pop(context);
                             },
-                          ));
-                        },
-                      ),
-                    )));
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SizedBox(
-                  width: 126,
-                  child: Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedWeek -= 1;
-                            });
-                          },
-                          icon: const Icon(Icons.arrow_left)),
-                      Expanded(
-                          child: Text(
-                        "v.$selectedWeek",
-                        textAlign: TextAlign.center,
-                      )),
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedWeek += 1;
-                            });
-                          },
-                          icon: const Icon(Icons.arrow_right))
-                    ],
-                  )),
-              const Expanded(
-                  child: Padding(
-                padding: EdgeInsets.fromLTRB(0, 0, 18, 0),
-                child: SizedBox(width: 20, child: Icon(Icons.people)),
-              )),
-            ],
+                            icon: const Icon(Icons.arrow_left)),
+                        Expanded(
+                            child: Text(
+                          "v.$selectedWeek",
+                          textAlign: TextAlign.center,
+                        )),
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedWeek += 1;
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_right))
+                      ],
+                    )),
+                const Expanded(
+                    child: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 18, 0),
+                  child: SizedBox(width: 20, child: Icon(Icons.people)),
+                )),
+              ],
+            ),
           ),
         ),
       ),
-      body: Builder(builder: (context1) {
-        double fullHeight = MediaQuery.of(context1).size.height;
-        final appBar = AppBar(); //Need to instantiate this here to get its size
-        double appBarHeight =
-            appBar.preferredSize.height + MediaQuery.of(context).padding.top;
-        /* height = fullHeight.toInt() - appBarHeight.toInt(); */
-        height = fullHeight.toInt() - appBarHeight.toInt() * 2 - 40;
-        width = MediaQuery.of(context).size.width.toInt();
-        log(fullHeight.toString());
-        log(appBarHeight.toString());
-        log(height.toString());
-        return TabBarView(
-          physics: _scrollingEnabled
-              ? const ClampingScrollPhysics()
-              : const NeverScrollableScrollPhysics(),
-          controller: _tabController,
-          children: [
-            for (final tab in tabs)
-              InteractiveViewer(
-                  transformationController: _transformationController,
-                  onInteractionStart: (scale) {
-                    setState(() => _scrollingEnabled = false);
-                  },
-                  onInteractionEnd: (details) {
-                    if (_transformationController.value.getMaxScaleOnAxis() ==
-                        1) {
-                      setState(() => _scrollingEnabled = true);
-                    }
-                  },
-                  child: TabViewComponent(
-                    tab: tab,
-                    tabIndex: tabIndex,
-                    currentGroupGuid: currentGroupGuid,
-                    height: height,
-                    width: width,
-                    altSchedule: altSchedule,
-                    dio: widget.dio,
-                    selectedWeek: selectedWeek,
-                  ))
-          ],
-        );
-      }),
+      body: Column(
+        children: [
+          Expanded(
+            child: Builder(builder: (context1) {
+              double fullHeight = MediaQuery.of(context1).size.height;
+              final appBar =
+                  AppBar(); //Need to instantiate this here to get its size
+              double appBarHeight = appBar.preferredSize.height +
+                  MediaQuery.of(context).padding.top;
+              /* height = fullHeight.toInt() - appBarHeight.toInt(); */
+              height = fullHeight.toInt() -
+                  appBarHeight.toInt() * 2 -
+                  40 -
+                  (widget.showAds ? 60 : 0);
+              width = MediaQuery.of(context).size.width.toInt();
+              log(fullHeight.toString());
+              log(appBarHeight.toString());
+              log(height.toString());
+              return TabBarView(
+                physics: _scrollingEnabled
+                    ? const ClampingScrollPhysics()
+                    : const NeverScrollableScrollPhysics(),
+                controller: _tabController,
+                children: [
+                  for (final tab in tabs)
+                    InteractiveViewer(
+                        transformationController: _transformationController,
+                        onInteractionStart: (scale) {
+                          setState(() => _scrollingEnabled = false);
+                        },
+                        onInteractionEnd: (details) {
+                          if (_transformationController.value
+                                  .getMaxScaleOnAxis() ==
+                              1) {
+                            setState(() => _scrollingEnabled = true);
+                          }
+                        },
+                        child: TabViewComponent(
+                          tab: tab,
+                          tabIndex: tabIndex,
+                          currentGroupGuid: currentGroupGuid,
+                          height: height,
+                          width: width,
+                          altSchedule: altSchedule,
+                          dio: widget.dio,
+                          selectedWeek: selectedWeek,
+                        ))
+                ],
+              );
+            }),
+          ),
+          AdComponent(
+            adUnit: AdHelper.scheduleBannerAdUnit,
+            showAds: widget.showAds,
+          )
+        ],
+      ),
     );
   }
 }

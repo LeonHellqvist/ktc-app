@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'dart:io';
@@ -66,6 +68,7 @@ class Caller {
     try {
       return dio.get(url, options: options);
     } on DioError catch (err) {
+      log(err.toString());
       return Future.value(null);
     }
   }

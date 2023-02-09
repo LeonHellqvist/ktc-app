@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:animations/animations.dart';
 import 'package:ktc_app/caller.dart';
@@ -11,7 +14,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 import 'config.dart';
-import 'dart:io';
 
 import 'schedule/schedule.dart';
 import 'food/food.dart';
@@ -19,13 +21,26 @@ import 'absent.dart';
 import 'settings/settings.dart';
 import 'onboarding.dart';
 
-void main() async {
+Future<void> main() async {
   await Hive.initFlutter();
   box = await Hive.openBox('database');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  // Pass all uncaught "fatal" errors from the framework to Crashlytics
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  await Firebase.initializeApp();
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
   await loadImage(const AssetImage('assets/images/ktcBuilding.png'));
   runApp(const MyApp());
 }
@@ -91,6 +106,7 @@ class _MyAppState extends State<MyApp> {
 
       return MaterialApp(
         title: 'KTC Appen',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           brightness: Brightness.light,
           colorScheme: lightColorScheme,
@@ -133,6 +149,11 @@ class MyHomePage extends StatefulWidget {
 
   final String title;
 
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    // TODO: Initialize Google Mobile Ads SDK
+    return MobileAds.instance.initialize();
+  }
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -147,8 +168,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late final List<Widget> pageList;
 
+  late bool showAds;
+
   @override
   void initState() {
+    showAds = true;
     cacheStore = HiveCacheStore(null);
     cacheOptions = CacheOptions(
       policy: CachePolicy.forceCache,
@@ -169,9 +193,13 @@ class _MyHomePageState extends State<MyHomePage> {
       dio: dio,
     );
     pageList = <Widget>[
-      SchedulePage(currentGroupGuid: currentGroupGuid, dio: dio),
-      FoodPage(dio: dio),
-      AbsentPage(currentLoginStatus: currentLoginStatus),
+      SchedulePage(
+        currentGroupGuid: currentGroupGuid,
+        dio: dio,
+        showAds: showAds,
+      ),
+      FoodPage(dio: dio, showAds: showAds),
+      AbsentPage(currentLoginStatus: currentLoginStatus, showAds: showAds),
       SettingsPage(
           currentGroupGuid: currentGroupGuid,
           currentLoginStatus: currentLoginStatus)
@@ -190,8 +218,6 @@ class _MyHomePageState extends State<MyHomePage> {
     cacheStore.close();
     super.dispose();
   }
-
-  final _pageList = <Widget>[];
 
   @override
   Widget build(BuildContext context) {

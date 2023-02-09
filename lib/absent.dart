@@ -1,10 +1,17 @@
+import 'dart:developer';
+import 'dart:io' show Platform;
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/sheets/v4.dart' as api;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:ktc_app/loginStatus.dart';
+import 'package:ktc_app/ad_component.dart';
+import 'package:ktc_app/ad_helper.dart';
+import 'package:ktc_app/login_status.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'config.dart';
 
@@ -18,17 +25,22 @@ extension StringCasingExtension on String {
 }
 
 class AbsentPage extends StatefulWidget {
-  const AbsentPage({super.key, required MyLoginStatus currentLoginStatus});
+  const AbsentPage(
+      {super.key,
+      required MyLoginStatus currentLoginStatus,
+      required this.showAds});
+
+  final bool showAds;
 
   @override
   State<AbsentPage> createState() => _AbsentPageState();
 }
 
 class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
-  final GoogleSignIn _googleSignIn = kIsWeb
+  final GoogleSignIn _googleSignIn = Platform.isAndroid
       ? GoogleSignIn(
           clientId:
-              "114566651471-f1h56f08a47mbmvol2iok2v7jg8d453d.apps.googleusercontent.com",
+              "114566651471-2ne2tukjh0r1t2cn6blqmulj0e8tk49j.apps.googleusercontent.com",
           scopes: <String>[api.SheetsApi.spreadsheetsReadonlyScope],
         )
       : GoogleSignIn(
@@ -102,7 +114,7 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
     try {
       await _googleSignIn.signIn();
     } catch (error) {
-      print(error);
+      log(error.toString());
     }
   }
 
@@ -122,63 +134,132 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
           ],
         ),
       ),
-      body: LayoutBuilder(builder: (context, constraints) {
-        if (user != null) {
-          if (absent != null) {
-            return TabBarView(controller: _tabController, children: [
-              for (final days in absent!)
-                RefreshIndicator(
-                    onRefresh: _pullRefresh, child: AbsentView(days: days))
-            ]);
-          } else {
-            return const Center(
-                child: CircularProgressIndicator(
-              strokeWidth: 8,
-            ));
-          }
-        } else {
-          if (loginStatus == "out") {
-            print("out");
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
+      body: Column(
+        children: [
+          Expanded(
+            child: LayoutBuilder(builder: (context, constraints) {
+              if (user != null) {
+                if (absent != null) {
+                  return TabBarView(controller: _tabController, children: [
+                    for (final days in absent!)
+                      RefreshIndicator(
+                          onRefresh: _pullRefresh,
+                          child: AbsentView(days: days))
+                  ]);
+                } else {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    strokeWidth: 8,
+                  ));
+                }
+              } else {
+                if (loginStatus == "out") {
+                  log("out");
+                  return Center(
                     child: Column(
-                      children: const [
-                        Text(
-                            style: TextStyle(fontSize: 16),
-                            textAlign: TextAlign.center,
-                            'För att se frånvarande personal måste du\nlogga in med ditt skolkonto!'),
-                        Text(
-                            style: TextStyle(fontSize: 12),
-                            textAlign: TextAlign.center,
-                            'Du måste även godkänna att appen kan se alla dina kalkylark men appen använder bara frånvarande personal dokumentet'),
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    const Text(
+                                        style: TextStyle(fontSize: 16),
+                                        textAlign: TextAlign.center,
+                                        'För att se frånvarande personal måste du\nlogga in med ditt skolkonto!'),
+                                    RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(children: [
+                                          const TextSpan(
+                                              style: TextStyle(fontSize: 12),
+                                              text:
+                                                  "Du måste godkänna att appen kan se alla dina "),
+                                          TextSpan(
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
+                                              text: "Google Kalkylark",
+                                              recognizer: TapGestureRecognizer()
+                                                ..onTap = () async {
+                                                  var uri = Uri.parse(
+                                                      "https://www.google.com/intl/sv/sheets/about/");
+                                                  if (await canLaunchUrl(uri)) {
+                                                    await launchUrl(uri);
+                                                  } else {
+                                                    throw 'Could not launch $uri';
+                                                  }
+                                                }),
+                                          const TextSpan(
+                                              style: TextStyle(fontSize: 12),
+                                              text:
+                                                  " men appen använder bara \"Frånvarande Personal DU/KTC\" kalkylarket")
+                                        ]))
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: SignInButton(
+                                  Buttons.GoogleDark,
+                                  text: "Logga in med Google",
+                                  onPressed: () {
+                                    _handleSignIn();
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: SizedBox(
+                            height: 20,
+                            child: RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(children: [
+                                  TextSpan(
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                      text: "Integritetspolicy",
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+                                          var uri = Uri.parse(
+                                              "https://leonhellqvist.com/ktc-appen/privacy-policy.html");
+                                          if (await canLaunchUrl(uri)) {
+                                            await launchUrl(uri);
+                                          } else {
+                                            throw 'Could not launch $uri';
+                                          }
+                                        }),
+                                ])),
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SignInButton(
-                      Buttons.Google,
-                      text: "Logga in med Google",
-                      onPressed: () {
-                        _handleSignIn();
-                      },
-                    ),
-                  )
-                ],
-              ),
-            );
-          }
-          return const Center(
-              child: CircularProgressIndicator(
-            strokeWidth: 8,
-          ));
-        }
-      }),
+                  );
+                }
+                return const Center(
+                    child: CircularProgressIndicator(
+                  strokeWidth: 8,
+                ));
+              }
+            }),
+          ),
+          AdComponent(
+              adUnit: AdHelper.absentBannerAdUnit, showAds: widget.showAds)
+        ],
+      ),
     );
   }
 
@@ -202,7 +283,7 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
 class AbsentView extends StatefulWidget {
   const AbsentView({super.key, required this.days});
 
-  final days;
+  final List<Object?> days;
   @override
   State<AbsentView> createState() => _AbsentViewState();
 }
