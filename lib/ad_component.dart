@@ -71,7 +71,10 @@ class _AdComponentState extends State<AdComponent> {
       );
     }
     if (_anchoredAdaptiveAd == null) {
-      return const SizedBox(height: 0, child: Text(""));
+      return SizedBox(
+        height: 50,
+        width: MediaQuery.of(context).size.width,
+      );
     } else {
       return SizedBox(
           height: _anchoredAdaptiveAd!.size.height.toDouble(),
