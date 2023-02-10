@@ -42,7 +42,7 @@ class _PrimarySelectorState extends State<PrimarySelector> {
                         clipBehavior: Clip.antiAlias,
                         child: Scaffold(
                           appBar: AppBar(
-                              title: const Text("Favorit scheman"),
+                              title: const Text("Primärt schema"),
                               bottom: const TabBar(
                                 tabs: <Widget>[
                                   Tab(
