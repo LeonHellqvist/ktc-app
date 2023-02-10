@@ -263,20 +263,25 @@ class _SchedulePageState extends State<SchedulePage>
 
 Color _getColorFromHex(String hexColor, bool text, context) {
   var color = TinyColor.fromString(hexColor);
+  if (color.color == TinyColor.fromString("#808080").color) {
+    return TinyColor.fromColor(Theme.of(context).colorScheme.background)
+        .desaturate(10)
+        .color;
+  }
+  if (color.color == TinyColor.fromString("#cccccc").color) {
+    return Theme.of(context).colorScheme.background.darken(4);
+  }
+  if (color.color == Colors.white) {
+    return Theme.of(context).colorScheme.background;
+  }
   if (currentTheme.currentTheme() == ThemeMode.light) {
     return color.color;
   }
   if (text) {
     return Colors.white;
   }
-  if (color.color == Colors.white) {
-    return Theme.of(context).colorScheme.background;
-  }
   if (color.color == Colors.black) {
     return const Color.fromARGB(75, 255, 255, 255);
-  }
-  if (color.color == TinyColor.fromString("#cccccc").color) {
-    return Colors.black12;
   }
   color.darken(15);
   color.desaturate(60);
