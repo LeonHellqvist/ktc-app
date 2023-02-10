@@ -16,11 +16,16 @@ import '../config.dart';
 import 'models.dart';
 
 Future<Schedule> fetchSchedule(String groupGuid, int scheduleDay, int week,
-    int width, int height, Dio dio) async {
+    int width, int height, Dio dio, bool dayView) async {
   int year = DateTime.now().year;
 
   String selectionType = groupGuid.split(":")[1];
   String requestGroupGuid = groupGuid.split(":")[0];
+
+  if (!dayView) {
+    scheduleDay = 0;
+    height += 60;
+  }
 
   String url =
       'https://tools-proxy.leonhellqvist.workers.dev/?service=skola24&subService=getLessons&hostName=katrineholm.skola24.se&unitGuid=ZGI0OGY4MjktMmYzNy1mMmU3LTk4NmItYzgyOWViODhmNzhj&groupGuid=$requestGroupGuid&year=$year&week=$week&scheduleDay=$scheduleDay&selectionType=$selectionType&lines=true&width=$width&height=$height';
@@ -64,6 +69,8 @@ class _SchedulePageState extends State<SchedulePage>
   int selectedWeek = DateTime.now().weekOfYear;
 
   bool altSchedule = false;
+
+  bool dayView = true;
 
   late AdSize adSize;
 
@@ -115,13 +122,27 @@ class _SchedulePageState extends State<SchedulePage>
       appBar: AppBar(
         primary: true,
         title: Text("Schema ${currentGroupGuid.currentGroupName()}"),
-        bottom: TabBar(
-          controller: _tabController,
-          isScrollable: false,
-          tabs: [
-            for (final tab in tabs) Tab(text: tab),
-          ],
-        ),
+        actions: <Widget>[
+          IconButton(
+            icon: dayView
+                ? const Icon(Icons.view_week_rounded)
+                : const Icon(Icons.view_day_rounded),
+            onPressed: () {
+              setState(() {
+                dayView = !dayView;
+              });
+            },
+          ),
+        ],
+        bottom: dayView
+            ? TabBar(
+                controller: _tabController,
+                isScrollable: false,
+                tabs: [
+                  for (final tab in tabs) Tab(text: tab),
+                ],
+              )
+            : null,
       ),
       floatingActionButton: Padding(
         padding: EdgeInsets.fromLTRB(0, 0, 0, (widget.showAds ? 60 : 0)),
@@ -219,9 +240,11 @@ class _SchedulePageState extends State<SchedulePage>
               log(appBarHeight.toString());
               log(height.toString());
               return TabBarView(
-                physics: _scrollingEnabled
-                    ? const ClampingScrollPhysics()
-                    : const NeverScrollableScrollPhysics(),
+                physics: (dayView
+                    ? _scrollingEnabled
+                        ? const ClampingScrollPhysics()
+                        : const NeverScrollableScrollPhysics()
+                    : const NeverScrollableScrollPhysics()),
                 controller: _tabController,
                 children: [
                   for (final tab in tabs)
@@ -246,6 +269,7 @@ class _SchedulePageState extends State<SchedulePage>
                           altSchedule: altSchedule,
                           dio: widget.dio,
                           selectedWeek: selectedWeek,
+                          dayView: dayView,
                         ))
                 ],
               );
@@ -418,16 +442,18 @@ class ScheduleComponent extends CustomPainter {
 }
 
 class TabViewComponent extends StatefulWidget {
-  const TabViewComponent(
-      {super.key,
-      required this.tab,
-      required this.tabIndex,
-      required this.currentGroupGuid,
-      required this.height,
-      required this.width,
-      required this.altSchedule,
-      required this.dio,
-      required this.selectedWeek});
+  const TabViewComponent({
+    super.key,
+    required this.tab,
+    required this.tabIndex,
+    required this.currentGroupGuid,
+    required this.height,
+    required this.width,
+    required this.altSchedule,
+    required this.dio,
+    required this.selectedWeek,
+    required this.dayView,
+  });
   final String tab;
   final int tabIndex;
   final MyGroupGuid currentGroupGuid;
@@ -436,6 +462,7 @@ class TabViewComponent extends StatefulWidget {
   final bool altSchedule;
   final Dio dio;
   final int selectedWeek;
+  final bool dayView;
 
   @override
   State<TabViewComponent> createState() => _TabViewComponentState();
@@ -451,12 +478,14 @@ class _TabViewComponentState extends State<TabViewComponent> {
     if (currentGroupGuid.currentGroupGuid() != "") {
       setState(() {
         futureSchedule = fetchSchedule(
-            currentGroupGuid.currentGroupGuid(),
-            dayMap[widget.tab]! + 1,
-            widget.selectedWeek,
-            widget.width,
-            widget.height,
-            widget.dio);
+          currentGroupGuid.currentGroupGuid(),
+          dayMap[widget.tab]! + 1,
+          widget.selectedWeek,
+          widget.width,
+          widget.height,
+          widget.dio,
+          widget.dayView,
+        );
       });
     }
     super.initState();
@@ -465,15 +494,18 @@ class _TabViewComponentState extends State<TabViewComponent> {
   @override
   void didUpdateWidget(oldWidget) {
     if ((oldWidget.altSchedule != widget.altSchedule) ||
-        (oldWidget.selectedWeek != widget.selectedWeek)) {
+        (oldWidget.selectedWeek != widget.selectedWeek ||
+            (oldWidget.dayView != widget.dayView))) {
       setState(() {
         futureSchedule = fetchSchedule(
-            currentGroupGuid.currentGroupGuid(),
-            dayMap[widget.tab]! + 1,
-            widget.selectedWeek,
-            widget.width,
-            widget.height,
-            widget.dio);
+          currentGroupGuid.currentGroupGuid(),
+          dayMap[widget.tab]! + 1,
+          widget.selectedWeek,
+          widget.width,
+          widget.height,
+          widget.dio,
+          widget.dayView,
+        );
       });
     }
     super.didUpdateWidget(oldWidget);
