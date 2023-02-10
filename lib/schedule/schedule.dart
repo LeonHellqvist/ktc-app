@@ -19,8 +19,11 @@ Future<Schedule> fetchSchedule(String groupGuid, int scheduleDay, int week,
     int width, int height, Dio dio) async {
   int year = DateTime.now().year;
 
+  String selectionType = groupGuid.split(":")[1];
+  String requestGroupGuid = groupGuid.split(":")[0];
+
   String url =
-      'https://tools-proxy.leonhellqvist.workers.dev/?service=skola24&subService=getLessons&hostName=katrineholm.skola24.se&unitGuid=ZGI0OGY4MjktMmYzNy1mMmU3LTk4NmItYzgyOWViODhmNzhj&groupGuid=$groupGuid&year=$year&week=$week&scheduleDay=$scheduleDay&lines=true&width=$width&height=$height';
+      'https://tools-proxy.leonhellqvist.workers.dev/?service=skola24&subService=getLessons&hostName=katrineholm.skola24.se&unitGuid=ZGI0OGY4MjktMmYzNy1mMmU3LTk4NmItYzgyOWViODhmNzhj&groupGuid=$requestGroupGuid&year=$year&week=$week&scheduleDay=$scheduleDay&selectionType=$selectionType&lines=true&width=$width&height=$height';
 
   log(url);
 
