@@ -123,41 +123,46 @@ class _SchedulePageState extends State<SchedulePage>
       floatingActionButton: Padding(
         padding: EdgeInsets.fromLTRB(0, 0, 0, (widget.showAds ? 60 : 0)),
         child: SizedBox(
-          width: 170,
+          width: currentGroupGuid.currentGroupGuidFavorites().length >= 2
+              ? 170
+              : 126,
           child: FloatingActionButton(
             onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                      title: const Text('Byt till en favorit'),
-                      content: SizedBox(
-                        height: 175.0,
-                        width: 150.0,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: currentGroupGuid
-                              .currentGroupGuidFavorites()
-                              .length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ListTile(
-                                title: FilledButton.tonal(
-                              child: Text(currentGroupGuid
-                                  .currentGroupNameFavorites()[index]),
-                              onPressed: () {
-                                currentGroupGuid.setGroup(
-                                    currentGroupGuid
-                                        .currentGroupGuidFavorites()[index],
-                                    currentGroupGuid
-                                        .currentGroupNameFavorites()[index]);
-                                setState(() {
-                                  altSchedule = !altSchedule;
-                                });
-                                Navigator.pop(context);
+              currentGroupGuid.currentGroupGuidFavorites().length >= 2
+                  ? showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                          title: const Text('Byt till en favorit'),
+                          content: SizedBox(
+                            height: 175.0,
+                            width: 150.0,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: currentGroupGuid
+                                  .currentGroupGuidFavorites()
+                                  .length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return ListTile(
+                                    title: FilledButton.tonal(
+                                  child: Text(currentGroupGuid
+                                      .currentGroupNameFavorites()[index]),
+                                  onPressed: () {
+                                    currentGroupGuid.setGroup(
+                                        currentGroupGuid
+                                            .currentGroupGuidFavorites()[index],
+                                        currentGroupGuid
+                                                .currentGroupNameFavorites()[
+                                            index]);
+                                    setState(() {
+                                      altSchedule = !altSchedule;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ));
                               },
-                            ));
-                          },
-                        ),
-                      )));
+                            ),
+                          )))
+                  : null;
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -187,11 +192,12 @@ class _SchedulePageState extends State<SchedulePage>
                             icon: const Icon(Icons.arrow_right))
                       ],
                     )),
-                const Expanded(
-                    child: Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0, 18, 0),
-                  child: SizedBox(width: 20, child: Icon(Icons.people)),
-                )),
+                if (currentGroupGuid.currentGroupGuidFavorites().length >= 2)
+                  const Expanded(
+                      child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 18, 0),
+                    child: SizedBox(width: 20, child: Icon(Icons.people)),
+                  ))
               ],
             ),
           ),
