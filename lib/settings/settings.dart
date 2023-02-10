@@ -238,24 +238,27 @@ class _GroupSelectorState extends State<GroupSelector> {
                                 child: Column(
                               children: [
                                 for (var item in snapshot.data!.data.classes)
-                                  ListTile(
-                                    leading: Checkbox(
-                                      value: currentGroupGuid
-                                          .currentGroupGuidFavorites()
-                                          .contains(item.groupGuid),
-                                      onChanged: (bool? selected) {
-                                        if (selected!) {
-                                          currentGroupGuid.addGroupFavorite(
-                                              item.groupGuid, item.groupName);
-                                        } else {
-                                          currentGroupGuid.removeGroupFavorite(
-                                              item.groupGuid);
-                                        }
-                                        setState(() {});
-                                      },
-                                    ),
-                                    title: Text(item.groupName),
-                                  )
+                                  if (item.groupName !=
+                                      currentGroupGuid.currentGroupName())
+                                    ListTile(
+                                      leading: Checkbox(
+                                        value: currentGroupGuid
+                                            .currentGroupGuidFavorites()
+                                            .contains(item.groupGuid),
+                                        onChanged: (bool? selected) {
+                                          if (selected!) {
+                                            currentGroupGuid.addGroupFavorite(
+                                                item.groupGuid, item.groupName);
+                                          } else {
+                                            currentGroupGuid
+                                                .removeGroupFavorite(
+                                                    item.groupGuid);
+                                          }
+                                          setState(() {});
+                                        },
+                                      ),
+                                      title: Text(item.groupName),
+                                    )
                               ],
                             ));
                           } else {
