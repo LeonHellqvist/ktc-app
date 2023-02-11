@@ -73,8 +73,13 @@ class _PrimarySelectorState extends State<PrimarySelector> {
                                             groupValue: currentGroupGuid
                                                 .currentGroupGuid(),
                                             onChanged: (value) {
+                                              currentGroupGuid.updateMainGroup(
+                                                  value!,
+                                                  item.groupName,
+                                                  currentGroupGuid
+                                                      .currentGroupGuid());
                                               currentGroupGuid.setGroup(
-                                                  value!, item.groupName);
+                                                  value, item.groupName);
                                               setState(() {});
                                             },
                                           )
@@ -99,12 +104,17 @@ class _PrimarySelectorState extends State<PrimarySelector> {
                                                 .colorScheme
                                                 .primary,
                                             title: Text(item.fullName),
-                                            value: "${item.personGuid}:0",
+                                            value: "${item.personGuid}:7",
                                             groupValue: currentGroupGuid
                                                 .currentGroupGuid(),
                                             onChanged: (value) {
+                                              currentGroupGuid.updateMainGroup(
+                                                  value!,
+                                                  item.id,
+                                                  currentGroupGuid
+                                                      .currentGroupGuid());
                                               currentGroupGuid.setGroup(
-                                                  value!, item.id);
+                                                  value, item.id);
                                               setState(() {});
                                             },
                                           )
