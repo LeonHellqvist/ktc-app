@@ -16,11 +16,19 @@ import '../config.dart';
 import 'models.dart';
 
 Future<Schedule> fetchSchedule(String groupGuid, int scheduleDay, int week,
-    int width, int height, Dio dio) async {
+    int width, int height, Dio dio, bool dayView) async {
   int year = DateTime.now().year;
 
+  String selectionType = groupGuid.split(":")[1];
+  String requestGroupGuid = groupGuid.split(":")[0];
+
+  if (!dayView) {
+    scheduleDay = 0;
+    height += 50;
+  }
+
   String url =
-      'https://tools-proxy.leonhellqvist.workers.dev/?service=skola24&subService=getLessons&hostName=katrineholm.skola24.se&unitGuid=ZGI0OGY4MjktMmYzNy1mMmU3LTk4NmItYzgyOWViODhmNzhj&groupGuid=$groupGuid&year=$year&week=$week&scheduleDay=$scheduleDay&lines=true&width=$width&height=$height';
+      'https://tools-proxy.leonhellqvist.workers.dev/?service=skola24&subService=getLessons&hostName=katrineholm.skola24.se&unitGuid=ZGI0OGY4MjktMmYzNy1mMmU3LTk4NmItYzgyOWViODhmNzhj&groupGuid=$requestGroupGuid&year=$year&week=$week&scheduleDay=$scheduleDay&selectionType=$selectionType&lines=true&width=$width&height=$height';
 
   log(url);
 
@@ -62,6 +70,10 @@ class _SchedulePageState extends State<SchedulePage>
 
   bool altSchedule = false;
 
+  bool dayView = true;
+
+  late ValueKey reDrawState;
+
   late AdSize adSize;
 
   bool _scrollingEnabled = true;
@@ -69,6 +81,7 @@ class _SchedulePageState extends State<SchedulePage>
       TransformationController();
   @override
   void initState() {
+    reDrawState = ValueKey("$dayView$selectedWeek$altSchedule");
     _tabController = TabController(
       initialIndex: tabIndex,
       length: 5,
@@ -112,13 +125,28 @@ class _SchedulePageState extends State<SchedulePage>
       appBar: AppBar(
         primary: true,
         title: Text("Schema ${currentGroupGuid.currentGroupName()}"),
-        bottom: TabBar(
-          controller: _tabController,
-          isScrollable: false,
-          tabs: [
-            for (final tab in tabs) Tab(text: tab),
-          ],
-        ),
+        actions: <Widget>[
+          IconButton(
+            icon: dayView
+                ? const Icon(Icons.view_week_rounded)
+                : const Icon(Icons.view_day_rounded),
+            onPressed: () {
+              setState(() {
+                dayView = !dayView;
+                reDrawState = ValueKey("$dayView$selectedWeek$altSchedule");
+              });
+            },
+          ),
+        ],
+        bottom: dayView
+            ? TabBar(
+                controller: _tabController,
+                isScrollable: false,
+                tabs: [
+                  for (final tab in tabs) Tab(text: tab),
+                ],
+              )
+            : null,
       ),
       floatingActionButton: Padding(
         padding: EdgeInsets.fromLTRB(0, 0, 0, (widget.showAds ? 60 : 0)),
@@ -134,34 +162,38 @@ class _SchedulePageState extends State<SchedulePage>
                       builder: (_) => AlertDialog(
                           title: const Text('Byt till en favorit'),
                           content: SizedBox(
-                            height: 175.0,
-                            width: 150.0,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: currentGroupGuid
-                                  .currentGroupGuidFavorites()
-                                  .length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return ListTile(
-                                    title: FilledButton.tonal(
-                                  child: Text(currentGroupGuid
-                                      .currentGroupNameFavorites()[index]),
-                                  onPressed: () {
-                                    currentGroupGuid.setGroup(
-                                        currentGroupGuid
-                                            .currentGroupGuidFavorites()[index],
-                                        currentGroupGuid
+                              height: 175.0,
+                              width: 150.0,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: currentGroupGuid
+                                      .currentGroupGuidFavorites()
+                                      .length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return ListTile(
+                                      title: FilledButton.tonal(
+                                        child: Text(currentGroupGuid
                                                 .currentGroupNameFavorites()[
-                                            index]);
-                                    setState(() {
-                                      altSchedule = !altSchedule;
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                ));
-                              },
-                            ),
-                          )))
+                                            index]),
+                                        onPressed: () {
+                                          currentGroupGuid.setGroup(
+                                              currentGroupGuid
+                                                      .currentGroupGuidFavorites()[
+                                                  index],
+                                              currentGroupGuid
+                                                      .currentGroupNameFavorites()[
+                                                  index]);
+                                          setState(() {
+                                            altSchedule = !altSchedule;
+                                            reDrawState = ValueKey(
+                                                "$dayView$selectedWeek$altSchedule");
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    );
+                                  }))))
                   : null;
             },
             child: Row(
@@ -175,6 +207,8 @@ class _SchedulePageState extends State<SchedulePage>
                             onPressed: () {
                               setState(() {
                                 selectedWeek -= 1;
+                                reDrawState = ValueKey(
+                                    "$dayView$selectedWeek$altSchedule");
                               });
                             },
                             icon: const Icon(Icons.arrow_left)),
@@ -187,6 +221,8 @@ class _SchedulePageState extends State<SchedulePage>
                             onPressed: () {
                               setState(() {
                                 selectedWeek += 1;
+                                reDrawState = ValueKey(
+                                    "$dayView$selectedWeek$altSchedule");
                               });
                             },
                             icon: const Icon(Icons.arrow_right))
@@ -222,9 +258,11 @@ class _SchedulePageState extends State<SchedulePage>
               log(appBarHeight.toString());
               log(height.toString());
               return TabBarView(
-                physics: _scrollingEnabled
-                    ? const ClampingScrollPhysics()
-                    : const NeverScrollableScrollPhysics(),
+                physics: (dayView
+                    ? _scrollingEnabled
+                        ? const ClampingScrollPhysics()
+                        : const NeverScrollableScrollPhysics()
+                    : const NeverScrollableScrollPhysics()),
                 controller: _tabController,
                 children: [
                   for (final tab in tabs)
@@ -241,15 +279,16 @@ class _SchedulePageState extends State<SchedulePage>
                           }
                         },
                         child: TabViewComponent(
-                          tab: tab,
-                          tabIndex: tabIndex,
-                          currentGroupGuid: currentGroupGuid,
-                          height: height,
-                          width: width,
-                          altSchedule: altSchedule,
-                          dio: widget.dio,
-                          selectedWeek: selectedWeek,
-                        ))
+                            tab: tab,
+                            tabIndex: tabIndex,
+                            currentGroupGuid: currentGroupGuid,
+                            height: height,
+                            width: width,
+                            altSchedule: altSchedule,
+                            dio: widget.dio,
+                            selectedWeek: selectedWeek,
+                            dayView: dayView,
+                            key: reDrawState))
                 ],
               );
             }),
@@ -266,6 +305,11 @@ class _SchedulePageState extends State<SchedulePage>
 
 Color _getColorFromHex(String hexColor, bool text, context) {
   var color = TinyColor.fromString(hexColor);
+  if (color.color == TinyColor.fromString("#808080").color) {
+    return TinyColor.fromColor(Theme.of(context).colorScheme.background)
+        .desaturate(6)
+        .color;
+  }
   if (currentTheme.currentTheme() == ThemeMode.light) {
     return color.color;
   }
@@ -279,7 +323,7 @@ Color _getColorFromHex(String hexColor, bool text, context) {
     return const Color.fromARGB(75, 255, 255, 255);
   }
   if (color.color == TinyColor.fromString("#cccccc").color) {
-    return Colors.black12;
+    return Colors.black38;
   }
   color.darken(15);
   color.desaturate(60);
@@ -416,16 +460,18 @@ class ScheduleComponent extends CustomPainter {
 }
 
 class TabViewComponent extends StatefulWidget {
-  const TabViewComponent(
-      {super.key,
-      required this.tab,
-      required this.tabIndex,
-      required this.currentGroupGuid,
-      required this.height,
-      required this.width,
-      required this.altSchedule,
-      required this.dio,
-      required this.selectedWeek});
+  const TabViewComponent({
+    super.key,
+    required this.tab,
+    required this.tabIndex,
+    required this.currentGroupGuid,
+    required this.height,
+    required this.width,
+    required this.altSchedule,
+    required this.dio,
+    required this.selectedWeek,
+    required this.dayView,
+  });
   final String tab;
   final int tabIndex;
   final MyGroupGuid currentGroupGuid;
@@ -434,6 +480,7 @@ class TabViewComponent extends StatefulWidget {
   final bool altSchedule;
   final Dio dio;
   final int selectedWeek;
+  final bool dayView;
 
   @override
   State<TabViewComponent> createState() => _TabViewComponentState();
@@ -443,18 +490,21 @@ class _TabViewComponentState extends State<TabViewComponent> {
   Map<String, int> dayMap = {"Mån": 0, "Tis": 1, "Ons": 2, "Tors": 3, "Fre": 4};
 
   Future<Schedule>? futureSchedule;
+  late ValueKey reDrawState;
 
   @override
   void initState() {
     if (currentGroupGuid.currentGroupGuid() != "") {
       setState(() {
         futureSchedule = fetchSchedule(
-            currentGroupGuid.currentGroupGuid(),
-            dayMap[widget.tab]! + 1,
-            widget.selectedWeek,
-            widget.width,
-            widget.height,
-            widget.dio);
+          currentGroupGuid.currentGroupGuid(),
+          dayMap[widget.tab]! + 1,
+          widget.selectedWeek,
+          widget.width,
+          widget.height,
+          widget.dio,
+          widget.dayView,
+        );
       });
     }
     super.initState();
@@ -463,15 +513,18 @@ class _TabViewComponentState extends State<TabViewComponent> {
   @override
   void didUpdateWidget(oldWidget) {
     if ((oldWidget.altSchedule != widget.altSchedule) ||
-        (oldWidget.selectedWeek != widget.selectedWeek)) {
+        (oldWidget.selectedWeek != widget.selectedWeek ||
+            (oldWidget.dayView != widget.dayView))) {
       setState(() {
         futureSchedule = fetchSchedule(
-            currentGroupGuid.currentGroupGuid(),
-            dayMap[widget.tab]! + 1,
-            widget.selectedWeek,
-            widget.width,
-            widget.height,
-            widget.dio);
+          currentGroupGuid.currentGroupGuid(),
+          dayMap[widget.tab]! + 1,
+          widget.selectedWeek,
+          widget.width,
+          widget.height,
+          widget.dio,
+          widget.dayView,
+        );
       });
     }
     super.didUpdateWidget(oldWidget);
@@ -483,7 +536,9 @@ class _TabViewComponentState extends State<TabViewComponent> {
         future: futureSchedule,
         builder: (BuildContext context, AsyncSnapshot<Schedule> snapshot) {
           if (snapshot.data != null) {
-            return DayComponent(futureSchedule: snapshot.data!);
+            return DayComponent(
+              futureSchedule: snapshot.data!,
+            );
           } else {
             return const Text("");
           }
