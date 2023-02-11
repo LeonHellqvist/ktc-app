@@ -24,7 +24,7 @@ Future<Schedule> fetchSchedule(String groupGuid, int scheduleDay, int week,
 
   if (!dayView) {
     scheduleDay = 0;
-    height += 60;
+    height += 50;
   }
 
   String url =
