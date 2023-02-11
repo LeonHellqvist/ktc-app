@@ -72,6 +72,8 @@ class _SchedulePageState extends State<SchedulePage>
 
   bool dayView = true;
 
+  late ValueKey reDrawState;
+
   late AdSize adSize;
 
   bool _scrollingEnabled = true;
@@ -79,6 +81,7 @@ class _SchedulePageState extends State<SchedulePage>
       TransformationController();
   @override
   void initState() {
+    reDrawState = ValueKey("$dayView$selectedWeek$altSchedule");
     _tabController = TabController(
       initialIndex: tabIndex,
       length: 5,
@@ -130,6 +133,7 @@ class _SchedulePageState extends State<SchedulePage>
             onPressed: () {
               setState(() {
                 dayView = !dayView;
+                reDrawState = ValueKey("$dayView$selectedWeek$altSchedule");
               });
             },
           ),
@@ -175,6 +179,8 @@ class _SchedulePageState extends State<SchedulePage>
                                         .currentGroupNameFavorites()[index]);
                                 setState(() {
                                   altSchedule = !altSchedule;
+                                  reDrawState = ValueKey(
+                                      "$dayView$selectedWeek$altSchedule");
                                 });
                                 Navigator.pop(context);
                               },
@@ -194,6 +200,8 @@ class _SchedulePageState extends State<SchedulePage>
                             onPressed: () {
                               setState(() {
                                 selectedWeek -= 1;
+                                reDrawState = ValueKey(
+                                    "$dayView$selectedWeek$altSchedule");
                               });
                             },
                             icon: const Icon(Icons.arrow_left)),
@@ -206,6 +214,8 @@ class _SchedulePageState extends State<SchedulePage>
                             onPressed: () {
                               setState(() {
                                 selectedWeek += 1;
+                                reDrawState = ValueKey(
+                                    "$dayView$selectedWeek$altSchedule");
                               });
                             },
                             icon: const Icon(Icons.arrow_right))
@@ -261,16 +271,16 @@ class _SchedulePageState extends State<SchedulePage>
                           }
                         },
                         child: TabViewComponent(
-                          tab: tab,
-                          tabIndex: tabIndex,
-                          currentGroupGuid: currentGroupGuid,
-                          height: height,
-                          width: width,
-                          altSchedule: altSchedule,
-                          dio: widget.dio,
-                          selectedWeek: selectedWeek,
-                          dayView: dayView,
-                        ))
+                            tab: tab,
+                            tabIndex: tabIndex,
+                            currentGroupGuid: currentGroupGuid,
+                            height: height,
+                            width: width,
+                            altSchedule: altSchedule,
+                            dio: widget.dio,
+                            selectedWeek: selectedWeek,
+                            dayView: dayView,
+                            key: reDrawState))
                 ],
               );
             }),
@@ -472,6 +482,7 @@ class _TabViewComponentState extends State<TabViewComponent> {
   Map<String, int> dayMap = {"Mån": 0, "Tis": 1, "Ons": 2, "Tors": 3, "Fre": 4};
 
   Future<Schedule>? futureSchedule;
+  late ValueKey reDrawState;
 
   @override
   void initState() {
@@ -517,7 +528,9 @@ class _TabViewComponentState extends State<TabViewComponent> {
         future: futureSchedule,
         builder: (BuildContext context, AsyncSnapshot<Schedule> snapshot) {
           if (snapshot.data != null) {
-            return DayComponent(futureSchedule: snapshot.data!);
+            return DayComponent(
+              futureSchedule: snapshot.data!,
+            );
           } else {
             return const Text("");
           }
