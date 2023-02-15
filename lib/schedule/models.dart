@@ -105,7 +105,9 @@ class LessonInfo {
 
   LessonInfo.fromJson(Map<String, dynamic> json) {
     guidId = json['guidId'];
-    texts = List.castFrom<dynamic, String>(json['texts']);
+    texts = json['texts'] == null
+        ? []
+        : List.castFrom<dynamic, String>(json['texts']);
     timeStart = json['timeStart'];
     timeEnd = json['timeEnd'];
     dayOfWeekNumber = json['dayOfWeekNumber'];

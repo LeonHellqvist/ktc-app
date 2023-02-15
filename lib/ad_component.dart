@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:ktc_app/ad_helper.dart';
 
 class AdComponent extends StatefulWidget {
   const AdComponent({super.key, required this.adUnit, required this.showAds});
@@ -13,74 +15,68 @@ class AdComponent extends StatefulWidget {
 }
 
 class _AdComponentState extends State<AdComponent> {
-  BannerAd? _anchoredAdaptiveAd;
+  BannerAd? _bannerAd;
+  bool _isLoaded = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadAd(widget.showAds);
-  }
 
-  Future<void> _loadAd(bool showAds) async {
-    // Get an AnchoredAdaptiveBannerAdSize before loading the ad.
-    final AnchoredAdaptiveBannerAdSize? size =
-        await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
-            MediaQuery.of(context).size.width.truncate());
-
-    if (size == null) {
-      log('Unable to get height of anchored banner.');
-      return;
-    }
-
-    _anchoredAdaptiveAd = showAds
-        ? BannerAd(
-            adUnitId: widget.adUnit,
-            size: size,
-            request: const AdRequest(),
-            listener: BannerAdListener(
-              onAdLoaded: (Ad ad) {
-                log('$ad loaded: ${ad.responseInfo}');
-                setState(() {
-                  // When the ad is loaded, get the ad size and use it to set
-                  // the height of the ad container.
-                  _anchoredAdaptiveAd = ad as BannerAd;
-                });
-              },
-              onAdFailedToLoad: (Ad ad, LoadAdError error) {
-                log('Anchored adaptive banner failedToLoad: $error');
-                ad.dispose();
-              },
-            ),
-          )
-        : null;
-    return _anchoredAdaptiveAd!.load();
-  }
-
-  @override
-  void dispose() {
-    _anchoredAdaptiveAd?.dispose();
-    super.dispose();
+    _isLoaded = false;
+    _loadAd();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.showAds == false) {
-      return const SizedBox(
-        height: 0,
-        width: 0,
+    if (_isLoaded == true && _bannerAd != null) {
+      return SizedBox(
+        width: _bannerAd!.size.width.toDouble(),
+        height: _bannerAd!.size.height.toDouble(),
+        child: AdWidget(ad: _bannerAd!),
       );
     }
-    if (_anchoredAdaptiveAd == null) {
-      return SizedBox(
-        // TODO: Make this the correct height of adaptive ad
-        height: 50,
-        width: MediaQuery.of(context).size.width,
-      );
-    } else {
-      return SizedBox(
-          height: _anchoredAdaptiveAd!.size.height.toDouble(),
-          width: _anchoredAdaptiveAd!.size.width.toDouble(),
-          child: AdWidget(ad: _anchoredAdaptiveAd!));
+    return (const SizedBox(
+      height: 60,
+    ));
+  }
+
+  /// Loads and shows a banner ad.
+  ///
+  /// Dimensions of the ad are determined by the width of the screen.
+  void _loadAd() async {
+    // Get an AnchoredAdaptiveBannerAdSize before loading the ad.
+    final size = await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
+        MediaQuery.of(context).size.width.truncate());
+
+    if (size == null) {
+      // Unable to get width of anchored banner.
+      return;
     }
+
+    BannerAd(
+      adUnitId: widget.adUnit,
+      request: const AdRequest(),
+      size: size,
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (ad) {
+          setState(() {
+            _bannerAd = ad as BannerAd;
+            _isLoaded = true;
+          });
+        },
+        // Called when an ad request failed.
+        onAdFailedToLoad: (ad, err) {
+          log(err.toString());
+          ad.dispose();
+        },
+      ),
+    ).load();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
   }
 }

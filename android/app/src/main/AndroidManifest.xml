@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.leonhellqvist.ktc_app">
    <uses-permission android:name="android.permission.INTERNET" />
+   <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
    <application
         android:label="KTC Appen"
         android:name="${applicationName}"
@@ -26,13 +27,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <meta-data 
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1670699619757926~4796098310" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <meta-data 
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1670699619757926~4796098310" />
     </application>
 </manifest>
