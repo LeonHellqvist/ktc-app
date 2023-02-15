@@ -65,28 +65,30 @@ class _FavoritesSelectorState extends State<FavoritesSelector> {
                                     children: [
                                       for (var item
                                           in snapshot.data!.data.classes)
-                                        ListTile(
-                                          leading: Checkbox(
-                                            value: currentGroupGuid
-                                                .currentGroupGuidFavorites()
-                                                .contains(
-                                                    "${item.groupGuid}:0"),
-                                            onChanged: (bool? selected) {
-                                              if (selected!) {
-                                                currentGroupGuid
-                                                    .addGroupFavorite(
-                                                        "${item.groupGuid}:0",
-                                                        item.groupName);
-                                              } else {
-                                                currentGroupGuid
-                                                    .removeGroupFavorite(
-                                                        "${item.groupGuid}:0");
-                                              }
-                                              setState(() {});
-                                            },
-                                          ),
-                                          title: Text(item.groupName),
-                                        )
+                                        if (item.groupName !=
+                                            currentGroupGuid.currentGroupName())
+                                          ListTile(
+                                            leading: Checkbox(
+                                              value: currentGroupGuid
+                                                  .currentGroupGuidFavorites()
+                                                  .contains(
+                                                      "${item.groupGuid}:0"),
+                                              onChanged: (bool? selected) {
+                                                if (selected!) {
+                                                  currentGroupGuid
+                                                      .addGroupFavorite(
+                                                          "${item.groupGuid}:0",
+                                                          item.groupName);
+                                                } else {
+                                                  currentGroupGuid
+                                                      .removeGroupFavorite(
+                                                          "${item.groupGuid}:0");
+                                                }
+                                                setState(() {});
+                                              },
+                                            ),
+                                            title: Text(item.groupName),
+                                          )
                                     ],
                                   ));
                                 } else {
@@ -103,28 +105,30 @@ class _FavoritesSelectorState extends State<FavoritesSelector> {
                                     children: [
                                       for (var item
                                           in snapshot.data!.data.teachers)
-                                        ListTile(
-                                          leading: Checkbox(
-                                            value: currentGroupGuid
-                                                .currentGroupGuidFavorites()
-                                                .contains(
-                                                    "${item.personGuid}:7"),
-                                            onChanged: (bool? selected) {
-                                              if (selected!) {
-                                                currentGroupGuid
-                                                    .addGroupFavorite(
-                                                        "${item.personGuid}:7",
-                                                        item.id);
-                                              } else {
-                                                currentGroupGuid
-                                                    .removeGroupFavorite(
-                                                        "${item.personGuid}:7");
-                                              }
-                                              setState(() {});
-                                            },
-                                          ),
-                                          title: Text(item.fullName),
-                                        )
+                                        if (item.id !=
+                                            currentGroupGuid.currentGroupName())
+                                          ListTile(
+                                            leading: Checkbox(
+                                              value: currentGroupGuid
+                                                  .currentGroupGuidFavorites()
+                                                  .contains(
+                                                      "${item.personGuid}:7"),
+                                              onChanged: (bool? selected) {
+                                                if (selected!) {
+                                                  currentGroupGuid
+                                                      .addGroupFavorite(
+                                                          "${item.personGuid}:7",
+                                                          item.id);
+                                                } else {
+                                                  currentGroupGuid
+                                                      .removeGroupFavorite(
+                                                          "${item.personGuid}:7");
+                                                }
+                                                setState(() {});
+                                              },
+                                            ),
+                                            title: Text(item.fullName),
+                                          )
                                     ],
                                   ));
                                 } else {

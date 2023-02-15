@@ -33,21 +33,11 @@ class MyGroupGuid with ChangeNotifier {
     }
   }
 
-  String currentGroupGuid() {
-    return groupGuid;
-  }
+  String currentGroupGuid() => groupGuid;
+  String currentGroupName() => groupName;
 
-  String currentGroupName() {
-    return groupName;
-  }
-
-  List<String> currentGroupGuidFavorites() {
-    return groupGuidFavorites.split(";");
-  }
-
-  List<String> currentGroupNameFavorites() {
-    return groupNameFavorites.split(";");
-  }
+  List<String> currentGroupGuidFavorites() => groupGuidFavorites.split(";");
+  List<String> currentGroupNameFavorites() => groupNameFavorites.split(";");
 
   void setGroup(String guid, String name) {
     groupGuid = guid;

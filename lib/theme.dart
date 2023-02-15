@@ -19,13 +19,9 @@ class MyTheme with ChangeNotifier {
     }
   }
 
-  ThemeMode currentTheme() {
-    return _isDark ? ThemeMode.dark : ThemeMode.light;
-  }
+  ThemeMode currentTheme() => _isDark ? ThemeMode.dark : ThemeMode.light;
 
-  bool currentThemeDynamic() {
-    return _isDynamic;
-  }
+  bool currentThemeDynamic() => _isDynamic;
 
   void switchTheme() {
     _isDark = !_isDark;

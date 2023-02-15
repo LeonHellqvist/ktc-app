@@ -14,9 +14,7 @@ class MyLoginStatus with ChangeNotifier {
     }
   }
 
-  String getLoginStatus() {
-    return loginStatus;
-  }
+  String getLoginStatus() => loginStatus;
 
   void setLoginStatus(String status) {
     loginStatus = status;
