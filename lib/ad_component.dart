@@ -6,9 +6,14 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ktc_app/ad_helper.dart';
 
 class AdComponent extends StatefulWidget {
-  const AdComponent({super.key, required this.adUnit, required this.showAds});
+  const AdComponent(
+      {super.key,
+      required this.adUnit,
+      required this.showAds,
+      this.placeholder = false});
   final String adUnit;
   final bool showAds;
+  final bool placeholder;
 
   @override
   State<AdComponent> createState() => _AdComponentState();
@@ -35,8 +40,8 @@ class _AdComponentState extends State<AdComponent> {
         child: AdWidget(ad: _bannerAd!),
       );
     }
-    return (const SizedBox(
-      height: 60,
+    return (SizedBox(
+      height: widget.placeholder ? 60 : 0,
     ));
   }
 
