@@ -179,8 +179,14 @@ class _FavoritesSelectorState extends State<FavoritesSelector> {
                                               for (var item in snapshot
                                                   .data!.data.teachers)
                                                 if (item.id !=
-                                                    currentGroupGuid
-                                                        .currentGroupName())
+                                                        currentGroupGuid
+                                                            .currentGroupName() &&
+                                                    item.fullName
+                                                        .toLowerCase()
+                                                        .contains(
+                                                            searchController
+                                                                .text
+                                                                .toLowerCase()))
                                                   ListTile(
                                                     leading: Checkbox(
                                                       value: currentGroupGuid
