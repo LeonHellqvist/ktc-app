@@ -51,5 +51,7 @@
 	<string>ca-app-pub-1670699619757926~6204279254</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Denna identifierare kommer att användas för att leverera personliga annonser till dig.</string>
 </dict>
 </plist>
