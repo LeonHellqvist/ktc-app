@@ -32,6 +32,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   await Firebase.initializeApp();
 
   // Pass all uncaught "fatal" errors from the framework to Crashlytics
@@ -194,6 +195,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     showAds = true;
+    if (Platform.isIOS) {
+      initPlugin();
+    }
     cacheStore = HiveCacheStore(null);
     cacheOptions = CacheOptions(
       policy: CachePolicy.forceCache,
@@ -231,7 +235,6 @@ class _MyHomePageState extends State<MyHomePage> {
         Navigator.pushReplacementNamed(context, '/onboarding');
       }
     });
-    Platform.isAndroid ? MobileAds.instance.initialize() : initPlugin();
   }
 
   @override
