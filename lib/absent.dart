@@ -257,7 +257,10 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
             }),
           ),
           AdComponent(
-              adUnit: AdHelper.absentBannerAdUnit, showAds: widget.showAds)
+            adUnit: AdHelper.absentBannerAdUnit,
+            showAds: widget.showAds,
+            placeholder: loginStatus == "in" ? false : true,
+          )
         ],
       ),
     );

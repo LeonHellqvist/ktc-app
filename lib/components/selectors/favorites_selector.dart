@@ -17,6 +17,7 @@ class FavoritesSelector extends StatefulWidget {
 class _FavoritesSelectorState extends State<FavoritesSelector> {
   late Future<Groups> futureGroups;
   late Future<TeacherGroups> futureTeacherGroups;
+  var searchController = TextEditingController();
 
   @override
   void initState() {
@@ -60,35 +61,80 @@ class _FavoritesSelectorState extends State<FavoritesSelector> {
                               builder: (BuildContext context,
                                   AsyncSnapshot<Groups> snapshot) {
                                 if (snapshot.data != null) {
-                                  return SingleChildScrollView(
-                                      child: Column(
-                                    children: [
-                                      for (var item
-                                          in snapshot.data!.data.classes)
-                                        ListTile(
-                                          leading: Checkbox(
-                                            value: currentGroupGuid
-                                                .currentGroupGuidFavorites()
-                                                .contains(
-                                                    "${item.groupGuid}:0"),
-                                            onChanged: (bool? selected) {
-                                              if (selected!) {
-                                                currentGroupGuid
-                                                    .addGroupFavorite(
-                                                        "${item.groupGuid}:0",
-                                                        item.groupName);
-                                              } else {
-                                                currentGroupGuid
-                                                    .removeGroupFavorite(
-                                                        "${item.groupGuid}:0");
-                                              }
-                                              setState(() {});
-                                            },
+                                  return StatefulBuilder(
+                                    builder: (BuildContext context,
+                                        StateSetter setState) {
+                                      return Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                24.0, 16, 24, 8),
+                                            child: TextField(
+                                              controller: searchController,
+                                              onChanged: (text) {
+                                                setState(() {
+                                                  searchController.value =
+                                                      TextEditingValue(
+                                                          text: text,
+                                                          selection: TextSelection
+                                                              .collapsed(
+                                                                  offset: text
+                                                                      .length));
+                                                });
+                                              },
+                                              decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                labelText: 'Sök',
+                                              ),
+                                            ),
                                           ),
-                                          title: Text(item.groupName),
-                                        )
-                                    ],
-                                  ));
+                                          const Divider(),
+                                          Expanded(
+                                            child: SingleChildScrollView(
+                                                child: Column(
+                                              children: [
+                                                for (var item in snapshot
+                                                    .data!.data.classes)
+                                                  if (item.groupName !=
+                                                          currentGroupGuid
+                                                              .currentGroupName() &&
+                                                      item.groupName
+                                                          .toLowerCase()
+                                                          .contains(
+                                                              searchController
+                                                                  .text
+                                                                  .toLowerCase()))
+                                                    ListTile(
+                                                      leading: Checkbox(
+                                                        value: currentGroupGuid
+                                                            .currentGroupGuidFavorites()
+                                                            .contains(
+                                                                "${item.groupGuid}:0"),
+                                                        onChanged:
+                                                            (bool? selected) {
+                                                          if (selected!) {
+                                                            currentGroupGuid
+                                                                .addGroupFavorite(
+                                                                    "${item.groupGuid}:0",
+                                                                    item.groupName);
+                                                          } else {
+                                                            currentGroupGuid
+                                                                .removeGroupFavorite(
+                                                                    "${item.groupGuid}:0");
+                                                          }
+                                                          setState(() {});
+                                                        },
+                                                      ),
+                                                      title:
+                                                          Text(item.groupName),
+                                                    )
+                                              ],
+                                            )),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 } else {
                                   return const Text("");
                                 }
@@ -98,35 +144,78 @@ class _FavoritesSelectorState extends State<FavoritesSelector> {
                               builder: (BuildContext context,
                                   AsyncSnapshot<TeacherGroups> snapshot) {
                                 if (snapshot.data != null) {
-                                  return SingleChildScrollView(
-                                      child: Column(
-                                    children: [
-                                      for (var item
-                                          in snapshot.data!.data.teachers)
-                                        ListTile(
-                                          leading: Checkbox(
-                                            value: currentGroupGuid
-                                                .currentGroupGuidFavorites()
-                                                .contains(
-                                                    "${item.personGuid}:7"),
-                                            onChanged: (bool? selected) {
-                                              if (selected!) {
-                                                currentGroupGuid
-                                                    .addGroupFavorite(
-                                                        "${item.personGuid}:7",
-                                                        item.id);
-                                              } else {
-                                                currentGroupGuid
-                                                    .removeGroupFavorite(
-                                                        "${item.personGuid}:7");
-                                              }
-                                              setState(() {});
+                                  return StatefulBuilder(builder:
+                                      (BuildContext context,
+                                          StateSetter setState) {
+                                    return Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              24.0, 16, 24, 8),
+                                          child: TextField(
+                                            controller: searchController,
+                                            onChanged: (text) {
+                                              setState(() {
+                                                searchController.value =
+                                                    TextEditingValue(
+                                                        text: text,
+                                                        selection: TextSelection
+                                                            .collapsed(
+                                                                offset: text
+                                                                    .length));
+                                              });
                                             },
+                                            decoration: const InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              labelText: 'Sök',
+                                            ),
                                           ),
-                                          title: Text(item.fullName),
-                                        )
-                                    ],
-                                  ));
+                                        ),
+                                        const Divider(),
+                                        Expanded(
+                                          child: SingleChildScrollView(
+                                              child: Column(
+                                            children: [
+                                              for (var item in snapshot
+                                                  .data!.data.teachers)
+                                                if (item.id !=
+                                                        currentGroupGuid
+                                                            .currentGroupName() &&
+                                                    item.fullName
+                                                        .toLowerCase()
+                                                        .contains(
+                                                            searchController
+                                                                .text
+                                                                .toLowerCase()))
+                                                  ListTile(
+                                                    leading: Checkbox(
+                                                      value: currentGroupGuid
+                                                          .currentGroupGuidFavorites()
+                                                          .contains(
+                                                              "${item.personGuid}:7"),
+                                                      onChanged:
+                                                          (bool? selected) {
+                                                        if (selected!) {
+                                                          currentGroupGuid
+                                                              .addGroupFavorite(
+                                                                  "${item.personGuid}:7",
+                                                                  item.id);
+                                                        } else {
+                                                          currentGroupGuid
+                                                              .removeGroupFavorite(
+                                                                  "${item.personGuid}:7");
+                                                        }
+                                                        setState(() {});
+                                                      },
+                                                    ),
+                                                    title: Text(item.fullName),
+                                                  )
+                                            ],
+                                          )),
+                                        ),
+                                      ],
+                                    );
+                                  });
                                 } else {
                                   return const Text("");
                                 }

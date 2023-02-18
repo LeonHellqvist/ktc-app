@@ -16,6 +16,7 @@ class PrimarySelector extends StatefulWidget {
 class _PrimarySelectorState extends State<PrimarySelector> {
   late Future<Groups> futureGroups;
   late Future<TeacherGroups> futureTeacherGroups;
+  var searchController = TextEditingController();
 
   @override
   void initState() {
@@ -24,6 +25,12 @@ class _PrimarySelectorState extends State<PrimarySelector> {
       futureTeacherGroups = fetchTeacherGroups();
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -59,32 +66,81 @@ class _PrimarySelectorState extends State<PrimarySelector> {
                                 builder: (BuildContext context,
                                     AsyncSnapshot<Groups> snapshot) {
                                   if (snapshot.data != null) {
-                                    return SingleChildScrollView(
-                                        child: Column(
-                                      children: [
-                                        for (var item
-                                            in snapshot.data!.data.classes)
-                                          RadioListTile(
-                                            activeColor: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            title: Text(item.groupName),
-                                            value: "${item.groupGuid}:0",
-                                            groupValue: currentGroupGuid
-                                                .currentGroupGuid(),
-                                            onChanged: (value) {
-                                              currentGroupGuid.updateMainGroup(
-                                                  value!,
-                                                  item.groupName,
-                                                  currentGroupGuid
-                                                      .currentGroupGuid());
-                                              currentGroupGuid.setGroup(
-                                                  value, item.groupName);
-                                              setState(() {});
-                                            },
-                                          )
-                                      ],
-                                    ));
+                                    return StatefulBuilder(builder:
+                                        (BuildContext context,
+                                            StateSetter setState) {
+                                      return Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                24.0, 16, 24, 8),
+                                            child: TextField(
+                                              controller: searchController,
+                                              onChanged: (text) {
+                                                setState(() {
+                                                  searchController.value =
+                                                      TextEditingValue(
+                                                          text: text,
+                                                          selection: TextSelection
+                                                              .collapsed(
+                                                                  offset: text
+                                                                      .length));
+                                                });
+                                              },
+                                              decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                labelText: 'Sök',
+                                              ),
+                                            ),
+                                          ),
+                                          const Divider(),
+                                          Expanded(
+                                            child: SingleChildScrollView(
+                                                child: Column(
+                                              children: [
+                                                for (var item in snapshot
+                                                    .data!.data.classes)
+                                                  item.groupName
+                                                          .toLowerCase()
+                                                          .contains(
+                                                              searchController
+                                                                  .text
+                                                                  .toLowerCase())
+                                                      ? RadioListTile(
+                                                          activeColor:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .primary,
+                                                          title: Text(
+                                                              item.groupName),
+                                                          value:
+                                                              "${item.groupGuid}:0",
+                                                          groupValue:
+                                                              currentGroupGuid
+                                                                  .currentGroupGuid(),
+                                                          onChanged: (value) {
+                                                            currentGroupGuid
+                                                                .updateMainGroup(
+                                                                    value!,
+                                                                    item
+                                                                        .groupName,
+                                                                    currentGroupGuid
+                                                                        .currentGroupGuid());
+                                                            currentGroupGuid
+                                                                .setGroup(value,
+                                                                    item.groupName);
+                                                            setState(() {});
+                                                          },
+                                                        )
+                                                      : const SizedBox(
+                                                          height: 0,
+                                                        )
+                                              ],
+                                            )),
+                                          ),
+                                        ],
+                                      );
+                                    });
                                   } else {
                                     return const Text("");
                                   }
@@ -94,32 +150,85 @@ class _PrimarySelectorState extends State<PrimarySelector> {
                                 builder: (BuildContext context,
                                     AsyncSnapshot<TeacherGroups> snapshot) {
                                   if (snapshot.data != null) {
-                                    return SingleChildScrollView(
-                                        child: Column(
-                                      children: [
-                                        for (var item
-                                            in snapshot.data!.data.teachers)
-                                          RadioListTile(
-                                            activeColor: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            title: Text(item.fullName),
-                                            value: "${item.personGuid}:7",
-                                            groupValue: currentGroupGuid
-                                                .currentGroupGuid(),
-                                            onChanged: (value) {
-                                              currentGroupGuid.updateMainGroup(
-                                                  value!,
-                                                  item.id,
-                                                  currentGroupGuid
-                                                      .currentGroupGuid());
-                                              currentGroupGuid.setGroup(
-                                                  value, item.id);
-                                              setState(() {});
-                                            },
-                                          )
-                                      ],
-                                    ));
+                                    return StatefulBuilder(
+                                      builder: (BuildContext context,
+                                          StateSetter setState) {
+                                        return Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      24.0, 16, 24, 8),
+                                              child: TextField(
+                                                controller: searchController,
+                                                onChanged: (text) {
+                                                  setState(() {
+                                                    searchController.value =
+                                                        TextEditingValue(
+                                                            text: text,
+                                                            selection: TextSelection
+                                                                .collapsed(
+                                                                    offset: text
+                                                                        .length));
+                                                  });
+                                                },
+                                                decoration:
+                                                    const InputDecoration(
+                                                  border: OutlineInputBorder(),
+                                                  labelText: 'Sök',
+                                                ),
+                                              ),
+                                            ),
+                                            const Divider(),
+                                            Expanded(
+                                              child: SingleChildScrollView(
+                                                  child: Column(
+                                                children: [
+                                                  for (var item in snapshot
+                                                      .data!.data.teachers)
+                                                    item.fullName
+                                                            .toLowerCase()
+                                                            .contains(
+                                                                searchController
+                                                                    .text
+                                                                    .toLowerCase())
+                                                        ? RadioListTile(
+                                                            activeColor:
+                                                                Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .primary,
+                                                            title: Text(
+                                                                item.fullName),
+                                                            value:
+                                                                "${item.personGuid}:7",
+                                                            groupValue:
+                                                                currentGroupGuid
+                                                                    .currentGroupGuid(),
+                                                            onChanged: (value) {
+                                                              currentGroupGuid
+                                                                  .updateMainGroup(
+                                                                      value!,
+                                                                      item.id,
+                                                                      currentGroupGuid
+                                                                          .currentGroupGuid());
+                                                              currentGroupGuid
+                                                                  .setGroup(
+                                                                      value,
+                                                                      item.id);
+                                                              setState(() {});
+                                                            },
+                                                          )
+                                                        : const SizedBox(
+                                                            height: 0,
+                                                          )
+                                                ],
+                                              )),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                                   } else {
                                     return const Text("");
                                   }

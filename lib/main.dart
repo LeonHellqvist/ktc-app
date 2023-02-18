@@ -1,3 +1,7 @@
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
@@ -28,6 +32,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   await Firebase.initializeApp();
 
   // Pass all uncaught "fatal" errors from the framework to Crashlytics
@@ -149,17 +154,13 @@ class MyHomePage extends StatefulWidget {
 
   final String title;
 
-  Future<InitializationStatus> _initGoogleMobileAds() {
-    // TODO: Initialize Google Mobile Ads SDK
-    return MobileAds.instance.initialize();
-  }
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   int _pageIndex = 0;
+  String _authStatus = 'Unknown';
 
   late CacheStore cacheStore;
   late CacheOptions cacheOptions;
@@ -170,9 +171,33 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late bool showAds;
 
+  Future<void> initPlugin() async {
+    final TrackingStatus status =
+        await AppTrackingTransparency.trackingAuthorizationStatus;
+    setState(() => _authStatus = '$status');
+    // If the system can show an authorization request dialog
+    if (status == TrackingStatus.notDetermined) {
+      // Show a custom explainer dialog before the system dialog
+      await showCustomTrackingDialog(context);
+      // Wait for dialog popping animation
+      await Future.delayed(const Duration(milliseconds: 200));
+      // Request system's tracking authorization dialog
+      final TrackingStatus status =
+          await AppTrackingTransparency.requestTrackingAuthorization();
+      log(status.toString());
+    }
+
+    final uuid = await AppTrackingTransparency.getAdvertisingIdentifier();
+    MobileAds.instance.initialize();
+    log("UUID: $uuid");
+  }
+
   @override
   void initState() {
     showAds = true;
+    if (Platform.isIOS) {
+      initPlugin();
+    }
     cacheStore = HiveCacheStore(null);
     cacheOptions = CacheOptions(
       policy: CachePolicy.forceCache,
@@ -272,3 +297,22 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+Future<void> showCustomTrackingDialog(BuildContext context) async =>
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Kära KTCare'),
+        content: const Text(
+          'Jag håller den här appen gratis genom att visa annonser. \n'
+          'Kan jag fortsätta att använda din data för att skräddarsy annonser åt dig? '
+          'Google samlar in och använder en unik identifierare på din enhet för att visa dig annonser.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Fortsätt'),
+          ),
+        ],
+      ),
+    );
