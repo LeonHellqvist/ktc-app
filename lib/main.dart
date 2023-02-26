@@ -8,6 +8,7 @@ import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_stor
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:animations/animations.dart';
@@ -47,6 +48,7 @@ Future<void> main() async {
     return true;
   };
   await loadImage(const AssetImage('assets/images/ktcBuilding.png'));
+  GoogleFonts.config.allowRuntimeFetching = false;
   runApp(const MyApp());
 }
 

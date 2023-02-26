@@ -10,6 +10,7 @@ import 'package:week_of_year/week_of_year.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 import 'package:dio/dio.dart';
 import 'package:ktc_app/ad_helper.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../config.dart';
 
@@ -416,33 +417,19 @@ class ScheduleComponent extends CustomPainter {
       FontStyle style =
           text.italic == true ? FontStyle.italic : FontStyle.normal;
 
+      var offset = Offset(text.x.toDouble(), text.y.toDouble() - 23);
+
       var textStyle = TextStyle(
         color: _getColorFromHex(text.fColor, true, context),
         fontSize: text.fontsize.toDouble(),
         fontWeight: weight,
         fontStyle: style,
-        letterSpacing: 0.5,
       );
-
-      var offset = Offset(text.x.toDouble(), text.y.toDouble() - 23);
-
-      if (!kIsWeb) {
-        textStyle = TextStyle(
-          color: _getColorFromHex(text.fColor, true, context),
-          fontSize: Platform.isIOS
-              ? text.fontsize.toDouble()
-              : text.fontsize.toDouble() - 1,
-          fontWeight: weight,
-          fontStyle: style,
-          letterSpacing: Platform.isIOS ? 0 : 0.5,
-        );
-        offset = Offset(
-            text.x.toDouble(), text.y.toDouble() - (Platform.isIOS ? 25 : 23));
-      }
+      offset = Offset(text.x.toDouble(), text.y.toDouble() - 25.5);
 
       final textSpan = TextSpan(
         text: text.text,
-        style: textStyle,
+        style: GoogleFonts.openSans(textStyle: textStyle),
       );
       final textPainter = TextPainter(
         text: textSpan,
