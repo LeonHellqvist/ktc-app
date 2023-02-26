@@ -61,12 +61,14 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
   TabController? _tabController;
-  int tabIndex = (DateTime.now().weekday > 5 ? 5 : DateTime.now().weekday) - 1;
+  int tabIndex = (DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday) - 1;
 
   int height = 0;
   int width = 0;
 
-  int selectedWeek = DateTime.now().weekOfYear;
+  int selectedWeek = DateTime.now().weekday > 5
+      ? DateTime.now().weekOfYear + 1
+      : DateTime.now().weekOfYear;
 
   bool altSchedule = false;
 
