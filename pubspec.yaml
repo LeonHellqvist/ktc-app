@@ -58,7 +58,6 @@ dependencies:
   firebase_crashlytics: ^3.0.12
   firebase_performance: ^0.9.0+11
   app_tracking_transparency: ^2.0.3
-  google_fonts: ^4.0.3
 
 dev_dependencies:
   flutter_test:
@@ -93,7 +92,15 @@ flutter:
   #
   assets:
     - assets/images/ktcBuilding.png
-    - assets/google_fonts/
+
+  fonts:
+    - family: OpenSans
+      fonts:
+        - asset: assets/fonts/OpenSans-Regular.ttf
+        - asset: assets/fonts/OpenSans-Bold.ttf
+        - asset: assets/fonts/OpenSans-Italic.ttf
+          style: italic
+        - asset: assets/fonts/OpenSans-BoldItalic.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

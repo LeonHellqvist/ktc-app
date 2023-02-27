@@ -10,7 +10,6 @@ import 'package:week_of_year/week_of_year.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 import 'package:dio/dio.dart';
 import 'package:ktc_app/ad_helper.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../config.dart';
 
@@ -421,6 +420,7 @@ class ScheduleComponent extends CustomPainter {
 
       var textStyle = TextStyle(
         color: _getColorFromHex(text.fColor, true, context),
+        fontFamily: "OpenSans",
         fontSize: text.fontsize.toDouble(),
         fontWeight: weight,
         fontStyle: style,
@@ -429,7 +429,7 @@ class ScheduleComponent extends CustomPainter {
 
       final textSpan = TextSpan(
         text: text.text,
-        style: GoogleFonts.openSans(textStyle: textStyle),
+        style: textStyle,
       );
       final textPainter = TextPainter(
         text: textSpan,
