@@ -15,14 +15,14 @@ PODS:
   - Firebase/Performance (10.3.0):
     - Firebase/CoreOnly
     - FirebasePerformance (~> 10.3.0)
-  - firebase_core (2.5.0):
+  - firebase_core (2.7.0):
     - Firebase/CoreOnly (= 10.3.0)
     - Flutter
-  - firebase_crashlytics (3.0.12):
+  - firebase_crashlytics (3.0.15):
     - Firebase/Crashlytics (= 10.3.0)
     - firebase_core
     - Flutter
-  - firebase_performance (0.9.0-11):
+  - firebase_performance (0.9.0-14):
     - Firebase/Performance (= 10.3.0)
     - firebase_core
     - Flutter
@@ -193,9 +193,9 @@ SPEC CHECKSUMS:
   app_tracking_transparency: 5b1745ef9ade815f7455cb6a0848349589afb7c5
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
-  firebase_core: f95c8bbe65213d406d592573ad42a12d64849cb8
-  firebase_crashlytics: 5d22873d5e7f8b807d1a787ed1cab903f1d83e5a
-  firebase_performance: 456a6bbbca55888ed32b9d0dcd7f96738fe56f0d
+  firebase_core: 128d8c43c3a453a4a67463314fc3761bedff860b
+  firebase_crashlytics: 0a99d06e38030d769021340b551d8ac4b27345fc
+  firebase_performance: 3c1458dca5341be250ed91b704c9e424690ca46e
   FirebaseABTesting: 8cb5cc4e395c8dce8a2820a6a329020ead56fe2f
   FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
   FirebaseCoreInternal: e463f41bb935cd049505bf7e9a5bdd7dcea90df6
@@ -206,7 +206,7 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   Google-Mobile-Ads-SDK: 4fe6304b771f8467d29978cb790ec1e56e646946
   google_mobile_ads: 6bfe04d9c9fd5c2a026e6f09ca2d97ae25b78f7e
-  google_sign_in_ios: 4f85eb9f937450765c8573bb85fd8cd6a5af675c
+  google_sign_in_ios: 63e49658400eb806dd30054dc56f8baee3025508
   GoogleAppMeasurement: 40c70a7d89013f0eca72006c4b9732163ea4cdae
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
   GoogleSignIn: 5651ce3a61e56ca864160e79b484cd9ed3f49b7a
@@ -215,9 +215,9 @@ SPEC CHECKSUMS:
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
-  path_provider_foundation: 37748e03f12783f9de2cb2c4eadfaa25fe6d4852
+  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  url_launcher_ios: fb12c43172927bb5cf75aeebd073f883801f1993
+  url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
 PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
 

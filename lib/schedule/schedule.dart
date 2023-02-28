@@ -61,12 +61,14 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage>
     with TickerProviderStateMixin {
   TabController? _tabController;
-  int tabIndex = (DateTime.now().weekday > 5 ? 5 : DateTime.now().weekday) - 1;
+  int tabIndex = (DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday) - 1;
 
   int height = 0;
   int width = 0;
 
-  int selectedWeek = DateTime.now().weekOfYear;
+  int selectedWeek = DateTime.now().weekday > 5
+      ? DateTime.now().weekOfYear + 1
+      : DateTime.now().weekOfYear;
 
   bool altSchedule = false;
 
@@ -414,29 +416,16 @@ class ScheduleComponent extends CustomPainter {
       FontStyle style =
           text.italic == true ? FontStyle.italic : FontStyle.normal;
 
+      var offset = Offset(text.x.toDouble(), text.y.toDouble() - 23);
+
       var textStyle = TextStyle(
         color: _getColorFromHex(text.fColor, true, context),
+        fontFamily: "OpenSans",
         fontSize: text.fontsize.toDouble(),
         fontWeight: weight,
         fontStyle: style,
-        letterSpacing: 0.5,
       );
-
-      var offset = Offset(text.x.toDouble(), text.y.toDouble() - 23);
-
-      if (!kIsWeb) {
-        textStyle = TextStyle(
-          color: _getColorFromHex(text.fColor, true, context),
-          fontSize: Platform.isIOS
-              ? text.fontsize.toDouble()
-              : text.fontsize.toDouble() - 1,
-          fontWeight: weight,
-          fontStyle: style,
-          letterSpacing: Platform.isIOS ? 0 : 0.5,
-        );
-        offset = Offset(
-            text.x.toDouble(), text.y.toDouble() - (Platform.isIOS ? 25 : 23));
-      }
+      offset = Offset(text.x.toDouble(), text.y.toDouble() - 25.5);
 
       final textSpan = TextSpan(
         text: text.text,
