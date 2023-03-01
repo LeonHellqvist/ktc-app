@@ -51,8 +51,8 @@ class _SettingsState extends State<SettingsPage> {
             ],
           ),
           ExpansionTile(
-            title: Text('Schema'),
-            subtitle: Text("Ändra klass"),
+            title: const Text('Schema'),
+            subtitle: const Text("Ändra klass"),
             children: <Widget>[
               ListTile(
                   title: Row(
