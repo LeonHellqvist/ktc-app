@@ -1,9 +1,7 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:ktc_app/ad_helper.dart';
 
 class AdComponent extends StatefulWidget {
   const AdComponent(

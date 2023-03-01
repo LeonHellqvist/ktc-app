@@ -1,11 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:ktc_app/components/selectors/favorites_selector.dart';
 import 'package:ktc_app/components/selectors/primary_selector.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:ktc_app/group_guid.dart';
 import 'package:ktc_app/login_status.dart';
 

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -10,7 +9,6 @@ import 'package:week_of_year/week_of_year.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 import 'package:dio/dio.dart';
 import 'package:ktc_app/ad_helper.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import '../config.dart';
 
 import 'models.dart';
