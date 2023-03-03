@@ -26,7 +26,9 @@ class _AdComponentState extends State<AdComponent> {
     super.didChangeDependencies();
 
     _isLoaded = false;
-    _loadAd();
+    if (widget.showAds) {
+      _loadAd();
+    }
   }
 
   @override
