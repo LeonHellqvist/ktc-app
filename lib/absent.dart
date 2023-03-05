@@ -311,19 +311,33 @@ class _AbsentViewState extends State<AbsentView>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _animation,
-      child: ListView.builder(
-        itemCount: widget.days.length,
-        prototypeItem: ListTile(
-          title: Text(widget.days[0].toString()),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+        child: ListView.builder(
+          itemCount: widget.days.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+              child: ListTile(
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    index == 0
+                        ? Text(widget.days[index].toString().toCapitalized(),
+                            textScaleFactor: 1.3)
+                        : Text(widget.days[index].toString()),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: Divider(
+                        height: 0,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
         ),
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: index == 0
-                ? Text(widget.days[index].toString().toCapitalized(),
-                    textScaleFactor: 1.3)
-                : Text(widget.days[index].toString()),
-          );
-        },
       ),
     );
   }
