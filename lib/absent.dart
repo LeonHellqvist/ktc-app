@@ -311,33 +311,32 @@ class _AbsentViewState extends State<AbsentView>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _animation,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-        child: ListView.builder(
-          itemCount: widget.days.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-              child: ListTile(
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    index == 0
-                        ? Text(widget.days[index].toString().toCapitalized(),
-                            textScaleFactor: 1.3)
-                        : Text(widget.days[index].toString()),
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                      child: Divider(
-                        height: 0,
-                      ),
-                    )
-                  ],
-                ),
+      child: ListView.builder(
+        itemCount: widget.days.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: index == 0
+                ? const EdgeInsets.fromLTRB(10, 15, 10, 0)
+                : const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: ListTile(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  index == 0
+                      ? Text(widget.days[index].toString().toCapitalized(),
+                          textScaleFactor: 1.3)
+                      : Text(widget.days[index].toString()),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+                    child: Divider(
+                      height: 0,
+                    ),
+                  )
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
