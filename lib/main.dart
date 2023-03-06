@@ -302,7 +302,7 @@ Future<void> showCustomTrackingDialog(BuildContext context) async =>
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Kära KTCare'),
+        title: const Text('Kära KTC:are'),
         content: const Text(
           'Jag håller den här appen gratis genom att visa annonser. \n'
           'Kan jag fortsätta att använda din data för att skräddarsy annonser åt dig? '
