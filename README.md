@@ -16,7 +16,7 @@
 <h3 align="center">KTC appen</h3>
 
   <p align="center">
-    En app / websida / progressiv webbapplikation (pwa) för KTC i Katrineholm. 
+    En app för KTC i Katrineholm. 
     <br />
     Alla elever och lärare är välkomna att hjälpa till! 
     <br />
