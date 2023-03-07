@@ -118,7 +118,7 @@ class Meals {
 
   Meals.fromJson(Map<String, dynamic> json) {
     attributes = List.castFrom<dynamic, dynamic>(json['attributes']);
-    value = json['value'];
+    value = json['value'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
