@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:ktc_app/ad_component.dart';
 import 'package:ktc_app/ad_helper.dart';
 import 'package:week_of_year/week_of_year.dart';
-import 'package:ktc_app/throttler.dart';
-
 import 'models.dart';
 
 Future<Food> fetchFood(int week, Dio dio) async {
@@ -35,8 +33,6 @@ class FoodPage extends StatefulWidget {
 
 class _FoodPageState extends State<FoodPage>
     with TickerProviderStateMixin, RestorationMixin {
-  var throttler = Throttler();
-
   TabController? _tabController;
   final RestorableInt tabIndex = RestorableInt(DateTime.now().weekOfYear - 1);
 
@@ -73,7 +69,6 @@ class _FoodPageState extends State<FoodPage>
   void dispose() {
     _tabController!.dispose();
     tabIndex.dispose();
-    throttler.dispose();
     super.dispose();
   }
 
