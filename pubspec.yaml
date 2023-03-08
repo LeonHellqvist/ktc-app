@@ -92,6 +92,7 @@ flutter:
   #
   assets:
     - assets/images/ktcBuilding.png
+    - assets/images/github-mark-white.png
 
   fonts:
     - family: OpenSans

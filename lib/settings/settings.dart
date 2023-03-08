@@ -78,7 +78,49 @@ class _SettingsState extends State<SettingsPage> {
               ListTile(
                 title: Column(
                   children: [
-                    const Text("Leon Hellqvist | TE21"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                              child: InkWell(
+                                onTap: () => launchUrl(Uri.parse(
+                                    'https://github.com/leonhellqvist')),
+                                child: Image.asset(
+                                    height: 20,
+                                    'assets/images/github-mark-white.png'),
+                              ),
+                            ),
+                            const Text("Leon Hellqvist, TE21"),
+                          ],
+                        ),
+                        const Text("Skapare"),
+                      ],
+                    ),
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                              child: InkWell(
+                                onTap: () => launchUrl(Uri.parse(
+                                    'https://github.com/erikdahlqvist')),
+                                child: Image.asset(
+                                    height: 20,
+                                    'assets/images/github-mark-white.png'),
+                              ),
+                            ),
+                            const Text("Erik Dahlqvist, TE21"),
+                          ],
+                        ),
+                        const Text("Små fixar"),
+                      ],
+                    ),
                     TextButton(
                       child: const Text("Vill du hjälpa till? Besök projektet"),
                       onPressed: () => {_launchUrl()},
