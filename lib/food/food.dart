@@ -308,18 +308,33 @@ class _TabViewComponentState extends State<TabViewComponent> {
           future: futureFood,
           builder: (BuildContext context, AsyncSnapshot<Food> snapshot) {
             if (snapshot.data != null) {
-              return ListView.builder(
-                  itemCount: snapshot.data!.menu.weeks[0].days
-                      .length, // getting map length you can use keyList.length too
-                  itemBuilder: (BuildContext context, int index) {
-                    return DayComponent(
-                      meals: snapshot.data!.menu.weeks[0].days[index].meals,
-                      day:
-                          index // key // getting your map values from current key
-                      ,
-                      week: widget.tab,
-                    );
-                  });
+              int foundMeals = 0;
+              for (int i = 0;
+                  i < snapshot.data!.menu.weeks[0].days.length;
+                  i++) {
+                for (var meal in snapshot.data!.menu.weeks[0].days[i].meals) {
+                  if (meal.value == "") {
+                    foundMeals++;
+                  }
+                }
+              }
+
+              if (foundMeals == 0) {
+                return ListView.builder(
+                    itemCount: snapshot.data!.menu.weeks[0].days
+                        .length, // getting map length you can use keyList.length too
+                    itemBuilder: (BuildContext context, int index) {
+                      return DayComponent(
+                        meals: snapshot.data!.menu.weeks[0].days[index].meals,
+                        day:
+                            index // key // getting your map values from current key
+                        ,
+                        week: widget.tab,
+                      );
+                    });
+              } else {
+                return const Text(textScaleFactor: 1.5, "Finns ingen matsedel");
+              }
             } else {
               return const Text("");
             }
