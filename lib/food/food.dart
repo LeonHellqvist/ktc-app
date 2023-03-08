@@ -240,7 +240,7 @@ class _DayComponentState extends State<DayComponent>
                             ), */
                                 Text(
                                     textAlign: TextAlign.left,
-                                    textScaleFactor: 1.15,
+                                    textScaleFactor: 1.05,
                                     "${i.value}."),
                           ))
                       .toList()),
