@@ -222,13 +222,24 @@ class _DayComponentState extends State<DayComponent>
                           text: TextSpan(
                               style: DefaultTextStyle.of(context).style,
                               children: <TextSpan>[
-                                TextSpan(
-                                    text: DayComponent.weekDays[widget.day],
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w500)),
+                                widget.day == DateTime.now().weekday - 1 &&
+                                        DateTime.now().weekOfYear.toString() ==
+                                            widget.week
+                                    ? TextSpan(
+                                        text: DayComponent.weekDays[widget.day],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary))
+                                    : TextSpan(
+                                        text: DayComponent.weekDays[widget.day],
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                        )),
                               ])),
                     ),
-                    RichText(
+                    /* RichText(
                         textScaleFactor: 1.2,
                         text: TextSpan(
                             style: DefaultTextStyle.of(context).style,
@@ -245,7 +256,7 @@ class _DayComponentState extends State<DayComponent>
                                               .primary),
                                     )
                                   : const TextSpan(),
-                            ])),
+                            ])), */
                   ],
                 ),
               ),
@@ -253,10 +264,31 @@ class _DayComponentState extends State<DayComponent>
                   children: widget.meals
                       .map((i) => Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(
-                                textAlign: TextAlign.left,
-                                textScaleFactor: 1.15,
-                                i.value),
+                            child:
+                                // TODO: decide if we want to use this
+                                /* Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(2.0),
+                                  child: Text(
+                                      style: TextStyle(height: 1),
+                                      textScaleFactor: 1.2,
+                                      " "),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                      textAlign: TextAlign.left,
+                                      textScaleFactor: 1.15,
+                                      "${i.value}."),
+                                ),
+                              ],
+                            ), */
+                                Text(
+                                    textAlign: TextAlign.left,
+                                    textScaleFactor: 1.15,
+                                    "${i.value}."),
                           ))
                       .toList()),
               const SizedBox(
