@@ -171,9 +171,11 @@ class _FoodPageState extends State<FoodPage>
 }
 
 class DayComponent extends StatefulWidget {
-  const DayComponent({super.key, required this.meals, required this.day});
+  const DayComponent(
+      {super.key, required this.meals, required this.day, required this.week});
   final List<Meals> meals;
   final int day;
+  final String week;
 
   static const List<String> weekDays = [
     "Måndag",
@@ -217,10 +219,40 @@ class _DayComponentState extends State<DayComponent>
             children: [
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                    textScaleFactor: 1.5,
-                    DayComponent.weekDays[widget.day]),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RichText(
+                          textScaleFactor: 1.5,
+                          text: TextSpan(
+                              style: DefaultTextStyle.of(context).style,
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: DayComponent.weekDays[widget.day],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w500)),
+                              ])),
+                    ),
+                    RichText(
+                        textScaleFactor: 1.2,
+                        text: TextSpan(
+                            style: DefaultTextStyle.of(context).style,
+                            children: <TextSpan>[
+                              widget.day == DateTime.now().weekday - 1 &&
+                                      DateTime.now().weekOfYear.toString() ==
+                                          widget.week
+                                  ? TextSpan(
+                                      text: 'Idag',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                    )
+                                  : const TextSpan(),
+                            ])),
+                  ],
+                ),
               ),
               Column(
                   children: widget.meals
@@ -286,10 +318,12 @@ class _TabViewComponentState extends State<TabViewComponent> {
                       .length, // getting map length you can use keyList.length too
                   itemBuilder: (BuildContext context, int index) {
                     return DayComponent(
-                        meals: snapshot.data!.menu.weeks[0].days[index].meals,
-                        day:
-                            index // key // getting your map values from current key
-                        );
+                      meals: snapshot.data!.menu.weeks[0].days[index].meals,
+                      day:
+                          index // key // getting your map values from current key
+                      ,
+                      week: widget.tab,
+                    );
                   });
             } else {
               return const Text("");
