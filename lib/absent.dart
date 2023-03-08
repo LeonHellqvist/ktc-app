@@ -316,24 +316,25 @@ class _AbsentViewState extends State<AbsentView>
         itemBuilder: (context, index) {
           return Padding(
             padding: index == 0
-                ? const EdgeInsets.fromLTRB(10, 15, 10, 0)
-                : const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: ListTile(
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  index == 0
-                      ? Text(widget.days[index].toString().toCapitalized(),
-                          textScaleFactor: 1.3)
-                      : Text(widget.days[index].toString()),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
-                    child: Divider(
-                      height: 0,
-                    ),
-                  )
-                ],
-              ),
+                ? const EdgeInsets.fromLTRB(25, 15, 25, 0)
+                : const EdgeInsets.fromLTRB(25, 0, 25, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                index == 0
+                    ? Text(widget.days[index].toString().toCapitalized(),
+                        textScaleFactor: 1.8)
+                    : Text(
+                        widget.days[index].toString(),
+                        textScaleFactor: 1.25,
+                      ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                  child: Divider(
+                    height: 0,
+                  ),
+                )
+              ],
             ),
           );
         },
