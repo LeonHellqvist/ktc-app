@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class Schedule {
   Schedule({
     required this.boxList,
@@ -222,4 +224,85 @@ class TextList {
     data['type'] = type;
     return data;
   }
+}
+
+class Lesson {
+  late String guidId;
+  late List<String> texts;
+  late String timeStart;
+  late String timeEnd;
+  late String blockName;
+
+  Lesson(LessonInfo lesson) {
+    guidId = lesson.guidId;
+    texts = lesson.texts;
+    timeStart = lesson.timeStart;
+    timeEnd = lesson.timeEnd;
+    blockName = lesson.blockName;
+  }
+}
+
+class Block {
+  String blockName;
+  String timeStart;
+  String timeEnd;
+  List<Lesson> lessons;
+
+  Block(this.blockName, this.timeStart, this.timeEnd, this.lessons);
+
+  void addLesson(LessonInfo lesson) {
+    if (lessons.isNotEmpty) {
+      if (hhmmssToM(lessons.last.timeStart) > hhmmssToM(lesson.timeStart)) {
+        timeStart = lesson.timeStart;
+      }
+      if (hhmmssToM(lessons.last.timeEnd) < hhmmssToM(lesson.timeEnd)) {
+        timeEnd = lesson.timeEnd;
+      }
+      lessons.add(Lesson(lesson));
+    }
+  }
+}
+
+class Group {
+  String timeStart;
+  String timeEnd;
+  List<Block> blocks = [];
+  List<Lesson> lessons = [];
+  int count = 1;
+
+  Group(this.timeStart, this.timeEnd, add) {
+    if (add is Block) {
+      blocks.add(add);
+    } else {
+      lessons.add(add);
+    }
+  }
+
+  void add(add) {
+    if (add is Block) {
+      if (hhmmssToM(add.timeStart) < hhmmssToM(timeStart)) {
+        timeStart = add.timeStart;
+      }
+      if (hhmmssToM(add.timeEnd) > hhmmssToM(timeEnd)) {
+        timeEnd = add.timeEnd;
+      }
+      blocks.add(add);
+    } else if (add is Lesson) {
+      if (hhmmssToM(add.timeStart) < hhmmssToM(timeStart)) {
+        timeStart = add.timeStart;
+      }
+      if (hhmmssToM(add.timeEnd) > hhmmssToM(timeEnd)) {
+        timeEnd = add.timeEnd;
+      }
+      lessons.add(add);
+    }
+    count++;
+  }
+}
+
+int hhmmssToM(String hhmmss) {
+  String hh = hhmmss.substring(0, 2);
+  String mm = hhmmss.substring(3, 5);
+  int minutes = int.parse(hh) * 60 + int.parse(mm);
+  return minutes;
 }

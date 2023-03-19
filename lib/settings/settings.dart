@@ -48,6 +48,13 @@ class _SettingsState extends State<SettingsPage> {
                       child: const Text('Ändra dynamiskt/standard tema'),
                     ))
                   : const SizedBox(height: 0),
+              ListTile(
+                  title: FilledButton.tonal(
+                onPressed: () {
+                  currentTheme.switchThemeScheduleView();
+                },
+                child: const Text('Ändra vanligt/block schema'),
+              )),
             ],
           ),
           ExpansionTile(
