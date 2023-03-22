@@ -9,6 +9,8 @@ import 'package:ktc_app/login_status.dart';
 
 import '../config.dart';
 
+import '../util/license.dart';
+
 class SettingsPage extends StatefulWidget {
   const SettingsPage(
       {super.key,
@@ -176,6 +178,17 @@ class _SettingsState extends State<SettingsPage> {
                   ],
                 )
               : const Text(""),
+          ListTile(
+            title: const Text('Programvara från tredje part'),
+            subtitle:
+                const Text("Bra programvara som hjälpt med detta projekt"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LicenseScreen()),
+              );
+            },
+          ),
         ]));
   }
 }
@@ -204,4 +217,41 @@ class GroupOptionsEntry {
   const GroupOptionsEntry(this.groupName, this.groupGuid);
   final String groupName;
   final String groupGuid;
+}
+
+class LicenseScreen extends StatelessWidget {
+  const LicenseScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(textScaleFactor: 0.8, 'Programvara från tredje part'),
+      ),
+      body: Center(
+        child: ListView.builder(
+          itemCount: LicenseUtil.getLicenses().length,
+          itemBuilder: (context, index) {
+            final item = LicenseUtil.getLicenses()[index];
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: Container(
+                color: Colors.black12,
+                child: Column(
+                  children: [
+                    Text(item.name),
+                    Text(item.version ?? 'n/a'),
+                    Text(item.homepage ?? 'n/a'),
+                    Text(item.repository ?? 'n/a'),
+                    Container(height: 8),
+                    Text(item.license),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 }
