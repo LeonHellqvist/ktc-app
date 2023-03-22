@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:ktc_app/ad_component.dart';
 import 'package:ktc_app/ad_helper.dart';
 import 'package:week_of_year/week_of_year.dart';
-import 'package:ktc_app/throttler.dart';
-
 import 'models.dart';
 
 Future<Food> fetchFood(int week, Dio dio) async {
@@ -35,8 +33,6 @@ class FoodPage extends StatefulWidget {
 
 class _FoodPageState extends State<FoodPage>
     with TickerProviderStateMixin, RestorationMixin {
-  var throttler = Throttler();
-
   TabController? _tabController;
   final RestorableInt tabIndex = RestorableInt(DateTime.now().weekOfYear - 1);
 
@@ -73,67 +69,12 @@ class _FoodPageState extends State<FoodPage>
   void dispose() {
     _tabController!.dispose();
     tabIndex.dispose();
-    throttler.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final tabs = [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53"
-    ];
+    final tabs = List.generate(53, (index) => "${index + 1}");
 
     return Scaffold(
       appBar: AppBar(
@@ -143,7 +84,14 @@ class _FoodPageState extends State<FoodPage>
           controller: _tabController,
           isScrollable: true,
           tabs: [
-            for (final tab in tabs) Tab(text: tab),
+            for (final tab in tabs)
+              tab == DateTime.now().weekOfYear.toString()
+                  ? Tab(
+                      child: Text(
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary),
+                          tab))
+                  : Tab(text: tab)
           ],
         ),
       ),
@@ -171,9 +119,11 @@ class _FoodPageState extends State<FoodPage>
 }
 
 class DayComponent extends StatefulWidget {
-  const DayComponent({super.key, required this.meals, required this.day});
+  const DayComponent(
+      {super.key, required this.meals, required this.day, required this.week});
   final List<Meals> meals;
   final int day;
+  final String week;
 
   static const List<String> weekDays = [
     "Måndag",
@@ -217,19 +167,81 @@ class _DayComponentState extends State<DayComponent>
             children: [
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                    textScaleFactor: 1.5,
-                    DayComponent.weekDays[widget.day]),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RichText(
+                          textScaleFactor: 1.5,
+                          text: TextSpan(
+                              style: DefaultTextStyle.of(context).style,
+                              children: <TextSpan>[
+                                widget.day == DateTime.now().weekday - 1 &&
+                                        DateTime.now().weekOfYear.toString() ==
+                                            widget.week
+                                    ? TextSpan(
+                                        text: DayComponent.weekDays[widget.day],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary))
+                                    : TextSpan(
+                                        text: DayComponent.weekDays[widget.day],
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                        )),
+                              ])),
+                    ),
+                    /* RichText(
+                        textScaleFactor: 1.2,
+                        text: TextSpan(
+                            style: DefaultTextStyle.of(context).style,
+                            children: <TextSpan>[
+                              widget.day == DateTime.now().weekday - 1 &&
+                                      DateTime.now().weekOfYear.toString() ==
+                                          widget.week
+                                  ? TextSpan(
+                                      text: 'Idag',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                    )
+                                  : const TextSpan(),
+                            ])), */
+                  ],
+                ),
               ),
               Column(
                   children: widget.meals
                       .map((i) => Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(
-                                textAlign: TextAlign.left,
-                                textScaleFactor: 1.15,
-                                i.value),
+                            child:
+                                // TODO: decide if we want to use this
+                                /* Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(2.0),
+                                  child: Text(
+                                      style: TextStyle(height: 1),
+                                      textScaleFactor: 1.2,
+                                      " "),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                      textAlign: TextAlign.left,
+                                      textScaleFactor: 1.15,
+                                      "${i.value}."),
+                                ),
+                              ],
+                            ), */
+                                Text(
+                                    textAlign: TextAlign.left,
+                                    textScaleFactor: 1.05,
+                                    "${i.value}."),
                           ))
                       .toList()),
               const SizedBox(
@@ -281,16 +293,33 @@ class _TabViewComponentState extends State<TabViewComponent> {
           future: futureFood,
           builder: (BuildContext context, AsyncSnapshot<Food> snapshot) {
             if (snapshot.data != null) {
-              return ListView.builder(
-                  itemCount: snapshot.data!.menu.weeks[0].days
-                      .length, // getting map length you can use keyList.length too
-                  itemBuilder: (BuildContext context, int index) {
-                    return DayComponent(
+              int foundMeals = 0;
+              for (int i = 0;
+                  i < snapshot.data!.menu.weeks[0].days.length;
+                  i++) {
+                for (var meal in snapshot.data!.menu.weeks[0].days[i].meals) {
+                  if (meal.value == "") {
+                    foundMeals++;
+                  }
+                }
+              }
+
+              if (foundMeals == 0) {
+                return ListView.builder(
+                    itemCount: snapshot.data!.menu.weeks[0].days
+                        .length, // getting map length you can use keyList.length too
+                    itemBuilder: (BuildContext context, int index) {
+                      return DayComponent(
                         meals: snapshot.data!.menu.weeks[0].days[index].meals,
                         day:
                             index // key // getting your map values from current key
-                        );
-                  });
+                        ,
+                        week: widget.tab,
+                      );
+                    });
+              } else {
+                return const Text(textScaleFactor: 1.5, "Finns ingen matsedel");
+              }
             } else {
               return const Text("");
             }

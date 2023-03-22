@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/sheets/v4.dart' as api;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:ktc_app/ad_component.dart';
 import 'package:ktc_app/ad_helper.dart';
@@ -314,15 +313,29 @@ class _AbsentViewState extends State<AbsentView>
       opacity: _animation,
       child: ListView.builder(
         itemCount: widget.days.length,
-        prototypeItem: ListTile(
-          title: Text(widget.days[0].toString()),
-        ),
         itemBuilder: (context, index) {
-          return ListTile(
-            title: index == 0
-                ? Text(widget.days[index].toString().toCapitalized(),
-                    textScaleFactor: 1.3)
-                : Text(widget.days[index].toString()),
+          return Padding(
+            padding: index == 0
+                ? const EdgeInsets.fromLTRB(25, 15, 25, 0)
+                : const EdgeInsets.fromLTRB(25, 0, 25, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                index == 0
+                    ? Text(widget.days[index].toString().toCapitalized(),
+                        textScaleFactor: 1.8)
+                    : Text(
+                        widget.days[index].toString(),
+                        textScaleFactor: 1.25,
+                      ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                  child: Divider(
+                    height: 0,
+                  ),
+                )
+              ],
+            ),
           );
         },
       ),

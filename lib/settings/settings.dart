@@ -1,15 +1,15 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:ktc_app/components/selectors/favorites_selector.dart';
 import 'package:ktc_app/components/selectors/primary_selector.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:ktc_app/group_guid.dart';
 import 'package:ktc_app/login_status.dart';
 
 import '../config.dart';
+
+import '../util/license.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage(
@@ -50,11 +50,18 @@ class _SettingsState extends State<SettingsPage> {
                       child: const Text('Ändra dynamiskt/standard tema'),
                     ))
                   : const SizedBox(height: 0),
+              ListTile(
+                  title: FilledButton.tonal(
+                onPressed: () {
+                  currentTheme.switchThemeScheduleView();
+                },
+                child: const Text('Ändra vanligt/block schema'),
+              )),
             ],
           ),
           ExpansionTile(
-            title: Text('Schema'),
-            subtitle: Text("Ändra klass"),
+            title: const Text('Schema'),
+            subtitle: const Text("Ändra klass"),
             children: <Widget>[
               ListTile(
                   title: Row(
@@ -80,7 +87,49 @@ class _SettingsState extends State<SettingsPage> {
               ListTile(
                 title: Column(
                   children: [
-                    const Text("Leon Hellqvist | TE21"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                              child: InkWell(
+                                onTap: () => launchUrl(Uri.parse(
+                                    'https://github.com/leonhellqvist')),
+                                child: Image.asset(
+                                    height: 20,
+                                    'assets/images/github-mark-white.png'),
+                              ),
+                            ),
+                            const Text("Leon Hellqvist, TE21"),
+                          ],
+                        ),
+                        const Text("Skapare"),
+                      ],
+                    ),
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                              child: InkWell(
+                                onTap: () => launchUrl(Uri.parse(
+                                    'https://github.com/erikdahlqvist')),
+                                child: Image.asset(
+                                    height: 20,
+                                    'assets/images/github-mark-white.png'),
+                              ),
+                            ),
+                            const Text("Erik Dahlqvist, TE21"),
+                          ],
+                        ),
+                        const Text("Små fixar"),
+                      ],
+                    ),
                     TextButton(
                       child: const Text("Vill du hjälpa till? Besök projektet"),
                       onPressed: () => {_launchUrl()},
@@ -129,6 +178,17 @@ class _SettingsState extends State<SettingsPage> {
                   ],
                 )
               : const Text(""),
+          ListTile(
+            title: const Text('Programvara från tredje part'),
+            subtitle:
+                const Text("Bra programvara som hjälpt med detta projekt"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LicenseScreen()),
+              );
+            },
+          ),
         ]));
   }
 }
@@ -157,4 +217,41 @@ class GroupOptionsEntry {
   const GroupOptionsEntry(this.groupName, this.groupGuid);
   final String groupName;
   final String groupGuid;
+}
+
+class LicenseScreen extends StatelessWidget {
+  const LicenseScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(textScaleFactor: 0.8, 'Programvara från tredje part'),
+      ),
+      body: Center(
+        child: ListView.builder(
+          itemCount: LicenseUtil.getLicenses().length,
+          itemBuilder: (context, index) {
+            final item = LicenseUtil.getLicenses()[index];
+            return Padding(
+              padding: const EdgeInsets.all(8),
+              child: Container(
+                color: Colors.black12,
+                child: Column(
+                  children: [
+                    Text(item.name),
+                    Text(item.version ?? 'n/a'),
+                    Text(item.homepage ?? 'n/a'),
+                    Text(item.repository ?? 'n/a'),
+                    Container(height: 8),
+                    Text(item.license),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 }

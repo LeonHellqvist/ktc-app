@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -10,7 +9,6 @@ import 'package:week_of_year/week_of_year.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 import 'package:dio/dio.dart';
 import 'package:ktc_app/ad_helper.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import '../config.dart';
 
 import 'models.dart';
@@ -362,9 +360,12 @@ class _DayComponentState extends State<DayComponent>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _animation,
-      child: CustomPaint(
-          painter: ScheduleComponent(
-              futureSchedule: widget.futureSchedule, context: context)),
+      child: currentTheme.currentThemeScheduleView() == "standard"
+          ? CustomPaint(
+              painter: ScheduleComponent(
+                  futureSchedule: widget.futureSchedule, context: context))
+          : ContainerScheduleComponent(
+              futureSchedule: widget.futureSchedule, context: context),
     );
   }
 }
@@ -446,6 +447,262 @@ class ScheduleComponent extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
+
+class ContainerScheduleComponent extends StatefulWidget {
+  const ContainerScheduleComponent(
+      {super.key, required this.futureSchedule, required this.context});
+
+  final Schedule futureSchedule;
+  final BuildContext context;
+
+  @override
+  State<ContainerScheduleComponent> createState() =>
+      _ContainerScheduleComponentState();
+}
+
+class _ContainerScheduleComponentState
+    extends State<ContainerScheduleComponent> {
+  late List<Group> lessonGroups;
+
+  int hhmmssToM(String hhmmss) {
+    String hh = hhmmss.substring(0, 2);
+    String mm = hhmmss.substring(3, 5);
+    int minutes = int.parse(hh) * 60 + int.parse(mm);
+    return minutes;
+  }
+
+  @override
+  void initState() {
+    List<Group> groups = [];
+    List<Block> blocks = [];
+    List<Lesson> lessons = [];
+    for (int i = 0; i < widget.futureSchedule.lessonInfo.length; i++) {
+      if (widget.futureSchedule.lessonInfo[i].blockName == "") {
+        lessons.add(Lesson(widget.futureSchedule.lessonInfo[i]));
+      } else {
+        bool found = false;
+        for (int j = 0; j < blocks.length; j++) {
+          if (blocks[j].blockName ==
+              widget.futureSchedule.lessonInfo[i].blockName) {
+            blocks[j].addLesson(widget.futureSchedule.lessonInfo[i]);
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          Lesson tempLesson = Lesson(widget.futureSchedule.lessonInfo[i]);
+          List<Lesson> tempListLesson = [tempLesson];
+          blocks.add(Block(tempLesson.blockName, tempLesson.timeStart,
+              tempLesson.timeEnd, tempListLesson));
+        }
+      }
+    }
+    for (int i = 0; i < blocks.length; i++) {
+      bool found = false;
+      for (int j = 0; j < groups.length; j++) {
+        if ((hhmmssToM(groups[j].timeStart) == hhmmssToM(blocks[i].timeEnd) ||
+            hhmmssToM(groups[j].timeEnd) == hhmmssToM(blocks[i].timeStart))) {
+          continue;
+        }
+        if (hhmmssToM(blocks[i].timeStart) < hhmmssToM(groups[j].timeEnd) &&
+            hhmmssToM(blocks[i].timeEnd) > hhmmssToM(groups[j].timeStart)) {
+          groups[j].add(blocks[i]);
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        groups.add(Group(blocks[i].timeStart, blocks[i].timeEnd, blocks[i]));
+      }
+    }
+    for (int i = 0; i < lessons.length; i++) {
+      bool found = false;
+      for (int j = 0; j < groups.length; j++) {
+        if ((hhmmssToM(groups[j].timeStart) == hhmmssToM(lessons[i].timeEnd) ||
+            hhmmssToM(groups[j].timeEnd) == hhmmssToM(lessons[i].timeStart))) {
+          continue;
+        }
+        if (hhmmssToM(lessons[i].timeStart) < hhmmssToM(groups[j].timeEnd) &&
+            hhmmssToM(lessons[i].timeEnd) > hhmmssToM(groups[j].timeStart)) {
+          groups[j].add(lessons[i]);
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        groups.add(Group(lessons[i].timeStart, lessons[i].timeEnd, lessons[i]));
+      }
+    }
+    groups.sort(
+        (a, b) => hhmmssToM(a.timeStart).compareTo(hhmmssToM(b.timeStart)));
+    for (int i = 0; i < groups.length; i++) {
+      groups[i].lessons.sort(
+          (a, b) => hhmmssToM(a.timeStart).compareTo(hhmmssToM(b.timeStart)));
+    }
+    for (int i = 0; i < blocks.length; i++) {
+      groups[i].blocks.sort(
+          (a, b) => hhmmssToM(a.timeStart).compareTo(hhmmssToM(b.timeStart)));
+    }
+    lessonGroups = groups;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          for (var group in lessonGroups)
+            Row(
+              children: [
+                for (Lesson lesson in group.lessons)
+                  lesson.texts.isNotEmpty && !lesson.texts[0].startsWith("STÖD")
+                      ? Expanded(
+                          child: Card(
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Card(
+                                    elevation: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                          lesson.timeStart.substring(0, 5)),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                            lesson.texts[0]),
+                                      ),
+                                      Wrap(
+                                        children: [
+                                          for (int i = 1;
+                                              i < lesson.texts.length;
+                                              i++)
+                                            lesson.texts[i] == ""
+                                                ? const SizedBox()
+                                                : Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Text(
+                                                        overflow:
+                                                            TextOverflow.fade,
+                                                        style:
+                                                            const TextStyle(),
+                                                        "${lesson.texts[i]}; "))
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Card(
+                                    elevation: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child:
+                                          Text(lesson.timeEnd.substring(0, 5)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                for (var block in group.blocks)
+                  Expanded(
+                    child: Card(
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Card(
+                              elevation: 0,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(block.timeStart.substring(0, 5)),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              children: [
+                                Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        "Lektionsblock ${block.blockName}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold))),
+                                for (Lesson lesson in block.lessons)
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 12),
+                                        child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              lesson.texts[0],
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            )),
+                                      ),
+                                      Row(
+                                        children: [
+                                          for (int i = 1;
+                                              i < lesson.texts.length;
+                                              i++)
+                                            lesson.texts[i] == ""
+                                                ? const SizedBox()
+                                                : Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Text(
+                                                        style:
+                                                            const TextStyle(),
+                                                        "${lesson.texts[i]}; "))
+                                        ],
+                                      )
+                                    ],
+                                  )
+                              ],
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Card(
+                              elevation: 0,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(block.timeEnd.substring(0, 5)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          const SizedBox(
+            height: 80,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class TabViewComponent extends StatefulWidget {

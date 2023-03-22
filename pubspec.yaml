@@ -1,5 +1,5 @@
 name: ktc_app
-description: En app för KTC i Katrineholm. Alla elever och lärare är välkomna att hjälpa till!
+description: En app för KTC i Katrineholm
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -17,7 +17,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.3+6
+version: 1.0.4+7
 
 environment:
   sdk: ">=2.18.5 <3.0.0"
@@ -34,29 +34,29 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.5
   animations: ^2.0.7
   http: ^0.13.5
   week_of_year: ^2.0.0
-  zoom_widget: ^2.0.0
-  dio_cache_interceptor: ^3.3.1
-  dio: ^5.0.1
+  zoom_widget: ^2.0.1
+  dio_cache_interceptor: ^3.4.0
+  dio: ^5.0.3
   tinycolor2: ^3.0.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  google_sign_in: ^6.0.1
-  firebase_core: ^2.4.0
-  googleapis: ^10.0.0
-  extension_google_sign_in_as_googleapis_auth: ^2.0.7
+  google_sign_in: ^6.0.2
+  firebase_core: ^2.8.0
+  googleapis: ^10.1.0
+  extension_google_sign_in_as_googleapis_auth: ^2.0.9
   flutter_launcher_icons: ^0.12.0
-  url_launcher: ^6.1.7
-  dio_cache_interceptor_hive_store: ^3.2.0
-  path_provider: ^2.0.11
-  dynamic_color: ^1.5.4
+  url_launcher: ^6.1.10
+  dio_cache_interceptor_hive_store: ^3.2.1
+  path_provider: ^2.0.14
+  dynamic_color: ^1.6.2
   flutter_signin_button: ^2.0.0
   google_mobile_ads: ^2.3.0
-  firebase_crashlytics: ^3.0.12
-  firebase_performance: ^0.9.0+11
+  firebase_crashlytics: ^3.0.17
+  firebase_performance: ^0.9.0+16
   app_tracking_transparency: ^2.0.3
 
 dev_dependencies:
@@ -68,7 +68,8 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.1
+  license_generator: ^1.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -92,6 +93,7 @@ flutter:
   #
   assets:
     - assets/images/ktcBuilding.png
+    - assets/images/github-mark-white.png
 
   fonts:
     - family: OpenSans
