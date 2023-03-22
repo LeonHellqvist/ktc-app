@@ -4,7 +4,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Forks][forks-shield]][forks-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
 
 <!-- PROJEKT LOGGA -->
 <br />
@@ -58,7 +57,7 @@
 
 ## Om projektet
 
-KTC appen är ett projekt för att förbättre upplevelsen av att gå på KTC.<br/>
+KTC appen är en app för att förbättra upplevelsen av att gå på KTC.<br/>
 Just nu kan man:
 
 - Se sitt schema
@@ -118,22 +117,13 @@ Se [öppna issues](https://github.com/LeonHellqvist/ktc-app/issues) för en full
 
 ## Bidra
 
-Bidrag är det som gör communityn med öppen källkod så bra. Alla bidrag du gör är **mycket uppskattade**.
+Alla bidrag du gör är **mycket uppskattade**.
 
 Om du har en idé som skulle göra det här bättre, forka repon och skapa en pull request. Du kan också bara öppna en issue med taggen "förbättring".
-Glöm inte att ge projektet en stjärna, tack så mycket!
 
 1. Forka projektet
 2. Gör dina ändringar och bidrag
 3. Öppna en pull request
-
-<p align="right">(<a href="#top">Tillbaka till toppen</a>)</p>
-
-<!-- LICENS -->
-
-## Licens
-
-Distribuerad under GNU General Public License v3.0. Se `LICENSE` för mer information.
 
 <p align="right">(<a href="#top">Tillbaka till toppen</a>)</p>
 
@@ -168,5 +158,3 @@ Projektlänk: [https://github.com/othneildrew/Best-README-Template](https://gith
 [stars-url]: https://github.com/LeonHellqvist/ktc-app/stargazers
 [issues-shield]: https://img.shields.io/github/issues/LeonHellqvist/ktc-app.svg?style=for-the-badge
 [issues-url]: https://github.com/LeonHellqvist/ktc-app/issues
-[license-shield]: https://img.shields.io/github/license/LeonHellqvist/ktc-app.svg?style=for-the-badge
-[license-url]: https://github.com/LeonHellqvist/ktc-app/blob/main/LICENSE.md
