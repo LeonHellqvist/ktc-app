@@ -7,14 +7,14 @@ import 'package:ktc_app/ad_component.dart';
 import 'package:ktc_app/group_guid.dart';
 import 'package:week_of_year/week_of_year.dart';
 import 'package:tinycolor2/tinycolor2.dart';
-import 'package:dio/dio.dart';
 import 'package:ktc_app/ad_helper.dart';
+import '../caller.dart';
 import '../config.dart';
 
 import 'models.dart';
 
 Future<Schedule> fetchSchedule(String groupGuid, int scheduleDay, int week,
-    int width, int height, Dio dio, bool dayView) async {
+    int width, int height, Caller caller, bool dayView) async {
   int year = DateTime.now().year;
 
   String selectionType = groupGuid.split(":")[1];
@@ -30,7 +30,7 @@ Future<Schedule> fetchSchedule(String groupGuid, int scheduleDay, int week,
 
   log(url);
 
-  final response = await dio.getUri(Uri.parse(url));
+  final response = await caller.requestCall(url);
 
   if (response.statusCode == 200 || response.statusCode == 304) {
     return Schedule.fromJson(jsonDecode(response.data));
@@ -45,11 +45,11 @@ class SchedulePage extends StatefulWidget {
   const SchedulePage({
     super.key,
     required this.currentGroupGuid,
-    required this.dio,
+    required this.caller,
     required this.showAds,
   });
   final MyGroupGuid currentGroupGuid;
-  final Dio dio;
+  final Caller caller;
   final bool showAds;
 
   @override
@@ -285,7 +285,7 @@ class _SchedulePageState extends State<SchedulePage>
                             height: height,
                             width: width,
                             altSchedule: altSchedule,
-                            dio: widget.dio,
+                            caller: widget.caller,
                             selectedWeek: selectedWeek,
                             dayView: dayView,
                             key: reDrawState))
@@ -714,7 +714,7 @@ class TabViewComponent extends StatefulWidget {
     required this.height,
     required this.width,
     required this.altSchedule,
-    required this.dio,
+    required this.caller,
     required this.selectedWeek,
     required this.dayView,
   });
@@ -724,7 +724,7 @@ class TabViewComponent extends StatefulWidget {
   final int height;
   final int width;
   final bool altSchedule;
-  final Dio dio;
+  final Caller caller;
   final int selectedWeek;
   final bool dayView;
 
@@ -748,7 +748,7 @@ class _TabViewComponentState extends State<TabViewComponent> {
           widget.selectedWeek,
           widget.width,
           widget.height,
-          widget.dio,
+          widget.caller,
           widget.dayView,
         );
       });
@@ -768,7 +768,7 @@ class _TabViewComponentState extends State<TabViewComponent> {
           widget.selectedWeek,
           widget.width,
           widget.height,
-          widget.dio,
+          widget.caller,
           widget.dayView,
         );
       });

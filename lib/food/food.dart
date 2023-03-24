@@ -5,12 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:ktc_app/ad_component.dart';
 import 'package:ktc_app/ad_helper.dart';
 import 'package:week_of_year/week_of_year.dart';
+import '../caller.dart';
 import 'models.dart';
 
-Future<Food> fetchFood(int week, Dio dio) async {
+Future<Food> fetchFood(int week, Caller caller,
+    {bool forceRefresh = false}) async {
   int year = DateTime.now().year;
-  final response = await dio.getUri(Uri.parse(
-      'https://tools-proxy.leonhellqvist.workers.dev/?service=skolmaten&subService=menu&school=76517002&year=$year&week=$week'));
+  Response response;
+  if (forceRefresh) {
+    response = await caller.refreshForceCacheCall(
+        'https://tools-proxy.leonhellqvist.workers.dev/?service=skolmaten&subService=menu&school=76517002&year=$year&week=$week');
+  } else {
+    response = await caller.requestCall(
+        'https://tools-proxy.leonhellqvist.workers.dev/?service=skolmaten&subService=menu&school=76517002&year=$year&week=$week');
+  }
 
   if (response.statusCode == 200 || response.statusCode == 304) {
     return Food.fromJson(response.data);
@@ -22,9 +30,9 @@ Future<Food> fetchFood(int week, Dio dio) async {
 }
 
 class FoodPage extends StatefulWidget {
-  const FoodPage({super.key, required this.dio, required this.showAds});
+  const FoodPage({super.key, required this.caller, required this.showAds});
 
-  final Dio dio;
+  final Caller caller;
   final bool showAds;
 
   @override
@@ -105,7 +113,7 @@ class _FoodPageState extends State<FoodPage>
                   TabViewComponent(
                     tab: tab,
                     tabIndex: tabIndex.value,
-                    dio: widget.dio,
+                    caller: widget.caller,
                   )
               ],
             ),
@@ -266,10 +274,10 @@ class TabViewComponent extends StatefulWidget {
       {super.key,
       required this.tab,
       required this.tabIndex,
-      required this.dio});
+      required this.caller});
   final String tab;
   final int tabIndex;
-  final Dio dio;
+  final Caller caller;
 
   @override
   State<TabViewComponent> createState() => _TabViewComponentState();
@@ -280,50 +288,60 @@ class _TabViewComponentState extends State<TabViewComponent> {
 
   @override
   void initState() {
-    setState(() {
-      futureFood = fetchFood(int.parse(widget.tab), widget.dio);
-    });
+    updateFood();
     super.initState();
+  }
+
+  Future<void> updateFood({bool forceRefresh = false}) async {
+    setState(() {
+      futureFood = fetchFood(int.parse(widget.tab), widget.caller,
+          forceRefresh: forceRefresh);
+    });
+    return Future.delayed(const Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FutureBuilder<Food>(
-          future: futureFood,
-          builder: (BuildContext context, AsyncSnapshot<Food> snapshot) {
-            if (snapshot.data != null) {
-              int foundMeals = 0;
-              for (int i = 0;
-                  i < snapshot.data!.menu.weeks[0].days.length;
-                  i++) {
-                for (var meal in snapshot.data!.menu.weeks[0].days[i].meals) {
-                  if (meal.value == "") {
-                    foundMeals++;
+    return RefreshIndicator(
+      onRefresh: () => updateFood(forceRefresh: true),
+      child: Center(
+        child: FutureBuilder<Food>(
+            future: futureFood,
+            builder: (BuildContext context, AsyncSnapshot<Food> snapshot) {
+              if (snapshot.data != null) {
+                int foundMeals = 0;
+                for (int i = 0;
+                    i < snapshot.data!.menu.weeks[0].days.length;
+                    i++) {
+                  for (var meal in snapshot.data!.menu.weeks[0].days[i].meals) {
+                    if (meal.value == "") {
+                      foundMeals++;
+                    }
                   }
                 }
-              }
 
-              if (foundMeals == 0) {
-                return ListView.builder(
-                    itemCount: snapshot.data!.menu.weeks[0].days
-                        .length, // getting map length you can use keyList.length too
-                    itemBuilder: (BuildContext context, int index) {
-                      return DayComponent(
-                        meals: snapshot.data!.menu.weeks[0].days[index].meals,
-                        day:
-                            index // key // getting your map values from current key
-                        ,
-                        week: widget.tab,
-                      );
-                    });
+                if (foundMeals == 0) {
+                  return ListView.builder(
+                      itemCount: snapshot.data!.menu.weeks[0].days
+                          .length, // getting map length you can use keyList.length too
+                      itemBuilder: (BuildContext context, int index) {
+                        return DayComponent(
+                          meals: snapshot.data!.menu.weeks[0].days[index].meals,
+                          day:
+                              index // key // getting your map values from current key
+                          ,
+                          week: widget.tab,
+                        );
+                      });
+                } else {
+                  return const Text(
+                      textScaleFactor: 1.5, "Finns ingen matsedel");
+                }
               } else {
-                return const Text(textScaleFactor: 1.5, "Finns ingen matsedel");
+                return const Text("");
               }
-            } else {
-              return const Text("");
-            }
-          }),
+            }),
+      ),
     );
   }
 }

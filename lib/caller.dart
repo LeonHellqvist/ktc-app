@@ -15,34 +15,29 @@ class Caller {
   final CacheOptions cacheOptions;
   final Dio dio;
 
-  Future<String> noCacheCall(String url) async {
+  Future<Response> noCacheCall(String url) async {
     final resp = await _call(url: url, policy: CachePolicy.noCache);
-    if (resp == null) return 'No response';
-    return _getResponseContent(resp);
+    return _getResponseContent(resp!);
   }
 
-  Future<String> requestCall(String url) async {
+  Future<Response> requestCall(String url) async {
     final resp = await _call(url: url);
-    if (resp == null) return 'No response';
-    return _getResponseContent(resp);
+    return _getResponseContent(resp!);
   }
 
-  Future<String> refreshCall(String url) async {
+  Future<Response> refreshCall(String url) async {
     final resp = await _call(url: url, policy: CachePolicy.refresh);
-    if (resp == null) return 'No response';
-    return _getResponseContent(resp);
+    return _getResponseContent(resp!);
   }
 
-  Future<String> forceCacheCall(String url) async {
+  Future<Response> forceCacheCall(String url) async {
     final resp = await _call(url: url, policy: CachePolicy.forceCache);
-    if (resp == null) return 'No response';
-    return _getResponseContent(resp);
+    return _getResponseContent(resp!);
   }
 
-  Future<String> refreshForceCacheCall(String url) async {
+  Future<Response> refreshForceCacheCall(String url) async {
     final resp = await _call(url: url, policy: CachePolicy.refreshForceCache);
-    if (resp == null) return 'No response';
-    return _getResponseContent(resp);
+    return _getResponseContent(resp!);
   }
 
   Future<String> deleteEntry(String url) async {
@@ -73,7 +68,7 @@ class Caller {
     }
   }
 
-  String _getResponseContent(Response response) {
+  Response _getResponseContent(Response response) {
     final date = response.headers[HttpHeaders.dateHeader]?.first;
     final etag = response.headers[HttpHeaders.etagHeader]?.first;
     final expires = response.headers[HttpHeaders.expiresHeader]?.first;
@@ -110,6 +105,7 @@ class Caller {
     buffer.writeln('Response body (truncated):');
     buffer.writeln('${response.data.toString().substring(0, 200)}...');
 
-    return buffer.toString();
+    /* return buffer.toString(); */
+    return response;
   }
 }
