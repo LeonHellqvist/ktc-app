@@ -220,10 +220,10 @@ class _MyHomePageState extends State<MyHomePage> {
     pageList = <Widget>[
       SchedulePage(
         currentGroupGuid: currentGroupGuid,
-        dio: dio,
+        caller: caller,
         showAds: showAds,
       ),
-      FoodPage(dio: dio, showAds: showAds),
+      FoodPage(caller: caller, showAds: showAds),
       AbsentPage(currentLoginStatus: currentLoginStatus, showAds: showAds),
       SettingsPage(
           currentGroupGuid: currentGroupGuid,
