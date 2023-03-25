@@ -66,7 +66,7 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
   int tabIndex = (DateTime.now().weekday > 5 ? 5 : DateTime.now().weekday) - 1;
 
   List<List<Object?>>? absent;
-  DateTime? lastEdited;
+  DateTime lastEdited = DateTime.fromMillisecondsSinceEpoch(0);
 
   String loginStatus = "in";
 
@@ -214,7 +214,7 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
                           onRefresh: _pullRefresh,
                           child: AbsentView(
                             days: days,
-                            absentInfo: currentAbsentCache.getAbsentCache(),
+                            lastEdited: lastEdited,
                           ))
                   ]);
                 } else {
@@ -367,10 +367,10 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
 }
 
 class AbsentView extends StatefulWidget {
-  const AbsentView({super.key, required this.days, required this.absentInfo});
+  const AbsentView({super.key, required this.days, required this.lastEdited});
 
   final List<Object?> days;
-  final AbsentList absentInfo;
+  final DateTime lastEdited;
   @override
   State<AbsentView> createState() => _AbsentViewState();
 }
@@ -424,10 +424,21 @@ class _AbsentViewState extends State<AbsentView>
                                       .indexOf(" "))
                                   .toCapitalized(),
                               textScaleFactor: 1.3),
-                          Chip(
-                            label: Text(DateFormat('hh:mm - d/M').format(
-                                DateTime.parse("2023-03-24T06:27:35.901Z"))),
-                            avatar: const Icon(Icons.edit),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: AnimatedSlide(
+                              offset: widget.lastEdited !=
+                                      DateTime.fromMillisecondsSinceEpoch(0)
+                                  ? Offset(0, 0)
+                                  : Offset(1, 0),
+                              curve: Curves.easeOutExpo,
+                              duration: const Duration(milliseconds: 700),
+                              child: Chip(
+                                label: Text(DateFormat('hh:mm - d/M')
+                                    .format(widget.lastEdited)),
+                                avatar: const Icon(Icons.edit),
+                              ),
+                            ),
                           )
                         ],
                       )
