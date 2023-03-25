@@ -351,6 +351,18 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
     setState(() {
       absent = values;
     });
+    var driveApi = drive_api.DriveApi(httpClient);
+    driveApi.files
+        .get("1g8BA1HngopNXsQaw-VieouP0uR1x3rAnPGYJSmloVH8",
+            $fields: "modifiedTime")
+        .then((file) {
+      var stringFile = json.encode(file);
+      DateTime editedDate =
+          DateTime.parse(json.decode(stringFile)["modifiedTime"].toString());
+      setState(() {
+        lastEdited = editedDate;
+      });
+    });
   }
 }
 
