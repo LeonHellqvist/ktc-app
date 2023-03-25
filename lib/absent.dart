@@ -4,13 +4,17 @@ import 'dart:io' show Platform;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googleapis/sheets/v4.dart' as api;
+import 'package:googleapis/sheets/v4.dart' as sheets_api;
+import 'package:googleapis/drive/v3.dart' as drive_api;
+import 'package:googleapis/people/v1.dart' as people_api;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:ktc_app/absent_cache.dart';
 import 'package:ktc_app/ad_component.dart';
 import 'package:ktc_app/ad_helper.dart';
 import 'package:ktc_app/login_status.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:skeletons/skeletons.dart';
 
 import 'config.dart';
 
@@ -40,10 +44,18 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
       ? GoogleSignIn(
           clientId:
               "114566651471-2ne2tukjh0r1t2cn6blqmulj0e8tk49j.apps.googleusercontent.com",
-          scopes: <String>[api.SheetsApi.spreadsheetsReadonlyScope],
+          scopes: <String>[
+            sheets_api.SheetsApi.spreadsheetsReadonlyScope,
+            drive_api.DriveApi.driveReadonlyScope,
+            people_api.PeopleServiceApi.directoryReadonlyScope,
+          ],
         )
       : GoogleSignIn(
-          scopes: <String>[api.SheetsApi.spreadsheetsReadonlyScope],
+          scopes: <String>[
+            sheets_api.SheetsApi.spreadsheetsReadonlyScope,
+            drive_api.DriveApi.driveReadonlyScope,
+            people_api.PeopleServiceApi.directoryReadonlyScope
+          ],
         );
 
   GoogleSignInAccount? _currentUser;
@@ -61,8 +73,50 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  updateCache(values, peopleApi) async {
+    for (int i = 0; i < values.length; i++) {
+      for (int j = 1; j < values[i].length; j++) {
+        bool found = false;
+        for (int k = 0;
+            k < currentAbsentCache.getAbsentCache().absents.length;
+            k++) {
+          if (values[i][j].toString().split(" - ")[0].toLowerCase() ==
+              currentAbsentCache
+                  .getAbsentCache()
+                  .absents[k]
+                  .name
+                  .toLowerCase()) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          log(values[i][j].toString().split(" - ")[0]);
+          peopleApi.people.searchDirectoryPeople(
+              query: values[i][j].toString().split(" - ")[0],
+              pageSize: 1,
+              readMask: "emailAddresses,photos",
+              sources: [
+                "DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE"
+              ]).then((people_api.SearchDirectoryPeopleResponse response) {
+            log(response.people![0].photos.toString());
+            currentAbsentCache.addAbsentCache(Absent(
+                email: response.people![0].emailAddresses![0].value.toString(),
+                name: values[i][j].toString().split(" - ")[0],
+                photoUrl: response.people![0].photos == null
+                    ? "Default"
+                    : response.people![0].photos![0].url!));
+          });
+          await Future.delayed(const Duration(milliseconds: 200));
+          setState(() {});
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
+    currentAbsentCache.clearAbsentCache();
     _tabController = TabController(
       initialIndex:
           (DateTime.now().weekday > 5 ? 5 : DateTime.now().weekday) - 1,
@@ -92,8 +146,8 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
           currentLoginStatus.setLoginStatus("in");
         }
         var httpClient = (await _googleSignIn.authenticatedClient())!;
-        var sheetsApi = api.SheetsApi(httpClient);
-        api.ValueRange sheet = await sheetsApi.spreadsheets.values.get(
+        var sheetsApi = sheets_api.SheetsApi(httpClient);
+        sheets_api.ValueRange sheet = await sheetsApi.spreadsheets.values.get(
             "1g8BA1HngopNXsQaw-VieouP0uR1x3rAnPGYJSmloVH8", "Blad1",
             majorDimension: "COLUMNS");
         List<List<Object?>> values = sheet.values!;
@@ -104,6 +158,8 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
         setState(() {
           absent = values;
         });
+        var peopleApi = people_api.PeopleServiceApi(httpClient);
+        updateCache(values, peopleApi);
       }
     });
     _googleSignIn.signInSilently();
@@ -143,7 +199,10 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
                     for (final days in absent!)
                       RefreshIndicator(
                           onRefresh: _pullRefresh,
-                          child: AbsentView(days: days))
+                          child: AbsentView(
+                            days: days,
+                            absentInfo: currentAbsentCache.getAbsentCache(),
+                          ))
                   ]);
                 } else {
                   return const Center(
@@ -267,8 +326,8 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
 
   Future<void> _pullRefresh() async {
     var httpClient = (await _googleSignIn.authenticatedClient())!;
-    var sheetsApi = api.SheetsApi(httpClient);
-    api.ValueRange sheet = await sheetsApi.spreadsheets.values.get(
+    var sheetsApi = sheets_api.SheetsApi(httpClient);
+    sheets_api.ValueRange sheet = await sheetsApi.spreadsheets.values.get(
         "1g8BA1HngopNXsQaw-VieouP0uR1x3rAnPGYJSmloVH8", "Blad1",
         majorDimension: "COLUMNS");
     List<List<Object?>> values = sheet.values!;
@@ -283,9 +342,10 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
 }
 
 class AbsentView extends StatefulWidget {
-  const AbsentView({super.key, required this.days});
+  const AbsentView({super.key, required this.days, required this.absentInfo});
 
   final List<Object?> days;
+  final AbsentList absentInfo;
   @override
   State<AbsentView> createState() => _AbsentViewState();
 }
@@ -307,6 +367,10 @@ class _AbsentViewState extends State<AbsentView>
     super.dispose();
   }
 
+  String getInitials(String absent) => absent.isNotEmpty
+      ? absent.trim().split(RegExp(' +')).map((s) => s[0]).take(2).join()
+      : '';
+
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
@@ -314,6 +378,8 @@ class _AbsentViewState extends State<AbsentView>
       child: ListView.builder(
         itemCount: widget.days.length,
         itemBuilder: (context, index) {
+          Absent absentCache =
+              currentAbsentCache.findAbsentCache(widget.days[index].toString());
           return Padding(
             padding: index == 0
                 ? const EdgeInsets.fromLTRB(25, 15, 25, 0)
@@ -324,12 +390,37 @@ class _AbsentViewState extends State<AbsentView>
                 index == 0
                     ? Text(widget.days[index].toString().toCapitalized(),
                         textScaleFactor: 1.8)
-                    : Text(
-                        widget.days[index].toString(),
-                        textScaleFactor: 1.25,
-                      ),
+                    : Card(
+                        child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            leading: absentCache.photoUrl != "Loading"
+                                ? absentCache.photoUrl == "Default"
+                                    ? CircleAvatar(
+                                        child:
+                                            Text(getInitials(absentCache.name)),
+                                      )
+                                    : CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(absentCache.photoUrl),
+                                      )
+                                : const SkeletonAvatar(
+                                    style: SkeletonAvatarStyle(
+                                        shape: BoxShape.circle)),
+                            title: Text(
+                                widget.days[index].toString().toCapitalized()),
+                            subtitle: absentCache.email != "Loading"
+                                ? Text(
+                                    absentCache.email,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : const SkeletonLine(),
+                          ),
+                        ],
+                      )),
                 const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                   child: Divider(
                     height: 0,
                   ),

@@ -58,6 +58,7 @@ dependencies:
   firebase_crashlytics: ^3.0.17
   firebase_performance: ^0.9.0+16
   app_tracking_transparency: ^2.0.3
+  skeletons: ^0.0.3
 
 dev_dependencies:
   flutter_test:
