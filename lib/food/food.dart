@@ -167,105 +167,49 @@ class _DayComponentState extends State<DayComponent>
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
-      opacity: _animation,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 0),
+        opacity: _animation,
+        child: Transform.translate(
+          offset: const Offset(0, 10),
           child: Column(
             children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Row(
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: Column(
                   children: [
-                    Expanded(
-                      child: RichText(
-                          textScaleFactor: 1.5,
-                          text: TextSpan(
-                              style: DefaultTextStyle.of(context).style,
-                              children: <TextSpan>[
-                                widget.day == DateTime.now().weekday - 1 &&
-                                        DateTime.now().weekOfYear.toString() ==
-                                            widget.week
-                                    ? TextSpan(
-                                        text: DayComponent.weekDays[widget.day],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary))
-                                    : TextSpan(
-                                        text: DayComponent.weekDays[widget.day],
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                        )),
-                              ])),
-                    ),
-                    /* RichText(
-                        textScaleFactor: 1.2,
-                        text: TextSpan(
-                            style: DefaultTextStyle.of(context).style,
-                            children: <TextSpan>[
-                              widget.day == DateTime.now().weekday - 1 &&
-                                      DateTime.now().weekOfYear.toString() ==
-                                          widget.week
-                                  ? TextSpan(
-                                      text: 'Idag',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary),
-                                    )
-                                  : const TextSpan(),
-                            ])), */
+                    Card(
+                        elevation: widget.day == DateTime.now().weekday - 4 &&
+                                DateTime.now().weekOfYear.toString() ==
+                                    widget.week
+                            ? 3
+                            : 1,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                title: Text(DayComponent.weekDays[widget.day]),
+                                subtitle: Column(
+                                    children: widget.meals
+                                        .map((i) => Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                  textAlign: TextAlign.left,
+                                                  textScaleFactor: 1.05,
+                                                  "${i.value}."),
+                                            ))
+                                        .toList()),
+                              ),
+                            ],
+                          ),
+                        )),
+                    widget.day != 4 ? const Divider() : const SizedBox()
                   ],
-                ),
-              ),
-              Column(
-                  children: widget.meals
-                      .map((i) => Align(
-                            alignment: Alignment.centerLeft,
-                            child:
-                                // TODO: decide if we want to use this
-                                /* Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(2.0),
-                                  child: Text(
-                                      style: TextStyle(height: 1),
-                                      textScaleFactor: 1.2,
-                                      " "),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                      textAlign: TextAlign.left,
-                                      textScaleFactor: 1.15,
-                                      "${i.value}."),
-                                ),
-                              ],
-                            ), */
-                                Text(
-                                    textAlign: TextAlign.left,
-                                    textScaleFactor: 1.05,
-                                    "${i.value}."),
-                          ))
-                      .toList()),
-              const SizedBox(
-                height: 8,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
-                  child: Divider(
-                    height: 1,
-                  ),
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
 
