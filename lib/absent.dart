@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io' show Platform;
+import 'package:intl/intl.dart';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -64,6 +66,7 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
   int tabIndex = (DateTime.now().weekday > 5 ? 5 : DateTime.now().weekday) - 1;
 
   List<List<Object?>>? absent;
+  DateTime? lastEdited;
 
   String loginStatus = "in";
 
@@ -91,7 +94,6 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
           }
         }
         if (!found) {
-          log(values[i][j].toString().split(" - ")[0]);
           peopleApi.people.searchDirectoryPeople(
               query: values[i][j].toString().split(" - ")[0],
               pageSize: 1,
@@ -99,7 +101,6 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
               sources: [
                 "DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE"
               ]).then((people_api.SearchDirectoryPeopleResponse response) {
-            log(response.people![0].photos.toString());
             currentAbsentCache.addAbsentCache(Absent(
                 email: response.people![0].emailAddresses![0].value.toString(),
                 name: values[i][j].toString().split(" - ")[0],
@@ -157,6 +158,18 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
         }
         setState(() {
           absent = values;
+        });
+        var driveApi = drive_api.DriveApi(httpClient);
+        driveApi.files
+            .get("1g8BA1HngopNXsQaw-VieouP0uR1x3rAnPGYJSmloVH8",
+                $fields: "modifiedTime")
+            .then((file) {
+          var stringFile = json.encode(file);
+          DateTime editedDate = DateTime.parse(
+              json.decode(stringFile)["modifiedTime"].toString());
+          setState(() {
+            lastEdited = editedDate;
+          });
         });
         var peopleApi = people_api.PeopleServiceApi(httpClient);
         updateCache(values, peopleApi);
@@ -388,8 +401,24 @@ class _AbsentViewState extends State<AbsentView>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 index == 0
-                    ? Text(widget.days[index].toString().toCapitalized(),
-                        textScaleFactor: 1.8)
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                              widget.days[index]
+                                  .toString()
+                                  .substring(widget.days[index]
+                                      .toString()
+                                      .indexOf(" "))
+                                  .toCapitalized(),
+                              textScaleFactor: 1.3),
+                          Chip(
+                            label: Text(DateFormat('hh:mm - d/M').format(
+                                DateTime.parse("2023-03-24T06:27:35.901Z"))),
+                            avatar: const Icon(Icons.edit),
+                          )
+                        ],
+                      )
                     : Card(
                         child: Column(
                         mainAxisSize: MainAxisSize.min,
