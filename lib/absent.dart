@@ -428,8 +428,8 @@ class _AbsentViewState extends State<AbsentView>
                             child: AnimatedSlide(
                               offset: widget.lastEdited !=
                                       DateTime.fromMillisecondsSinceEpoch(0)
-                                  ? Offset(0, 0)
-                                  : Offset(1, 0),
+                                  ? const Offset(0, 0)
+                                  : const Offset(1, 0),
                               curve: Curves.easeOutExpo,
                               duration: const Duration(milliseconds: 700),
                               child: Chip(
