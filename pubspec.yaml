@@ -60,6 +60,7 @@ dependencies:
   app_tracking_transparency: ^2.0.3
   skeletons: ^0.0.3
   intl: ^0.18.0
+  flutter_colorpicker: ^1.0.3
 
 dev_dependencies:
   flutter_test:

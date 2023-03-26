@@ -1,7 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import 'package:ktc_app/components/selectors/favorites_selector.dart';
 import 'package:ktc_app/components/selectors/primary_selector.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:ktc_app/group_guid.dart';
@@ -22,6 +25,22 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsState extends State<SettingsPage> {
+  Color pickerColor = currentTheme.currentThemeDynamic().startsWith("custom")
+      ? TinyColor.fromString(
+              currentTheme.currentThemeDynamic().split("custom")[1])
+          .color
+      : const Color.fromARGB(255, 26, 120, 47);
+  Color currentColor = currentTheme.currentThemeDynamic().startsWith("custom")
+      ? TinyColor.fromString(
+              currentTheme.currentThemeDynamic().split("custom")[1])
+          .color
+      : const Color.fromARGB(255, 26, 120, 47);
+
+// ValueChanged<Color> callback
+  void changeColor(Color color) {
+    setState(() => pickerColor = color);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,27 +56,74 @@ class _SettingsState extends State<SettingsPage> {
               subtitle: const Text("Anpassa utseendet"),
               children: <Widget>[
                 ListTile(
+                    title: Row(children: [
+                  Expanded(
+                      child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+                    child: FilledButton.tonal(
+                        onPressed: () {
+                          currentTheme.switchThemeDynamic("app");
+                        },
+                        child: Text("App tema")),
+                  )),
+                  Platform.isAndroid
+                      ? Expanded(
+                          child: Padding(
+                          padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                          child: FilledButton.tonal(
+                              onPressed: () {
+                                currentTheme.switchThemeDynamic("system");
+                              },
+                              child: Text("System")),
+                        ))
+                      : const SizedBox(),
+                  Expanded(
+                      child: Padding(
+                    padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                    child: FilledButton.tonal(
+                        onPressed: () {
+                          showDialog<bool>(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  DefaultTabController(
+                                    initialIndex: 0,
+                                    length: 2,
+                                    child: AlertDialog(
+                                      title: const Text('Välj en temafärg'),
+                                      content: SingleChildScrollView(
+                                        child: ColorPicker(
+                                          pickerColor: pickerColor,
+                                          onColorChanged: changeColor,
+                                          enableAlpha: false,
+                                          pickerAreaBorderRadius:
+                                              const BorderRadius.all(
+                                                  Radius.circular(30)),
+                                          pickerAreaHeightPercent: 0.8,
+                                          labelTypes: const [],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          child: const Text('Använd'),
+                                          onPressed: () {
+                                            currentTheme.switchThemeDynamic(
+                                                "custom#${TinyColor.fromColor(pickerColor).toHex8().toString().substring(2)}");
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ));
+                        },
+                        child: Text("Eget tema")),
+                  )),
+                ])),
+                ListTile(
                     title: FilledButton.tonal(
                   onPressed: () {
                     currentTheme.switchTheme();
                   },
                   child: const Text('Ändra mörkt/ljust läge'),
-                )),
-                Platform.isAndroid
-                    ? ListTile(
-                        title: FilledButton.tonal(
-                        onPressed: () {
-                          currentTheme.switchThemeDynamic();
-                        },
-                        child: const Text('Ändra dynamiskt/standard tema'),
-                      ))
-                    : const SizedBox(height: 0),
-                ListTile(
-                    title: FilledButton.tonal(
-                  onPressed: () {
-                    currentTheme.switchThemeScheduleView();
-                  },
-                  child: const Text('Ändra vanligt/block schema'),
                 )),
               ],
             ),
@@ -79,6 +145,13 @@ class _SettingsState extends State<SettingsPage> {
                       child: FavoritesSelector(),
                     )),
                   ],
+                )),
+                ListTile(
+                    title: FilledButton.tonal(
+                  onPressed: () {
+                    currentTheme.switchThemeScheduleView();
+                  },
+                  child: const Text('Ändra vanligt/block schema'),
                 )),
               ],
             ),
