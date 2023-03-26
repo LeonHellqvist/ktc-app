@@ -406,8 +406,8 @@ class _AbsentViewState extends State<AbsentView>
               currentAbsentCache.findAbsentCache(widget.days[index].toString());
           return Padding(
             padding: index == 0
-                ? const EdgeInsets.fromLTRB(25, 15, 25, 0)
-                : const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                ? const EdgeInsets.fromLTRB(20, 15, 20, 0)
+                : const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
