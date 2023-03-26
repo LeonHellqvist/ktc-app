@@ -28,168 +28,174 @@ class _SettingsState extends State<SettingsPage> {
         appBar: AppBar(
           title: const Text("Inställningar"),
         ),
-        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
-            Widget>[
-          ExpansionTile(
-            title: const Text('Utseende'),
-            subtitle: const Text("Anpassa utseendet"),
-            children: <Widget>[
-              ListTile(
-                  title: FilledButton.tonal(
-                onPressed: () {
-                  currentTheme.switchTheme();
-                },
-                child: const Text('Ändra mörkt/ljust läge'),
-              )),
-              Platform.isAndroid
-                  ? ListTile(
-                      title: FilledButton.tonal(
-                      onPressed: () {
-                        currentTheme.switchThemeDynamic();
-                      },
-                      child: const Text('Ändra dynamiskt/standard tema'),
-                    ))
-                  : const SizedBox(height: 0),
-              ListTile(
-                  title: FilledButton.tonal(
-                onPressed: () {
-                  currentTheme.switchThemeScheduleView();
-                },
-                child: const Text('Ändra vanligt/block schema'),
-              )),
-            ],
-          ),
-          ExpansionTile(
-            title: const Text('Schema'),
-            subtitle: const Text("Ändra klass"),
-            children: <Widget>[
-              ListTile(
-                  title: Row(
-                children: const [
-                  Expanded(
-                      child: Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
-                    child: PrimarySelector(),
-                  )),
-                  Expanded(
-                      child: Padding(
-                    padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
-                    child: FavoritesSelector(),
-                  )),
-                ],
-              )),
-            ],
-          ),
-          ExpansionTile(
-            title: const Text('Medverkande'),
-            subtitle: const Text("Se alla som hjälpt till"),
-            children: <Widget>[
-              ListTile(
-                title: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                              child: InkWell(
-                                onTap: () => launchUrl(Uri.parse(
-                                    'https://github.com/leonhellqvist')),
-                                child: Image.asset(
-                                    height: 20,
-                                    'assets/images/github-mark-white.png'),
-                              ),
-                            ),
-                            const Text("Leon Hellqvist, TE21"),
-                          ],
-                        ),
-                        const Text("Skapare"),
-                      ],
-                    ),
-                    const Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                              child: InkWell(
-                                onTap: () => launchUrl(Uri.parse(
-                                    'https://github.com/erikdahlqvist')),
-                                child: Image.asset(
-                                    height: 20,
-                                    'assets/images/github-mark-white.png'),
-                              ),
-                            ),
-                            const Text("Erik Dahlqvist, TE21"),
-                          ],
-                        ),
-                        const Text("Små fixar"),
-                      ],
-                    ),
-                    TextButton(
-                      child: const Text("Vill du hjälpa till? Besök projektet"),
-                      onPressed: () => {_launchUrl()},
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          ExpansionTile(
-            title: const Text('Integritet'),
-            subtitle: const Text("Se integritetpolicyn och användarvilloren"),
-            children: <Widget>[
-              ListTile(
-                title: Column(
-                  children: [
-                    TextButton(
-                      child: const Text("Integritetspolicy"),
-                      onPressed: () => {_launchUrlPrivacy()},
-                    ),
-                    TextButton(
-                      child: const Text("Användarvillkor"),
-                      onPressed: () => {_launchUrlTerms()},
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          currentLoginStatus.getLoginStatus() == "in"
-              ? ExpansionTile(
-                  title: const Text('Google konto'),
-                  subtitle: const Text("Hantera ditt Google konto"),
-                  children: <Widget>[
-                    ListTile(
-                        title: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                        child: FilledButton.tonal(
-                          child: const Text("Logga ut från ditt Google konto"),
-                          onPressed: () =>
-                              {currentLoginStatus.setLoginStatus("logout")},
-                        ),
-                      ),
+        body: SingleChildScrollView(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+                  Widget>[
+            ExpansionTile(
+              title: const Text('Utseende'),
+              subtitle: const Text("Anpassa utseendet"),
+              children: <Widget>[
+                ListTile(
+                    title: FilledButton.tonal(
+                  onPressed: () {
+                    currentTheme.switchTheme();
+                  },
+                  child: const Text('Ändra mörkt/ljust läge'),
+                )),
+                Platform.isAndroid
+                    ? ListTile(
+                        title: FilledButton.tonal(
+                        onPressed: () {
+                          currentTheme.switchThemeDynamic();
+                        },
+                        child: const Text('Ändra dynamiskt/standard tema'),
+                      ))
+                    : const SizedBox(height: 0),
+                ListTile(
+                    title: FilledButton.tonal(
+                  onPressed: () {
+                    currentTheme.switchThemeScheduleView();
+                  },
+                  child: const Text('Ändra vanligt/block schema'),
+                )),
+              ],
+            ),
+            ExpansionTile(
+              title: const Text('Schema'),
+              subtitle: const Text("Ändra klass"),
+              children: <Widget>[
+                ListTile(
+                    title: Row(
+                  children: const [
+                    Expanded(
+                        child: Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+                      child: PrimarySelector(),
+                    )),
+                    Expanded(
+                        child: Padding(
+                      padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                      child: FavoritesSelector(),
                     )),
                   ],
-                )
-              : const Text(""),
-          ListTile(
-            title: const Text('Programvara från tredje part'),
-            subtitle:
-                const Text("Bra programvara som hjälpt med detta projekt"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const LicenseScreen()),
-              );
-            },
-          ),
-        ]));
+                )),
+              ],
+            ),
+            ExpansionTile(
+              title: const Text('Medverkande'),
+              subtitle: const Text("Se alla som hjälpt till"),
+              children: <Widget>[
+                ListTile(
+                  title: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                                child: InkWell(
+                                  onTap: () => launchUrl(Uri.parse(
+                                      'https://github.com/leonhellqvist')),
+                                  child: Image.asset(
+                                      height: 20,
+                                      'assets/images/github-mark-white.png'),
+                                ),
+                              ),
+                              const Text("Leon Hellqvist, TE21"),
+                            ],
+                          ),
+                          const Text("Skapare"),
+                        ],
+                      ),
+                      const Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                                child: InkWell(
+                                  onTap: () => launchUrl(Uri.parse(
+                                      'https://github.com/erikdahlqvist')),
+                                  child: Image.asset(
+                                      height: 20,
+                                      'assets/images/github-mark-white.png'),
+                                ),
+                              ),
+                              const Text("Erik Dahlqvist, TE21"),
+                            ],
+                          ),
+                          const Text("Små fixar"),
+                        ],
+                      ),
+                      TextButton(
+                        child:
+                            const Text("Vill du hjälpa till? Besök projektet"),
+                        onPressed: () => {_launchUrl()},
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            ExpansionTile(
+              title: const Text('Integritet'),
+              subtitle: const Text("Se integritetpolicyn och användarvilloren"),
+              children: <Widget>[
+                ListTile(
+                  title: Column(
+                    children: [
+                      TextButton(
+                        child: const Text("Integritetspolicy"),
+                        onPressed: () => {_launchUrlPrivacy()},
+                      ),
+                      TextButton(
+                        child: const Text("Användarvillkor"),
+                        onPressed: () => {_launchUrlTerms()},
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            currentLoginStatus.getLoginStatus() == "in"
+                ? ExpansionTile(
+                    title: const Text('Google konto'),
+                    subtitle: const Text("Hantera ditt Google konto"),
+                    children: <Widget>[
+                      ListTile(
+                          title: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                          child: FilledButton.tonal(
+                            child:
+                                const Text("Logga ut från ditt Google konto"),
+                            onPressed: () =>
+                                {currentLoginStatus.setLoginStatus("logout")},
+                          ),
+                        ),
+                      )),
+                    ],
+                  )
+                : const Text(""),
+            ListTile(
+              title: const Text('Programvara från tredje part'),
+              subtitle:
+                  const Text("Bra programvara som hjälpt med detta projekt"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LicenseScreen()),
+                );
+              },
+            ),
+          ]),
+        ));
   }
 }
 
