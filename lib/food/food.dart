@@ -177,7 +177,7 @@ class _DayComponentState extends State<DayComponent>
                 child: Column(
                   children: [
                     Card(
-                        elevation: widget.day == DateTime.now().weekday - 4 &&
+                        elevation: widget.day == DateTime.now().weekday - 1 &&
                                 DateTime.now().weekOfYear.toString() ==
                                     widget.week
                             ? 3
