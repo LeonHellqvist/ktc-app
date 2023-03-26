@@ -17,7 +17,6 @@ class MyAbsentCache with ChangeNotifier {
   }
 
   AbsentList getAbsentCache() {
-    clearAbsentCache();
     if (absentCache == "") {
       return AbsentList(absents: []);
     } else {

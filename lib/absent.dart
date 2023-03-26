@@ -391,6 +391,18 @@ class _AbsentViewState extends State<AbsentView>
     super.dispose();
   }
 
+  String titleCase(String text) {
+    if (text == null) throw ArgumentError("string: $text");
+
+    if (text.isEmpty) return text;
+
+    /// If you are careful you could use only this part of the code as shown in the second option.
+    return text
+        .split(' ')
+        .map((word) => word[0].toUpperCase() + word.substring(1))
+        .join(' ');
+  }
+
   String getInitials(String absent) => absent.isNotEmpty
       ? absent.trim().split(RegExp(' +')).map((s) => s[0]).take(2).join()
       : '';
@@ -459,8 +471,8 @@ class _AbsentViewState extends State<AbsentView>
                                 : const SkeletonAvatar(
                                     style: SkeletonAvatarStyle(
                                         shape: BoxShape.circle)),
-                            title: Text(
-                                widget.days[index].toString().toCapitalized()),
+                            title:
+                                Text(titleCase(widget.days[index].toString())),
                             subtitle: absentCache.email != "Loading"
                                 ? Text(
                                     absentCache.email,
