@@ -164,8 +164,9 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
                 $fields: "modifiedTime")
             .then((file) {
           var stringFile = json.encode(file);
-          DateTime editedDate = DateTime.parse(
-              json.decode(stringFile)["modifiedTime"].toString());
+          DateTime editedDate =
+              DateTime.parse(json.decode(stringFile)["modifiedTime"].toString())
+                  .toLocal();
           setState(() {
             lastEdited = editedDate;
           });
