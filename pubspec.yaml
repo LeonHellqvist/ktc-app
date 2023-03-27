@@ -61,6 +61,7 @@ dependencies:
   skeletons: ^0.0.3
   intl: ^0.18.0
   flutter_colorpicker: ^1.0.3
+  touchable: ^1.0.2
 
 dev_dependencies:
   flutter_test:
