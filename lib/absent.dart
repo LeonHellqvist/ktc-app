@@ -358,7 +358,9 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
         .then((file) {
       var stringFile = json.encode(file);
       DateTime editedDate =
-          DateTime.parse(json.decode(stringFile)["modifiedTime"].toString());
+          DateTime.parse(json.decode(stringFile)["modifiedTime"].toString())
+              .toLocal();
+      log(editedDate.toString());
       setState(() {
         lastEdited = editedDate;
       });
@@ -434,7 +436,7 @@ class _AbsentViewState extends State<AbsentView>
                               curve: Curves.easeOutExpo,
                               duration: const Duration(milliseconds: 700),
                               child: Chip(
-                                label: Text(DateFormat('hh:mm - d/M')
+                                label: Text(DateFormat('HH:mm - d/M')
                                     .format(widget.lastEdited)),
                                 avatar: const Icon(Icons.edit),
                               ),
