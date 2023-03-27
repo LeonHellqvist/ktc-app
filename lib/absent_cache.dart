@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:googleapis/people/v1.dart';
 
 import 'config.dart';
 

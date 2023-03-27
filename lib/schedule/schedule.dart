@@ -422,7 +422,7 @@ class ScheduleComponent extends CustomPainter {
       ),
       actions: [
         TextButton(
-          child: Text("OK"),
+          child: const Text("OK"),
           onPressed: () {
             Navigator.of(context).pop();
           },

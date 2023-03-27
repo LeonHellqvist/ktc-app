@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class Schedule {
   Schedule({
     required this.boxList,

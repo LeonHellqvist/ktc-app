@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
@@ -59,27 +58,27 @@ class _SettingsState extends State<SettingsPage> {
                     title: Row(children: [
                   Expanded(
                       child: Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                     child: FilledButton.tonal(
                         onPressed: () {
                           currentTheme.switchThemeDynamic("app");
                         },
-                        child: Text("App tema")),
+                        child: const Text("App tema")),
                   )),
                   Platform.isAndroid
                       ? Expanded(
                           child: Padding(
-                          padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                          padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                           child: FilledButton.tonal(
                               onPressed: () {
                                 currentTheme.switchThemeDynamic("system");
                               },
-                              child: Text("System")),
+                              child: const Text("System")),
                         ))
                       : const SizedBox(),
                   Expanded(
                       child: Padding(
-                    padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                     child: FilledButton.tonal(
                         onPressed: () {
                           showDialog<bool>(
@@ -115,7 +114,7 @@ class _SettingsState extends State<SettingsPage> {
                                     ),
                                   ));
                         },
-                        child: Text("Eget tema")),
+                        child: const Text("Eget tema")),
                   )),
                 ])),
                 ListTile(
