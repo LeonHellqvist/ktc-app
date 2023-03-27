@@ -311,14 +311,16 @@ Color _getColorFromHex(String hexColor, bool text, context) {
         .desaturate(6)
         .color;
   }
+  if (color.color == Colors.white) {
+    if (!text) {
+      return Theme.of(context).colorScheme.background;
+    }
+  }
   if (currentTheme.currentTheme() == ThemeMode.light) {
     return color.color;
   }
   if (text) {
     return Colors.white;
-  }
-  if (color.color == Colors.white) {
-    return Theme.of(context).colorScheme.background;
   }
   if (color.color == Colors.black) {
     return const Color.fromARGB(75, 255, 255, 255);
