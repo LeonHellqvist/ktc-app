@@ -13,6 +13,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:animations/animations.dart';
 import 'package:ktc_app/caller.dart';
 import 'package:ktc_app/preload_image.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:dynamic_color/dynamic_color.dart';
@@ -83,11 +84,23 @@ class _MyAppState extends State<MyApp> {
       if (lightDynamic != null && darkDynamic != null) {
         // On Android S+ devices, use the provided dynamic color scheme.
         // (Recommended) Harmonize the dynamic color scheme' built-in semantic colors.
-        if (currentTheme.currentThemeDynamic()) {
-          lightColorScheme = lightDynamic;
+        if (currentTheme.currentThemeDynamic() != "app") {
+          if (currentTheme.currentThemeDynamic() == "system") {
+            lightColorScheme = lightDynamic;
 
-          // Repeat for the dark color scheme.
-          darkColorScheme = darkDynamic;
+            // Repeat for the dark color scheme.
+            darkColorScheme = darkDynamic;
+          } else {
+            lightColorScheme = ColorScheme.fromSeed(
+                seedColor: TinyColor.fromString(
+                        currentTheme.currentThemeDynamic().split("custom")[0])
+                    .color);
+            darkColorScheme = ColorScheme.fromSeed(
+                seedColor: TinyColor.fromString(
+                        currentTheme.currentThemeDynamic().split("custom")[0])
+                    .color,
+                brightness: Brightness.dark);
+          }
         } else {
           // Otherwise, use fallback schemes.
           lightColorScheme = ColorScheme.fromSeed(
@@ -99,14 +112,26 @@ class _MyAppState extends State<MyApp> {
           );
         }
       } else {
-        // Otherwise, use fallback schemes.
-        lightColorScheme = ColorScheme.fromSeed(
-          seedColor: Colors.green,
-        );
-        darkColorScheme = ColorScheme.fromSeed(
-          seedColor: Colors.green,
-          brightness: Brightness.dark,
-        );
+        if (currentTheme.currentThemeDynamic() == "app") {
+          // Otherwise, use fallback schemes.
+          lightColorScheme = ColorScheme.fromSeed(
+            seedColor: Colors.green,
+          );
+          darkColorScheme = ColorScheme.fromSeed(
+            seedColor: Colors.green,
+            brightness: Brightness.dark,
+          );
+        } else {
+          lightColorScheme = ColorScheme.fromSeed(
+              seedColor: TinyColor.fromString(
+                      currentTheme.currentThemeDynamic().split("custom")[1])
+                  .color);
+          darkColorScheme = ColorScheme.fromSeed(
+              seedColor: TinyColor.fromString(
+                      currentTheme.currentThemeDynamic().split("custom")[1])
+                  .color,
+              brightness: Brightness.dark);
+        }
       }
 
       return MaterialApp(
