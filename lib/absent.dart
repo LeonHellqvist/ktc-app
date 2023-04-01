@@ -461,6 +461,8 @@ class _AbsentViewState extends State<AbsentView>
                                       )
                                 : const SkeletonAvatar(
                                     style: SkeletonAvatarStyle(
+                                        height: 40,
+                                        width: 40,
                                         shape: BoxShape.circle)),
                             title: Text(
                                 widget.days[index].toString().toTitleCase()),
@@ -470,7 +472,9 @@ class _AbsentViewState extends State<AbsentView>
                                         .replaceAll("-", "\ufeff-\ufeff"),
                                     overflow: TextOverflow.ellipsis,
                                   )
-                                : const SkeletonLine(),
+                                : const SkeletonLine(
+                                    style: SkeletonLineStyle(height: 14),
+                                  ),
                           ),
                         ],
                       )),
