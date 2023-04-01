@@ -316,6 +316,12 @@ Color _getColorFromHex(String hexColor, bool text, context) {
       return Theme.of(context).colorScheme.background;
     }
   }
+  if (color.color == TinyColor.fromString("#cccccc").color) {
+    if (currentTheme.currentTheme() == ThemeMode.light) {
+      return Theme.of(context).colorScheme.background;
+    }
+    return Colors.black38;
+  }
   if (currentTheme.currentTheme() == ThemeMode.light) {
     return color.color;
   }
@@ -324,9 +330,6 @@ Color _getColorFromHex(String hexColor, bool text, context) {
   }
   if (color.color == Colors.black) {
     return const Color.fromARGB(75, 255, 255, 255);
-  }
-  if (color.color == TinyColor.fromString("#cccccc").color) {
-    return Colors.black38;
   }
   color.darken(15);
   color.desaturate(60);
