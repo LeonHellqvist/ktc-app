@@ -101,12 +101,15 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
               sources: [
                 "DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE"
               ]).then((people_api.SearchDirectoryPeopleResponse response) {
-            currentAbsentCache.addAbsentCache(Absent(
-                email: response.people![0].emailAddresses![0].value.toString(),
-                name: values[i][j].toString().split(" - ")[0],
-                photoUrl: response.people![0].photos == null
-                    ? "Default"
-                    : response.people![0].photos![0].url!));
+            if (response.people != null) {
+              currentAbsentCache.addAbsentCache(Absent(
+                  email:
+                      response.people![0].emailAddresses![0].value.toString(),
+                  name: values[i][j].toString().split(" - ")[0],
+                  photoUrl: response.people![0].photos == null
+                      ? "Default"
+                      : response.people![0].photos![0].url!));
+            }
           });
           await Future.delayed(const Duration(milliseconds: 200));
           setState(() {});
