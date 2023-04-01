@@ -481,12 +481,16 @@ class _AbsentViewState extends State<AbsentView>
                           ),
                         ],
                       )),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                  child: Divider(
-                    height: 0,
-                  ),
-                )
+                index != widget.days.length - 1
+                    ? const Padding(
+                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: Divider(
+                          height: 0,
+                        ),
+                      )
+                    : const SizedBox(
+                        height: 10,
+                      )
               ],
             ),
           );
