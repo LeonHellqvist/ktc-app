@@ -219,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    showAds = true;
+    showAds = false;
     if (Platform.isIOS) {
       initPlugin();
     }

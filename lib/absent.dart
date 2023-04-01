@@ -466,7 +466,8 @@ class _AbsentViewState extends State<AbsentView>
                                 widget.days[index].toString().toTitleCase()),
                             subtitle: absentCache.email != "Loading"
                                 ? Text(
-                                    absentCache.email,
+                                    absentCache.email
+                                        .replaceAll("-", "\ufeff-\ufeff"),
                                     overflow: TextOverflow.ellipsis,
                                   )
                                 : const SkeletonLine(),
