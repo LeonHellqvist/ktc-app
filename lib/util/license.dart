@@ -136,7 +136,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
-        version: r'^5.0.3',
+        version: r'^5.1.1',
         homepage: r'https://github.com/cfug/dio',
         repository: r'https://github.com/cfug/dio/blob/main/dio',
       ),
@@ -344,7 +344,7 @@ SOFTWARE.''',
    See the License for the specific language governing permissions and
    limitations under the License.
 ''',
-        version: r'^3.4.0',
+        version: r'^3.4.1',
         homepage: null,
         repository: r'https://github.com/llfbandit/dio_cache_interceptor',
       ),
@@ -825,7 +825,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
-        version: r'^2.8.0',
+        version: r'^2.9.0',
         homepage: r'https://firebase.google.com/docs/flutter/setup',
         repository: r'https://github.com/firebase/flutterfire/tree/master/packages/firebase_core/firebase_core',
       ),
@@ -858,7 +858,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
-        version: r'^3.0.17',
+        version: r'^3.1.0',
         homepage: r'https://firebase.google.com/docs/crashlytics',
         repository: r'https://github.com/firebase/flutterfire/tree/master/packages/firebase_crashlytics/firebase_crashlytics',
       ),
@@ -892,7 +892,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ''',
-        version: r'^0.9.0+16',
+        version: r'^0.9.1',
         homepage: r'https://firebase.google.com/docs/perf-mon',
         repository: r'https://github.com/firebase/flutterfire/tree/master/packages/firebase_performance/firebase_performance',
       ),
@@ -1265,7 +1265,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    See the License for the specific language governing permissions and
    limitations under the License.
 ''',
-        version: r'^2.3.0',
+        version: r'^2.4.0',
         homepage: null,
         repository: r'https://github.com/googleads/googleads-mobile-flutter/tree/main/packages/google_mobile_ads',
       ),
