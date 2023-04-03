@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'config.dart';
 
 class MyTheme with ChangeNotifier {
   static bool _isDark = true;
-  static String _theme = "app";
+  static String _theme = Platform.isIOS ? "app" : "system";
   static String _scheduleView = "standard";
 
   MyTheme() {
