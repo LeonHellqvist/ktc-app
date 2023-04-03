@@ -93,11 +93,11 @@ class _MyAppState extends State<MyApp> {
           } else {
             lightColorScheme = ColorScheme.fromSeed(
                 seedColor: TinyColor.fromString(
-                        currentTheme.currentThemeDynamic().split("custom")[0])
+                        currentTheme.currentThemeDynamic().split("custom")[1])
                     .color);
             darkColorScheme = ColorScheme.fromSeed(
                 seedColor: TinyColor.fromString(
-                        currentTheme.currentThemeDynamic().split("custom")[0])
+                        currentTheme.currentThemeDynamic().split("custom")[1])
                     .color,
                 brightness: Brightness.dark);
           }
