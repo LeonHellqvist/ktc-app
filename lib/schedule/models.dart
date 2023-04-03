@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class Schedule {
   Schedule({
     required this.boxList,
@@ -47,7 +45,7 @@ class BoxList {
     required this.id,
     this.parentId,
     required this.type,
-    this.lessonGuids,
+    required this.lessonGuids,
   });
   late final int x;
   late final int y;
@@ -58,7 +56,7 @@ class BoxList {
   late final int id;
   late final int? parentId;
   late final String type;
-  late final List<String>? lessonGuids;
+  late final List<dynamic>? lessonGuids;
 
   BoxList.fromJson(Map<String, dynamic> json) {
     x = json['x'];
@@ -70,7 +68,7 @@ class BoxList {
     id = json['id'];
     parentId = null;
     type = json['type'];
-    lessonGuids = null;
+    lessonGuids = json['lessonGuids'];
   }
 
   Map<String, dynamic> toJson() {

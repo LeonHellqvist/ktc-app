@@ -17,7 +17,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.4+7
+version: 1.1.0+8
 
 environment:
   sdk: ">=2.18.5 <3.0.0"
@@ -39,13 +39,13 @@ dependencies:
   http: ^0.13.5
   week_of_year: ^2.0.0
   zoom_widget: ^2.0.1
-  dio_cache_interceptor: ^3.4.0
-  dio: ^5.0.3
+  dio_cache_interceptor: ^3.4.1
+  dio: ^5.1.1
   tinycolor2: ^3.0.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   google_sign_in: ^6.0.2
-  firebase_core: ^2.8.0
+  firebase_core: ^2.9.0
   googleapis: ^10.1.0
   extension_google_sign_in_as_googleapis_auth: ^2.0.9
   flutter_launcher_icons: ^0.12.0
@@ -54,10 +54,14 @@ dependencies:
   path_provider: ^2.0.14
   dynamic_color: ^1.6.2
   flutter_signin_button: ^2.0.0
-  google_mobile_ads: ^2.3.0
-  firebase_crashlytics: ^3.0.17
-  firebase_performance: ^0.9.0+16
+  google_mobile_ads: ^2.4.0
+  firebase_crashlytics: ^3.1.0
+  firebase_performance: ^0.9.1
   app_tracking_transparency: ^2.0.3
+  skeletons: ^0.0.3
+  intl: ^0.18.0
+  flutter_colorpicker: ^1.0.3
+  touchable: ^1.0.2
 
 dev_dependencies:
   flutter_test:

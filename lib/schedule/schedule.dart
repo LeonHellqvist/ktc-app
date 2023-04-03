@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:touchable/touchable.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -7,14 +8,14 @@ import 'package:ktc_app/ad_component.dart';
 import 'package:ktc_app/group_guid.dart';
 import 'package:week_of_year/week_of_year.dart';
 import 'package:tinycolor2/tinycolor2.dart';
-import 'package:dio/dio.dart';
 import 'package:ktc_app/ad_helper.dart';
+import '../caller.dart';
 import '../config.dart';
 
 import 'models.dart';
 
 Future<Schedule> fetchSchedule(String groupGuid, int scheduleDay, int week,
-    int width, int height, Dio dio, bool dayView) async {
+    int width, int height, Caller caller, bool dayView) async {
   int year = DateTime.now().year;
 
   String selectionType = groupGuid.split(":")[1];
@@ -30,7 +31,7 @@ Future<Schedule> fetchSchedule(String groupGuid, int scheduleDay, int week,
 
   log(url);
 
-  final response = await dio.getUri(Uri.parse(url));
+  final response = await caller.requestCall(url);
 
   if (response.statusCode == 200 || response.statusCode == 304) {
     return Schedule.fromJson(jsonDecode(response.data));
@@ -45,11 +46,11 @@ class SchedulePage extends StatefulWidget {
   const SchedulePage({
     super.key,
     required this.currentGroupGuid,
-    required this.dio,
+    required this.caller,
     required this.showAds,
   });
   final MyGroupGuid currentGroupGuid;
-  final Dio dio;
+  final Caller caller;
   final bool showAds;
 
   @override
@@ -285,7 +286,7 @@ class _SchedulePageState extends State<SchedulePage>
                             height: height,
                             width: width,
                             altSchedule: altSchedule,
-                            dio: widget.dio,
+                            caller: widget.caller,
                             selectedWeek: selectedWeek,
                             dayView: dayView,
                             key: reDrawState))
@@ -310,20 +311,25 @@ Color _getColorFromHex(String hexColor, bool text, context) {
         .desaturate(6)
         .color;
   }
+  if (color.color == Colors.white) {
+    if (!text) {
+      return Theme.of(context).colorScheme.background;
+    }
+  }
+  if (color.color == TinyColor.fromString("#cccccc").color) {
+    if (currentTheme.currentTheme() == ThemeMode.light) {
+      return Theme.of(context).colorScheme.background;
+    }
+    return Colors.black38;
+  }
   if (currentTheme.currentTheme() == ThemeMode.light) {
     return color.color;
   }
   if (text) {
     return Colors.white;
   }
-  if (color.color == Colors.white) {
-    return Theme.of(context).colorScheme.background;
-  }
   if (color.color == Colors.black) {
     return const Color.fromARGB(75, 255, 255, 255);
-  }
-  if (color.color == TinyColor.fromString("#cccccc").color) {
-    return Colors.black38;
   }
   color.darken(15);
   color.desaturate(60);
@@ -361,9 +367,12 @@ class _DayComponentState extends State<DayComponent>
     return FadeTransition(
       opacity: _animation,
       child: currentTheme.currentThemeScheduleView() == "standard"
-          ? CustomPaint(
-              painter: ScheduleComponent(
-                  futureSchedule: widget.futureSchedule, context: context))
+          ? CanvasTouchDetector(
+              gesturesToOverride: const [GestureType.onTapUp],
+              builder: (context) => CustomPaint(
+                  painter: ScheduleComponent(
+                      futureSchedule: widget.futureSchedule, context: context)),
+            )
           : ContainerScheduleComponent(
               futureSchedule: widget.futureSchedule, context: context),
     );
@@ -377,25 +386,85 @@ class ScheduleComponent extends CustomPainter {
   final Schedule futureSchedule;
   final BuildContext context;
 
+  showAlertDialog(BuildContext context, List<dynamic>? lessonGuids,
+      List<LessonInfo> lessonInfo) {
+    if (lessonGuids == null) {
+      return;
+    }
+    List<String> days = ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag"];
+    Iterable<LessonInfo> relevantLessonInfo =
+        lessonInfo.where((element) => (lessonGuids.contains(element.guidId)));
+    for (int i = 0; i < relevantLessonInfo.length; i++) {
+      for (int j = 0; j < relevantLessonInfo.elementAt(i).texts.length; j++) {
+        if (relevantLessonInfo.elementAt(i).texts[j] == "") {
+          relevantLessonInfo.elementAt(i).texts.removeAt(j);
+        }
+      }
+    }
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(
+          "${days[relevantLessonInfo.elementAt(0).dayOfWeekNumber - 1]} ${relevantLessonInfo.elementAt(0).timeStart.substring(0, 5)} - ${relevantLessonInfo.elementAt(0).timeEnd.substring(0, 5)}"),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minHeight: 50.0,
+          maxHeight: 400.0,
+        ),
+        child: SingleChildScrollView(
+          child: Column(children: [
+            for (LessonInfo relevantLesson in relevantLessonInfo)
+              Column(
+                children: [
+                  for (String text in relevantLesson.texts)
+                    Align(alignment: Alignment.centerLeft, child: Text(text)),
+                  const Divider()
+                ],
+              )
+          ]),
+        ),
+      ),
+      actions: [
+        TextButton(
+          child: const Text("OK"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
+    var myCanvas = TouchyCanvas(context, canvas);
+    List<LessonInfo> info = futureSchedule.lessonInfo;
     for (int i = 0; i < futureSchedule.boxList.length; i++) {
       BoxList box = futureSchedule.boxList[i];
       var paint = Paint()
         ..color = _getColorFromHex(box.bColor, false, context)
         ..style = PaintingStyle.fill;
 
-      canvas.drawRect(
+      myCanvas.drawRect(
           Offset(box.x.toDouble(), box.y.toDouble() - 25) &
               Size(box.width.toDouble(), box.height.toDouble()),
-          paint);
+          paint,
+          onTapUp: (details) =>
+              {showAlertDialog(context, box.lessonGuids, info)});
 
       var paintS = Paint()
         ..color = _getColorFromHex("#000000", false, context)
         ..style = PaintingStyle.stroke;
 
       if (i != 0) {
-        canvas.drawRect(
+        myCanvas.drawRect(
             Offset(box.x.toDouble(), box.y.toDouble() - 25) &
                 Size(box.width.toDouble(), box.height.toDouble()),
             paintS);
@@ -407,7 +476,7 @@ class ScheduleComponent extends CustomPainter {
         ..color = _getColorFromHex(line.color, false, context)
         ..strokeWidth = 1;
 
-      canvas.drawLine(Offset(line.p1x.toDouble(), line.p1y.toDouble() - 25),
+      myCanvas.drawLine(Offset(line.p1x.toDouble(), line.p1y.toDouble() - 25),
           Offset(line.p2x.toDouble(), line.p2y.toDouble() - 25), paint);
     }
     for (int i = 0; i < futureSchedule.textList.length; i++) {
@@ -714,7 +783,7 @@ class TabViewComponent extends StatefulWidget {
     required this.height,
     required this.width,
     required this.altSchedule,
-    required this.dio,
+    required this.caller,
     required this.selectedWeek,
     required this.dayView,
   });
@@ -724,7 +793,7 @@ class TabViewComponent extends StatefulWidget {
   final int height;
   final int width;
   final bool altSchedule;
-  final Dio dio;
+  final Caller caller;
   final int selectedWeek;
   final bool dayView;
 
@@ -748,7 +817,7 @@ class _TabViewComponentState extends State<TabViewComponent> {
           widget.selectedWeek,
           widget.width,
           widget.height,
-          widget.dio,
+          widget.caller,
           widget.dayView,
         );
       });
@@ -768,7 +837,7 @@ class _TabViewComponentState extends State<TabViewComponent> {
           widget.selectedWeek,
           widget.width,
           widget.height,
-          widget.dio,
+          widget.caller,
           widget.dayView,
         );
       });

@@ -5,12 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:ktc_app/ad_component.dart';
 import 'package:ktc_app/ad_helper.dart';
 import 'package:week_of_year/week_of_year.dart';
+import '../caller.dart';
 import 'models.dart';
 
-Future<Food> fetchFood(int week, Dio dio) async {
+Future<Food> fetchFood(int week, Caller caller,
+    {bool forceRefresh = false}) async {
   int year = DateTime.now().year;
-  final response = await dio.getUri(Uri.parse(
-      'https://tools-proxy.leonhellqvist.workers.dev/?service=skolmaten&subService=menu&school=76517002&year=$year&week=$week'));
+  Response response;
+  if (forceRefresh) {
+    response = await caller.refreshForceCacheCall(
+        'https://tools-proxy.leonhellqvist.workers.dev/?service=skolmaten&subService=menu&school=76517002&year=$year&week=$week');
+  } else {
+    response = await caller.requestCall(
+        'https://tools-proxy.leonhellqvist.workers.dev/?service=skolmaten&subService=menu&school=76517002&year=$year&week=$week');
+  }
 
   if (response.statusCode == 200 || response.statusCode == 304) {
     return Food.fromJson(response.data);
@@ -22,9 +30,9 @@ Future<Food> fetchFood(int week, Dio dio) async {
 }
 
 class FoodPage extends StatefulWidget {
-  const FoodPage({super.key, required this.dio, required this.showAds});
+  const FoodPage({super.key, required this.caller, required this.showAds});
 
-  final Dio dio;
+  final Caller caller;
   final bool showAds;
 
   @override
@@ -105,7 +113,7 @@ class _FoodPageState extends State<FoodPage>
                   TabViewComponent(
                     tab: tab,
                     tabIndex: tabIndex.value,
-                    dio: widget.dio,
+                    caller: widget.caller,
                   )
               ],
             ),
@@ -159,105 +167,49 @@ class _DayComponentState extends State<DayComponent>
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
-      opacity: _animation,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 0),
+        opacity: _animation,
+        child: Transform.translate(
+          offset: const Offset(0, 10),
           child: Column(
             children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Row(
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: Column(
                   children: [
-                    Expanded(
-                      child: RichText(
-                          textScaleFactor: 1.5,
-                          text: TextSpan(
-                              style: DefaultTextStyle.of(context).style,
-                              children: <TextSpan>[
-                                widget.day == DateTime.now().weekday - 1 &&
-                                        DateTime.now().weekOfYear.toString() ==
-                                            widget.week
-                                    ? TextSpan(
-                                        text: DayComponent.weekDays[widget.day],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary))
-                                    : TextSpan(
-                                        text: DayComponent.weekDays[widget.day],
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                        )),
-                              ])),
-                    ),
-                    /* RichText(
-                        textScaleFactor: 1.2,
-                        text: TextSpan(
-                            style: DefaultTextStyle.of(context).style,
-                            children: <TextSpan>[
-                              widget.day == DateTime.now().weekday - 1 &&
-                                      DateTime.now().weekOfYear.toString() ==
-                                          widget.week
-                                  ? TextSpan(
-                                      text: 'Idag',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary),
-                                    )
-                                  : const TextSpan(),
-                            ])), */
+                    Card(
+                        elevation: widget.day == DateTime.now().weekday - 1 &&
+                                DateTime.now().weekOfYear.toString() ==
+                                    widget.week
+                            ? 3
+                            : 1,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 2, 0, 5),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                title: Text(DayComponent.weekDays[widget.day]),
+                                subtitle: Column(
+                                    children: widget.meals
+                                        .map((i) => Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                  textAlign: TextAlign.left,
+                                                  textScaleFactor: 1.05,
+                                                  "${i.value}."),
+                                            ))
+                                        .toList()),
+                              ),
+                            ],
+                          ),
+                        )),
+                    widget.day != 4 ? const Divider() : const SizedBox()
                   ],
-                ),
-              ),
-              Column(
-                  children: widget.meals
-                      .map((i) => Align(
-                            alignment: Alignment.centerLeft,
-                            child:
-                                // TODO: decide if we want to use this
-                                /* Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(2.0),
-                                  child: Text(
-                                      style: TextStyle(height: 1),
-                                      textScaleFactor: 1.2,
-                                      " "),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                      textAlign: TextAlign.left,
-                                      textScaleFactor: 1.15,
-                                      "${i.value}."),
-                                ),
-                              ],
-                            ), */
-                                Text(
-                                    textAlign: TextAlign.left,
-                                    textScaleFactor: 1.05,
-                                    "${i.value}."),
-                          ))
-                      .toList()),
-              const SizedBox(
-                height: 8,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
-                  child: Divider(
-                    height: 1,
-                  ),
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
 
@@ -266,10 +218,10 @@ class TabViewComponent extends StatefulWidget {
       {super.key,
       required this.tab,
       required this.tabIndex,
-      required this.dio});
+      required this.caller});
   final String tab;
   final int tabIndex;
-  final Dio dio;
+  final Caller caller;
 
   @override
   State<TabViewComponent> createState() => _TabViewComponentState();
@@ -280,50 +232,60 @@ class _TabViewComponentState extends State<TabViewComponent> {
 
   @override
   void initState() {
-    setState(() {
-      futureFood = fetchFood(int.parse(widget.tab), widget.dio);
-    });
+    updateFood();
     super.initState();
+  }
+
+  Future<void> updateFood({bool forceRefresh = false}) async {
+    setState(() {
+      futureFood = fetchFood(int.parse(widget.tab), widget.caller,
+          forceRefresh: forceRefresh);
+    });
+    return Future.delayed(const Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FutureBuilder<Food>(
-          future: futureFood,
-          builder: (BuildContext context, AsyncSnapshot<Food> snapshot) {
-            if (snapshot.data != null) {
-              int foundMeals = 0;
-              for (int i = 0;
-                  i < snapshot.data!.menu.weeks[0].days.length;
-                  i++) {
-                for (var meal in snapshot.data!.menu.weeks[0].days[i].meals) {
-                  if (meal.value == "") {
-                    foundMeals++;
+    return RefreshIndicator(
+      onRefresh: () => updateFood(forceRefresh: true),
+      child: Center(
+        child: FutureBuilder<Food>(
+            future: futureFood,
+            builder: (BuildContext context, AsyncSnapshot<Food> snapshot) {
+              if (snapshot.data != null) {
+                int foundMeals = 0;
+                for (int i = 0;
+                    i < snapshot.data!.menu.weeks[0].days.length;
+                    i++) {
+                  for (var meal in snapshot.data!.menu.weeks[0].days[i].meals) {
+                    if (meal.value == "") {
+                      foundMeals++;
+                    }
                   }
                 }
-              }
 
-              if (foundMeals == 0) {
-                return ListView.builder(
-                    itemCount: snapshot.data!.menu.weeks[0].days
-                        .length, // getting map length you can use keyList.length too
-                    itemBuilder: (BuildContext context, int index) {
-                      return DayComponent(
-                        meals: snapshot.data!.menu.weeks[0].days[index].meals,
-                        day:
-                            index // key // getting your map values from current key
-                        ,
-                        week: widget.tab,
-                      );
-                    });
+                if (foundMeals == 0) {
+                  return ListView.builder(
+                      itemCount: snapshot.data!.menu.weeks[0].days
+                          .length, // getting map length you can use keyList.length too
+                      itemBuilder: (BuildContext context, int index) {
+                        return DayComponent(
+                          meals: snapshot.data!.menu.weeks[0].days[index].meals,
+                          day:
+                              index // key // getting your map values from current key
+                          ,
+                          week: widget.tab,
+                        );
+                      });
+                } else {
+                  return const Text(
+                      textScaleFactor: 1.5, "Finns ingen matsedel");
+                }
               } else {
-                return const Text(textScaleFactor: 1.5, "Finns ingen matsedel");
+                return const Text("");
               }
-            } else {
-              return const Text("");
-            }
-          }),
+            }),
+      ),
     );
   }
 }

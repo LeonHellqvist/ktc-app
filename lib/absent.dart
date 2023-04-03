@@ -1,16 +1,22 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io' show Platform;
+import 'package:intl/intl.dart';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googleapis/sheets/v4.dart' as api;
+import 'package:googleapis/sheets/v4.dart' as sheets_api;
+import 'package:googleapis/drive/v3.dart' as drive_api;
+import 'package:googleapis/people/v1.dart' as people_api;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:ktc_app/absent_cache.dart';
 import 'package:ktc_app/ad_component.dart';
 import 'package:ktc_app/ad_helper.dart';
 import 'package:ktc_app/login_status.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:skeletons/skeletons.dart';
 
 import 'config.dart';
 
@@ -40,10 +46,18 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
       ? GoogleSignIn(
           clientId:
               "114566651471-2ne2tukjh0r1t2cn6blqmulj0e8tk49j.apps.googleusercontent.com",
-          scopes: <String>[api.SheetsApi.spreadsheetsReadonlyScope],
+          scopes: <String>[
+            sheets_api.SheetsApi.spreadsheetsReadonlyScope,
+            drive_api.DriveApi.driveReadonlyScope,
+            people_api.PeopleServiceApi.directoryReadonlyScope,
+          ],
         )
       : GoogleSignIn(
-          scopes: <String>[api.SheetsApi.spreadsheetsReadonlyScope],
+          scopes: <String>[
+            sheets_api.SheetsApi.spreadsheetsReadonlyScope,
+            drive_api.DriveApi.driveReadonlyScope,
+            people_api.PeopleServiceApi.directoryReadonlyScope
+          ],
         );
 
   GoogleSignInAccount? _currentUser;
@@ -52,6 +66,7 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
   int tabIndex = (DateTime.now().weekday > 5 ? 5 : DateTime.now().weekday) - 1;
 
   List<List<Object?>>? absent;
+  DateTime lastEdited = DateTime.fromMillisecondsSinceEpoch(0);
 
   String loginStatus = "in";
 
@@ -59,6 +74,48 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
   void dispose() {
     _tabController!.dispose();
     super.dispose();
+  }
+
+  updateCache(values, peopleApi) async {
+    for (int i = 0; i < values.length; i++) {
+      for (int j = 1; j < values[i].length; j++) {
+        bool found = false;
+        for (int k = 0;
+            k < currentAbsentCache.getAbsentCache().absents.length;
+            k++) {
+          if (values[i][j].toString().split(" - ")[0].toLowerCase() ==
+              currentAbsentCache
+                  .getAbsentCache()
+                  .absents[k]
+                  .name
+                  .toLowerCase()) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          peopleApi.people.searchDirectoryPeople(
+              query: values[i][j].toString().split(" - ")[0],
+              pageSize: 1,
+              readMask: "emailAddresses,photos",
+              sources: [
+                "DIRECTORY_SOURCE_TYPE_DOMAIN_PROFILE"
+              ]).then((people_api.SearchDirectoryPeopleResponse response) {
+            if (response.people != null) {
+              currentAbsentCache.addAbsentCache(Absent(
+                  email:
+                      response.people![0].emailAddresses![0].value.toString(),
+                  name: values[i][j].toString().split(" - ")[0],
+                  photoUrl: response.people![0].photos == null
+                      ? "Default"
+                      : response.people![0].photos![0].url!));
+            }
+          });
+          await Future.delayed(const Duration(milliseconds: 200));
+          setState(() {});
+        }
+      }
+    }
   }
 
   @override
@@ -92,8 +149,8 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
           currentLoginStatus.setLoginStatus("in");
         }
         var httpClient = (await _googleSignIn.authenticatedClient())!;
-        var sheetsApi = api.SheetsApi(httpClient);
-        api.ValueRange sheet = await sheetsApi.spreadsheets.values.get(
+        var sheetsApi = sheets_api.SheetsApi(httpClient);
+        sheets_api.ValueRange sheet = await sheetsApi.spreadsheets.values.get(
             "1g8BA1HngopNXsQaw-VieouP0uR1x3rAnPGYJSmloVH8", "Blad1",
             majorDimension: "COLUMNS");
         List<List<Object?>> values = sheet.values!;
@@ -104,6 +161,21 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
         setState(() {
           absent = values;
         });
+        var driveApi = drive_api.DriveApi(httpClient);
+        driveApi.files
+            .get("1g8BA1HngopNXsQaw-VieouP0uR1x3rAnPGYJSmloVH8",
+                $fields: "modifiedTime")
+            .then((file) {
+          var stringFile = json.encode(file);
+          DateTime editedDate =
+              DateTime.parse(json.decode(stringFile)["modifiedTime"].toString())
+                  .toLocal();
+          setState(() {
+            lastEdited = editedDate;
+          });
+        });
+        var peopleApi = people_api.PeopleServiceApi(httpClient);
+        updateCache(values, peopleApi);
       }
     });
     _googleSignIn.signInSilently();
@@ -143,7 +215,10 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
                     for (final days in absent!)
                       RefreshIndicator(
                           onRefresh: _pullRefresh,
-                          child: AbsentView(days: days))
+                          child: AbsentView(
+                            days: days,
+                            lastEdited: lastEdited,
+                          ))
                   ]);
                 } else {
                   return const Center(
@@ -267,8 +342,8 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
 
   Future<void> _pullRefresh() async {
     var httpClient = (await _googleSignIn.authenticatedClient())!;
-    var sheetsApi = api.SheetsApi(httpClient);
-    api.ValueRange sheet = await sheetsApi.spreadsheets.values.get(
+    var sheetsApi = sheets_api.SheetsApi(httpClient);
+    sheets_api.ValueRange sheet = await sheetsApi.spreadsheets.values.get(
         "1g8BA1HngopNXsQaw-VieouP0uR1x3rAnPGYJSmloVH8", "Blad1",
         majorDimension: "COLUMNS");
     List<List<Object?>> values = sheet.values!;
@@ -279,13 +354,28 @@ class _AbsentPageState extends State<AbsentPage> with TickerProviderStateMixin {
     setState(() {
       absent = values;
     });
+    var driveApi = drive_api.DriveApi(httpClient);
+    driveApi.files
+        .get("1g8BA1HngopNXsQaw-VieouP0uR1x3rAnPGYJSmloVH8",
+            $fields: "modifiedTime")
+        .then((file) {
+      var stringFile = json.encode(file);
+      DateTime editedDate =
+          DateTime.parse(json.decode(stringFile)["modifiedTime"].toString())
+              .toLocal();
+      log(editedDate.toString());
+      setState(() {
+        lastEdited = editedDate;
+      });
+    });
   }
 }
 
 class AbsentView extends StatefulWidget {
-  const AbsentView({super.key, required this.days});
+  const AbsentView({super.key, required this.days, required this.lastEdited});
 
   final List<Object?> days;
+  final DateTime lastEdited;
   @override
   State<AbsentView> createState() => _AbsentViewState();
 }
@@ -307,6 +397,10 @@ class _AbsentViewState extends State<AbsentView>
     super.dispose();
   }
 
+  String getInitials(String absent) => absent.isNotEmpty
+      ? absent.trim().split(RegExp(' +')).map((s) => s[0]).take(2).join()
+      : '';
+
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
@@ -314,26 +408,89 @@ class _AbsentViewState extends State<AbsentView>
       child: ListView.builder(
         itemCount: widget.days.length,
         itemBuilder: (context, index) {
+          Absent absentCache =
+              currentAbsentCache.findAbsentCache(widget.days[index].toString());
           return Padding(
             padding: index == 0
-                ? const EdgeInsets.fromLTRB(25, 15, 25, 0)
-                : const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                ? const EdgeInsets.fromLTRB(20, 15, 20, 0)
+                : const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 index == 0
-                    ? Text(widget.days[index].toString().toCapitalized(),
-                        textScaleFactor: 1.8)
-                    : Text(
-                        widget.days[index].toString(),
-                        textScaleFactor: 1.25,
-                      ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                  child: Divider(
-                    height: 0,
-                  ),
-                )
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                              widget.days[index]
+                                  .toString()
+                                  .substring(widget.days[index]
+                                      .toString()
+                                      .indexOf(" "))
+                                  .toCapitalized(),
+                              textScaleFactor: 1.3),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: AnimatedSlide(
+                              offset: widget.lastEdited !=
+                                      DateTime.fromMillisecondsSinceEpoch(0)
+                                  ? const Offset(0, 0)
+                                  : const Offset(1, 0),
+                              curve: Curves.easeOutExpo,
+                              duration: const Duration(milliseconds: 700),
+                              child: Chip(
+                                label: Text(DateFormat('HH:mm - d/M')
+                                    .format(widget.lastEdited)),
+                                avatar: const Icon(Icons.edit),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    : Card(
+                        child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            leading: absentCache.photoUrl != "Loading"
+                                ? absentCache.photoUrl == "Default"
+                                    ? CircleAvatar(
+                                        child:
+                                            Text(getInitials(absentCache.name)),
+                                      )
+                                    : CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(absentCache.photoUrl),
+                                      )
+                                : const SkeletonAvatar(
+                                    style: SkeletonAvatarStyle(
+                                        height: 40,
+                                        width: 40,
+                                        shape: BoxShape.circle)),
+                            title: Text(
+                                widget.days[index].toString().toTitleCase()),
+                            subtitle: absentCache.email != "Loading"
+                                ? Text(
+                                    absentCache.email
+                                        .replaceAll("-", "\ufeff-\ufeff"),
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : const SkeletonLine(
+                                    style: SkeletonLineStyle(height: 14),
+                                  ),
+                          ),
+                        ],
+                      )),
+                index != widget.days.length - 1
+                    ? const Padding(
+                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: Divider(
+                          height: 0,
+                        ),
+                      )
+                    : const SizedBox(
+                        height: 10,
+                      )
               ],
             ),
           );

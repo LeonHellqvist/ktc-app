@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'config.dart';
 
 class MyTheme with ChangeNotifier {
   static bool _isDark = true;
-  static bool _isDynamic = true;
+  static String _theme = Platform.isIOS ? "app" : "system";
   static String _scheduleView = "standard";
 
   MyTheme() {
@@ -14,9 +16,9 @@ class MyTheme with ChangeNotifier {
       box!.put('currentTheme', _isDark);
     }
     if (box!.containsKey('currentThemeDynamic')) {
-      _isDynamic = box!.get('currentThemeDynamic');
+      _theme = box!.get('currentThemeDynamic');
     } else {
-      box!.put('currentThemeDynamic', _isDynamic);
+      box!.put('currentThemeDynamic', _theme);
     }
     if (box!.containsKey('currentThemeScheduleView')) {
       _scheduleView = box!.get('currentThemeScheduleView');
@@ -27,7 +29,7 @@ class MyTheme with ChangeNotifier {
 
   ThemeMode currentTheme() => _isDark ? ThemeMode.dark : ThemeMode.light;
 
-  bool currentThemeDynamic() => _isDynamic;
+  String currentThemeDynamic() => _theme;
 
   String currentThemeScheduleView() => _scheduleView;
 
@@ -37,9 +39,9 @@ class MyTheme with ChangeNotifier {
     notifyListeners();
   }
 
-  void switchThemeDynamic() {
-    _isDynamic = !_isDynamic;
-    box!.put('currentThemeDynamic', _isDynamic);
+  void switchThemeDynamic(String newTheme) {
+    _theme = newTheme;
+    box!.put('currentThemeDynamic', _theme);
     notifyListeners();
   }
 
