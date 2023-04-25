@@ -227,7 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
     cacheOptions = CacheOptions(
       policy: CachePolicy.forceCache,
       priority: CachePriority.high,
-      maxStale: const Duration(days: 7),
+      maxStale: Duration(hours: (24 - DateTime.now().hour) + 1),
       store: cacheStore,
       hitCacheOnErrorExcept: [],
       allowPostMethod: false, // for offline behaviour
