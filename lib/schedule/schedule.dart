@@ -144,7 +144,15 @@ class _SchedulePageState extends State<SchedulePage>
                 controller: _tabController,
                 isScrollable: false,
                 tabs: [
-                  for (final tab in tabs) Tab(text: tab),
+                  for (final tab in tabs)
+                    tab == tabs[DateTime.now().weekday - 1]
+                        ? Tab(
+                            child: Text(
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                                tab))
+                        : Tab(text: tab),
                 ],
               )
             : null,
