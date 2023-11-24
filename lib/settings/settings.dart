@@ -130,9 +130,9 @@ class _SettingsState extends State<SettingsPage> {
               title: const Text('Schema'),
               subtitle: const Text("Ändra klass"),
               children: <Widget>[
-                ListTile(
+                const ListTile(
                     title: Row(
-                  children: const [
+                  children: [
                     Expanded(
                         child: Padding(
                       padding: EdgeInsets.fromLTRB(0, 0, 8, 0),

@@ -26,7 +26,7 @@ class LicenseUtil {
 
   static List<License> getLicenses() {
     return [
-      License(
+      const License(
         name: r'animations',
         license: r'''Copyright 2013 The Flutter Authors. All rights reserved.
 
@@ -58,7 +58,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: null,
         repository: r'https://github.com/flutter/packages/tree/main/packages/animations',
       ),
-      License(
+      const License(
         name: r'app_tracking_transparency',
         license: r'''MIT License
 
@@ -86,7 +86,7 @@ SOFTWARE.
         homepage: r'https://github.com/deniza/app_tracking_transparency',
         repository: null,
       ),
-      License(
+      const License(
         name: r'cupertino_icons',
         license: r'''The MIT License (MIT)
 
@@ -112,7 +112,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''',
         homepage: null,
         repository: r'https://github.com/flutter/packages/tree/main/third_party/packages/cupertino_icons',
       ),
-      License(
+      const License(
         name: r'dio',
         license: r'''MIT License
 
@@ -140,7 +140,7 @@ SOFTWARE.''',
         homepage: r'https://github.com/cfug/dio',
         repository: r'https://github.com/cfug/dio/blob/main/dio',
       ),
-      License(
+      const License(
         name: r'dio_cache_interceptor',
         license: r'''                                 Apache License
                            Version 2.0, January 2004
@@ -348,7 +348,7 @@ SOFTWARE.''',
         homepage: null,
         repository: r'https://github.com/llfbandit/dio_cache_interceptor',
       ),
-      License(
+      const License(
         name: r'dio_cache_interceptor_hive_store',
         license: r'''                                 Apache License
                            Version 2.0, January 2004
@@ -556,7 +556,7 @@ SOFTWARE.''',
         homepage: r'https://github.com/llfbandit/dio_cache_interceptor/tree/master/dio_cache_interceptor_hive_store',
         repository: null,
       ),
-      License(
+      const License(
         name: r'dynamic_color',
         license: r'''                                 Apache License
                            Version 2.0, January 2004
@@ -764,7 +764,7 @@ SOFTWARE.''',
         homepage: null,
         repository: r'https://github.com/material-foundation/flutter-packages/tree/main/packages/dynamic_color',
       ),
-      License(
+      const License(
         name: r'extension_google_sign_in_as_googleapis_auth',
         license: r'''Copyright 2013 The Flutter Authors. All rights reserved.
 
@@ -796,7 +796,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: null,
         repository: r'https://github.com/flutter/packages/tree/main/packages/extension_google_sign_in_as_googleapis_auth',
       ),
-      License(
+      const License(
         name: r'firebase_core',
         license: r'''// Copyright 2017 The Chromium Authors. All rights reserved.
 //
@@ -829,7 +829,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: r'https://firebase.google.com/docs/flutter/setup',
         repository: r'https://github.com/firebase/flutterfire/tree/master/packages/firebase_core/firebase_core',
       ),
-      License(
+      const License(
         name: r'firebase_crashlytics',
         license: r'''// Copyright 2019 The Chromium Authors. All rights reserved.
 //
@@ -862,7 +862,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: r'https://firebase.google.com/docs/crashlytics',
         repository: r'https://github.com/firebase/flutterfire/tree/master/packages/firebase_crashlytics/firebase_crashlytics',
       ),
-      License(
+      const License(
         name: r'firebase_performance',
         license: r'''// Copyright 2018 The Chromium Authors. All rights reserved.
 //
@@ -896,7 +896,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: r'https://firebase.google.com/docs/perf-mon',
         repository: r'https://github.com/firebase/flutterfire/tree/master/packages/firebase_performance/firebase_performance',
       ),
-      License(
+      const License(
         name: r'flutter',
         license: r'''Copyright 2014 The Flutter Authors. All rights reserved.
 
@@ -928,7 +928,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: r'https://flutter.dev/',
         repository: r'https://github.com/flutter/flutter',
       ),
-      License(
+      const License(
         name: r'flutter_colorpicker',
         license: r'''MIT License
 
@@ -943,7 +943,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         homepage: r'https://github.com/mchome/flutter_colorpicker',
         repository: null,
       ),
-      License(
+      const License(
         name: r'flutter_launcher_icons',
         license: r'''MIT License
 
@@ -971,7 +971,7 @@ SOFTWARE.
         homepage: r'https://github.com/fluttercommunity/flutter_launcher_icons',
         repository: r'https://github.com/fluttercommunity/flutter_launcher_icons/',
       ),
-      License(
+      const License(
         name: r'flutter_lints',
         license: r'''Copyright 2013 The Flutter Authors. All rights reserved.
 
@@ -1003,7 +1003,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: null,
         repository: r'https://github.com/flutter/packages/tree/main/packages/flutter_lints',
       ),
-      License(
+      const License(
         name: r'flutter_signin_button',
         license: r'''Copyright (C) 2018, Zayn Jarvis
 
@@ -1028,7 +1028,7 @@ SOFTWARE.''',
         homepage: r'https://github.com/ZaynJarvis/Flutter-Sign-in-Button',
         repository: null,
       ),
-      License(
+      const License(
         name: r'flutter_test',
         license: r'''Copyright 2014 The Flutter Authors. All rights reserved.
 
@@ -1060,7 +1060,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: r'https://flutter.dev/',
         repository: r'https://github.com/flutter/flutter',
       ),
-      License(
+      const License(
         name: r'google_mobile_ads',
         license: r'''
                                  Apache License
@@ -1269,7 +1269,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: null,
         repository: r'https://github.com/googleads/googleads-mobile-flutter/tree/main/packages/google_mobile_ads',
       ),
-      License(
+      const License(
         name: r'google_sign_in',
         license: r'''Copyright 2013 The Flutter Authors. All rights reserved.
 
@@ -1301,7 +1301,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: null,
         repository: r'https://github.com/flutter/packages/tree/main/packages/google_sign_in/google_sign_in',
       ),
-      License(
+      const License(
         name: r'googleapis',
         license: r'''Copyright 2014, the Dart project authors. 
 
@@ -1335,7 +1335,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: null,
         repository: r'https://github.com/google/googleapis.dart/tree/master/generated/googleapis',
       ),
-      License(
+      const License(
         name: r'hive',
         license: r'''                                 Apache License
                            Version 2.0, January 2004
@@ -1532,7 +1532,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: r'https://github.com/hivedb/hive/tree/master/hive',
         repository: null,
       ),
-      License(
+      const License(
         name: r'hive_flutter',
         license: r'''Copyright 2019 Simon Leier
 
@@ -1551,7 +1551,7 @@ limitations under the License.''',
         homepage: r'https://github.com/hivedb/hive/tree/master/hive_flutter',
         repository: null,
       ),
-      License(
+      const License(
         name: r'http',
         license: r'''Copyright 2014, the Dart project authors. 
 
@@ -1585,7 +1585,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: null,
         repository: r'https://github.com/dart-lang/http/tree/master/pkgs/http',
       ),
-      License(
+      const License(
         name: r'intl',
         license: r'''Copyright 2013, the Dart project authors.
 
@@ -1619,7 +1619,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: null,
         repository: r'https://github.com/dart-lang/intl',
       ),
-      License(
+      const License(
         name: r'license_generator',
         license: r'''MIT License
 
@@ -1647,7 +1647,7 @@ SOFTWARE.
         homepage: r'https://github.com/icapps/flutter-icapps-license',
         repository: null,
       ),
-      License(
+      const License(
         name: r'path_provider',
         license: r'''Copyright 2013 The Flutter Authors. All rights reserved.
 
@@ -1679,7 +1679,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: null,
         repository: r'https://github.com/flutter/packages/tree/main/packages/path_provider/path_provider',
       ),
-      License(
+      const License(
         name: r'skeletons',
         license: r'''Copyright 2021 Mohamed Badjah
 
@@ -1696,7 +1696,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
         homepage: r'https://github.com/badjio/skeletons/',
         repository: null,
       ),
-      License(
+      const License(
         name: r'tinycolor2',
         license: r'''MIT License
 
@@ -1714,7 +1714,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         homepage: r'https://github.com/TinyCommunity/tinycolor2',
         repository: null,
       ),
-      License(
+      const License(
         name: r'touchable',
         license: r'''Mozilla Public License Version 2.0
 ==================================
@@ -2094,7 +2094,7 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
         homepage: r'https://github.com/nateshmbhat/touchable',
         repository: r'https://github.com/nateshmbhat/touchable',
       ),
-      License(
+      const License(
         name: r'url_launcher',
         license: r'''Copyright 2013 The Flutter Authors. All rights reserved.
 
@@ -2126,7 +2126,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: null,
         repository: r'https://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher',
       ),
-      License(
+      const License(
         name: r'week_of_year',
         license: r'''BSD 3-Clause License
 
@@ -2162,7 +2162,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         homepage: r'https://github.com/KadaDev/week_of_year',
         repository: r'https://github.com/KadaDev/week_of_year',
       ),
-      License(
+      const License(
         name: r'zoom_widget',
         license: r'''The MIT License (MIT)
 

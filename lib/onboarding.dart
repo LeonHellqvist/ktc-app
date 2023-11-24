@@ -61,10 +61,10 @@ class _MyOnboardingPageState extends State<MyOnboardingPage>
                       textAlign: TextAlign.center,
                       "För att komma igång måste du bara ange ditt primära schema och välja några favoritklasser som du snabbt kan byta mellan om du vill"),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: Row(
-                    children: const [
+                    children: [
                       Expanded(
                           child: Padding(
                         padding: EdgeInsets.fromLTRB(0, 0, 8, 0),

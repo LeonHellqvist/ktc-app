@@ -85,10 +85,10 @@ packages:
     dependency: transitive
     description:
       name: cli_util
-      sha256: "66f86e916d285c1a93d3b79587d94bd71984a66aac4ff74e524cfa7877f1395c"
+      sha256: b8db3080e59b2503ca9e7922c3df2072cf13992354d5e944074ffa836fba43b7
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.5"
+    version: "0.4.0"
   clock:
     dependency: transitive
     description:
@@ -274,10 +274,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_launcher_icons
-      sha256: "02dcaf49d405f652b7160e882bacfc02cb497041bb2eab2a49b1c393cf9aac12"
+      sha256: "526faf84284b86a4cb36d20a5e45147747b7563d921373d4ee0559c54fcdbcea"
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.0"
+    version: "0.13.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -324,10 +324,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_mobile_ads
-      sha256: "010b7a7a81b5c8f760eb2e5add8eaa7e429b4982dc8c8e465b709611f52887be"
+      sha256: "24ee4e9546866cc15ebe565dabf6a6c485ce5fbec0645fde22799800532000f0"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0"
+    version: "3.0.0"
   google_sign_in:
     dependency: "direct main"
     description:
@@ -372,10 +372,10 @@ packages:
     dependency: "direct main"
     description:
       name: googleapis
-      sha256: "0af31e6aba9c6a72ee9c6fd02cb10813ed16d34bbd392b500fb147d64558f95d"
+      sha256: "993a7a5440b2dbe1a3c143ec43c4c0e79b35be6ae83fabb2c38ba938594f8c3c"
       url: "https://pub.dev"
     source: hosted
-    version: "10.1.0"
+    version: "11.0.0"
   googleapis_auth:
     dependency: transitive
     description:
@@ -473,7 +473,7 @@ packages:
     source: hosted
     version: "0.12.15"
   material_color_utilities:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: material_color_utilities
       sha256: d92141dc6fe1dad30722f9aa826c7fbc896d021d792f80678280601aff8cf724
@@ -773,6 +773,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.3"
+  webview_flutter:
+    dependency: transitive
+    description:
+      name: webview_flutter
+      sha256: "1a37bdbaaf5fbe09ad8579ab09ecfd473284ce482f900b5aea27cf834386a567"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.0"
+  webview_flutter_android:
+    dependency: transitive
+    description:
+      name: webview_flutter_android
+      sha256: "1acea8def62592123e2fbbca164ed8681a98a890bdcbb88f916d5b4a22687759"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.7.0"
+  webview_flutter_platform_interface:
+    dependency: transitive
+    description:
+      name: webview_flutter_platform_interface
+      sha256: "78715dc442b7849dbde74e92bb67de1cecf5addf95531c5fb474e72f5fe9a507"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
+  webview_flutter_wkwebview:
+    dependency: transitive
+    description:
+      name: webview_flutter_wkwebview
+      sha256: "4646bb68297803bdbb96d46853e8fcb560d6cb5e04153fa64581535767875dfe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.3"
   week_of_year:
     dependency: "direct main"
     description:
@@ -823,4 +855,4 @@ packages:
     version: "2.0.1"
 sdks:
   dart: ">=3.0.0-417 <4.0.0"
-  flutter: ">=3.4.0-17.0.pre"
+  flutter: ">=3.3.0"
